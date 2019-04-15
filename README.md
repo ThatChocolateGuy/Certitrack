@@ -1,2 +1,2 @@
 # Certitrack
-ASP.NET Core Certificate Issuing &amp; Tracking System
+ASP.NET Core Certificate Issuing and Tracking System
