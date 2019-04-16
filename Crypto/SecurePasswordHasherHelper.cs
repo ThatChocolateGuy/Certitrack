@@ -11,12 +11,12 @@ namespace Certitrack.Crypto
         /// <summary>
         /// Size of salt
         /// </summary>
-        private const int SaltSize = 16;
+        private const int _SaltSize = 16;
 
         /// <summary>
         /// Size of hash
         /// </summary>
-        private const int HashSize = 20;
+        private const int _HashSize = 20;
 
         /// <summary>
         /// Creates a hash from a password
@@ -28,16 +28,16 @@ namespace Certitrack.Crypto
         {
             //create salt
             byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[_SaltSize]);
 
             //create hash
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(HashSize);
+            var hash = pbkdf2.GetBytes(_HashSize);
 
             //combine salt and hash
-            var hashBytes = new byte[SaltSize + HashSize];
-            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
-            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
+            var hashBytes = new byte[_SaltSize + _HashSize];
+            Array.Copy(salt, 0, hashBytes, 0, _SaltSize);
+            Array.Copy(hash, 0, hashBytes, _SaltSize, _HashSize);
 
             //convert to base64
             var base64Hash = Convert.ToBase64String(hashBytes);
@@ -88,17 +88,17 @@ namespace Certitrack.Crypto
             var hashBytes = Convert.FromBase64String(base64Hash);
 
             //get salt
-            var salt = new byte[SaltSize];
-            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+            var salt = new byte[_SaltSize];
+            Array.Copy(hashBytes, 0, salt, 0, _SaltSize);
 
             //create hash with given salt
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            byte[] hash = pbkdf2.GetBytes(HashSize);
+            byte[] hash = pbkdf2.GetBytes(_HashSize);
 
             //get result
-            for (var i = 0; i < HashSize; i++)
+            for (var i = 0; i < _HashSize; i++)
             {
-                if (hashBytes[i + SaltSize] != hash[i])
+                if (hashBytes[i + _SaltSize] != hash[i])
                 {
                     return false;
                 }

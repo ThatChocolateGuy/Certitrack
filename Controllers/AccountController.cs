@@ -22,12 +22,14 @@ namespace Certitrack
         [HttpPost]
         public ActionResult Validate(Staff staff)
         {
-            
+            var _staff = db.Staff
+                .Where(s => s.Email == staff.Email);
 
-            var _staff = db.Staff.Where(s => s.Email == staff.Email);
             if (_staff.Any())
             {
-                if (_staff.Where(s => s.Password == staff.Password).Any())
+                var staffDbPw = _staff.Single().Password;
+                
+                if ( SecurePasswordHasherHelper.Verify(staff.Password, staffDbPw) )
                 {
 
                     return Json(new { status = true, message = "Login Successfull!" });
