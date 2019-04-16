@@ -6,6 +6,7 @@ using Certitrack;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Certitrack.Crypto;
 
 namespace Certitrack
 {
@@ -21,6 +22,8 @@ namespace Certitrack
         [HttpPost]
         public ActionResult Validate(Staff staff)
         {
+            
+
             var _staff = db.Staff.Where(s => s.Email == staff.Email);
             if (_staff.Any())
             {
@@ -38,6 +41,16 @@ namespace Certitrack
             {
                 return Json(new { status = false, message = "Invalid Email!" });
             }
+        }
+
+        [HttpPost]
+        public ActionResult CreateUser(Staff staff)
+        {
+            string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
+            staff.Password = hashed_pw;
+            db.AddRange(staff.Name, staff.Email, staff.Password);
+
+            return null;
         }
     }
 }
