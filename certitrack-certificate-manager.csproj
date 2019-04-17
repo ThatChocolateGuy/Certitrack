@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\NewFolder\" />
+    <Folder Include="Views\Staff\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
