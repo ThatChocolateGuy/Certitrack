@@ -20,7 +20,7 @@ namespace Certitrack
         CertitrackContext db = new CertitrackContext();
 
         [HttpPost]
-        public ActionResult Validate(Staff staff)
+        public IActionResult Validate(Staff staff)
         {
             var _staff = db.Staff
                 .Where(s => s.Email == staff.Email);
@@ -46,7 +46,7 @@ namespace Certitrack
         }
 
         [HttpPost]
-        public ActionResult CreateUser(Staff staff)
+        public IActionResult CreateUser(Staff staff)
         {
             string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
             staff.Password = hashed_pw;
