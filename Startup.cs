@@ -17,8 +17,10 @@ namespace Certitrack
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ConnectionString = Configuration.GetConnectionString("Certitrack");
         }
         public IConfiguration Configuration { get; }
+        public static string ConnectionString { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -34,7 +36,7 @@ namespace Certitrack
 
             services.AddDbContext<CertitrackContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Certitrack"));
+                options.UseSqlServer(ConnectionString);
             });            
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

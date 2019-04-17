@@ -11,8 +11,6 @@ namespace Certitrack
         {
         }
 
-        public IConfiguration Configuration { get; }
-
         public CertitrackContext(DbContextOptions<CertitrackContext> options)
             : base(options)
         {
@@ -30,12 +28,16 @@ namespace Certitrack
         public virtual DbSet<StaffLink> StaffLink { get; set; }
         public virtual DbSet<StaffType> StaffType { get; set; }
 
+        public static string GetConnectionString()
+        {
+            return Startup.ConnectionString;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("Certitrack"));
-                //optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Certitrack;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer(GetConnectionString());
             }
         }
 
