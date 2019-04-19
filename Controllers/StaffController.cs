@@ -15,42 +15,46 @@ namespace Certitrack.Controllers
         // DISPLAY STAFF LIST
         public IActionResult Index()
         {
-            List<Staff> staffList = new List<Staff>(); // Staff list to pass to view
-            var staffs = db.Staff; // Get all staff from db
-
-            foreach (Staff staff in staffs)
+            try
             {
-                // Get StaffLink record for current staff
-                staff.StaffLink = db.StaffLink
-                    .Where(sl => sl.StaffId == staff.Id).Single();
-                // Get Role from StaffLink
-                staff.StaffLink.Role = db.Role
-                    .Where(r => r.Id == staff.StaffLink.RoleId).Single();
-                // Get StaffType from StaffLink
-                staff.StaffLink.StaffType = db.StaffType
-                    .Where(st => st.Id == staff.StaffLink.StaffTypeId).Single();
+                List<Staff> staffList = new List<Staff>(); // Staff list to pass to view
+                var staffs = db.Staff; // Get all staff from db
 
-                // Add Current Staff to List for View Render
-                staffList.Add(staff);
+                foreach (Staff staff in staffs)
+                {
+                    // Get StaffLink record for current staff
+                    staff.StaffLink = db.StaffLink
+                        .Where(sl => sl.StaffId == staff.Id).Single();
+                    // Get Role from StaffLink
+                    staff.StaffLink.Role = db.Role
+                        .Where(r => r.Id == staff.StaffLink.RoleId).Single();
+                    // Get StaffType from StaffLink
+                    staff.StaffLink.StaffType = db.StaffType
+                        .Where(st => st.Id == staff.StaffLink.StaffTypeId).Single();
+
+                    // Add Current Staff to List for View Render
+                    staffList.Add(staff);
+                }
+
+                return View(staffList);
             }
-
-            return View(staffList);
+            catch (Exception)
+            {
+                return View();
+                throw;
+            }
         }
 
 
         // DISPLAY OPEN FIELDS TO EDIT
         public IActionResult Edit()
         {
-            //var editFields = db.Staff.Where().ToList();
-
             return View();
         }
         // UPDATE ENTITY MODEL & DB
         [HttpPost]
-        public IActionResult Edit(string name, string email, string password, string staff_type, string role_title)
+        public IActionResult Edit(Staff staff)
         {
-            //var editFields = db.Staff.Where().ToList();
-
             return View();
         }
 
@@ -58,13 +62,12 @@ namespace Certitrack.Controllers
         public IActionResult CreateStaff()
         {
             return View();
-
         }
         // CREATE NEW STAFF (IF ADMIN)
-        public IActionResult CreateStaff(string name, string email, string password, string staff_type, string role_title)
+        [HttpPost]
+        public IActionResult CreateStaff(Staff staff)
         {
             return View();
-
         }
     }
 }
