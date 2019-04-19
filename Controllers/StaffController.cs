@@ -18,9 +18,9 @@ namespace Certitrack.Controllers
             try
             {
                 List<Staff> staffList = new List<Staff>(); // Staff list to pass to view
-                var staffs = db.Staff; // Get all staff from db
+                var allStaff = db.Staff; // Get all staff from db
 
-                foreach (Staff staff in staffs)
+                foreach (Staff staff in allStaff)
                 {
                     // Get StaffLink record for current staff
                     staff.StaffLink = db.StaffLink
@@ -45,7 +45,6 @@ namespace Certitrack.Controllers
             }
         }
 
-
         // DISPLAY OPEN FIELDS TO EDIT
         public IActionResult Edit()
         {
@@ -59,15 +58,26 @@ namespace Certitrack.Controllers
         }
 
         // CREATE NEW STAFF (IF ADMIN)
-        public IActionResult CreateStaff()
+        public IActionResult Create()
         {
             return View();
         }
         // CREATE NEW STAFF (IF ADMIN)
         [HttpPost]
-        public IActionResult CreateStaff(Staff staff)
+        public IActionResult Create(Staff staff)
+        {
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete()
         {
             return View();
+        }
+        // DELETE STAFF FROM DB (IF ADMIN)
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            return RedirectToAction("Index");
         }
     }
 }
