@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Certitrack.Models;
 
-namespace Certitrack
+namespace Certitrack.Data
 {
     public partial class CertitrackContext : DbContext
     {

@@ -2,13 +2,14 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Certitrack
+namespace Certitrack.Controllers
 {
     public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Staff");
+            //return View();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Certitrack
+namespace Certitrack.Models
 {
     public partial class Certificate
     {
