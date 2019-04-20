@@ -110,7 +110,7 @@
                 </form>
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
-                @Html.Partial("_MainMenu")
+                <partial name="_MainMenu">
                 <!-- /.sidebar-menu -->
             </section>
             <!-- /.sidebar -->
@@ -136,5 +136,47 @@
     <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/dist/js/adminlte.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- Custom Page Script -->
+    <script>
+    $(function () {
+        $('#main-table-staff').DataTable({
+            "columnDefs": [{
+                "targets": 6,
+                "orderable": false
+            }]
+        });
+    });
+    @*function Delete(id){
+        alert(id)
+        var txt;
+        var r = confirm("Are you sure you want to Delete?");
+        if (r == true) {
+
+            $.ajax(
+            {
+                type: "POST",
+                url: '@Url.Action("Delete", "Staff")',
+                data: {
+                    id: id
+                },
+                error: function (result) {
+                    alert("error");
+                },
+                success: function (result) {
+                    if (result == true) {
+                        var baseUrl="/Index";
+                        window.location.reload();
+                    }
+                    else {
+                        alert("There is a problem, Try Later!");
+                    }
+                }
+            });
+        }
+    }*@
+    </script>
 </body>
 </html>

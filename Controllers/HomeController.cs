@@ -8,8 +8,8 @@ namespace Certitrack.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Staff");
-            //return View();
+            //return RedirectToAction("Index", "Staff");
+            return View();
         }
     }
 }

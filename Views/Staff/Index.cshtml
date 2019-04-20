@@ -13,21 +13,22 @@
         <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Staff</li>
     </ol>
-    <button class="btn btn-outline-primary">
-        <a asp-action="Create">Create New</a>
-    </button>
+    <a asp-action="Create" class="btn btn-primary" style="margin-top: 10px;">
+        <i class="fa fa-user-plus"></i>
+        Create New
+    </a>
 </section>
 <!-- Main content -->
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Manage Staff</h3>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
-                    <table id="main-table" class="table table-bordered table-striped">
+                <div class="box-body pad table-responsive">
+                    <table id="main-table-staff" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>
@@ -73,9 +74,13 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.StaffLink.Role.Title)
                                     </td>
-                                    <td>
-                                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <td class="text-center">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn text-green fa fa-edit">
+                                            <span class="sr-only">Edit</span>
+                                        </a> 
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn text-red fa fa-trash-o">
+                                            <span class="sr-only">Delete</span>
+                                        </a>
                                     </td>
                                 </tr>
                             }
@@ -90,42 +95,3 @@
     </div>
     <!-- /.row -->
 </section>
-
-<!-- DataTables -->
-<script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-
-<!-- page script -->
-<script>
-    $(function () {
-        $('#main-table').DataTable();
-    });
-    @*function Delete(id){
-        alert(id)
-        var txt;
-        var r = confirm("Are you sure you want to Delete?");
-        if (r == true) {
-
-            $.ajax(
-            {
-                type: "POST",
-                url: '@Url.Action("Delete", "Staff")',
-                data: {
-                    id: id
-                },
-                error: function (result) {
-                    alert("error");
-                },
-                success: function (result) {
-                    if (result == true) {
-                        var baseUrl="/Index";
-                        window.location.reload();
-                    }
-                    else {
-                        alert("There is a problem, Try Later!");
-                    }
-                }
-            });
-        }
-    }*@
-</script>

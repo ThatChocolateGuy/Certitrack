@@ -54,6 +54,7 @@ namespace Certitrack.Controllers
         [HttpPost]
         public IActionResult Edit(Staff staff)
         {
+            var staffToUpdate = new Staff();
             return View();
         }
 
@@ -66,6 +67,11 @@ namespace Certitrack.Controllers
         [HttpPost]
         public IActionResult Create(Staff staff)
         {
+            var staffToCreate = new Staff
+            {
+                Name = staff.Name,
+            };
+
             return RedirectToAction("Index");
         }
 
