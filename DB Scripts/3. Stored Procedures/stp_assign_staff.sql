@@ -17,7 +17,7 @@ CREATE PROCEDURE stpAssignStaff
 	-- STAFF PARAMS --
 	@staff_name varchar(45),
 	@staff_email varchar(50),
-	@staff_pw varchar(20),
+	@staff_pw varchar(255),
 	-- STAFF ROLE PARAMS --
 	@role_title varchar(30),
 	-- STAFF TYPE PARAMS --

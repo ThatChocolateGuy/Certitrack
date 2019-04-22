@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Certitrack.Data;
 using Certitrack.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Certitrack.Controllers
 {
@@ -66,13 +67,33 @@ namespace Certitrack.Controllers
         // CREATE NEW STAFF (IF ADMIN)
         [HttpPost]
         public IActionResult Create(Staff staff)
-        {
-            var staffToCreate = new Staff
-            {
-                Name = staff.Name,
-            };
+        { // USE STP FOR STAFF & LINK POPULATION
 
-            return RedirectToAction("Index");
+            //var staffJson = JObject.Parse(Json(staff).Value.ToString());
+            //var staffConvert = JObject.FromObject(staff);
+
+            //var staffToCreate = new Staff
+            //{
+            //    Name = staffJson.Property("name").Value.ToString(),
+            //    Email = staffJson.Property("email").Value.ToString(),
+            //    Password = staffJson.Property("password").Value.ToString(),
+
+            //    StaffLink = new StaffLink
+            //    {
+            //        Role = new Role
+            //        {
+            //            Title = staffJson["staffLink"][0]["Role"][0]["Title"].ToString()
+            //        },
+
+            //        StaffType = new StaffType
+            //        {
+            //            Type = staffJson["staffLink"][0]["StaffType"][0]["Type"].ToString()
+            //        }
+            //    }
+            //};
+
+            return Json(staff);
+            //return RedirectToAction("Index");
         }
 
         public IActionResult Delete()

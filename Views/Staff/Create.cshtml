@@ -1,0 +1,73 @@
+﻿@model Certitrack.Models.Staff
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <h1>
+        Staff
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/Staff">Staff</a></li>
+        <li class="active">Add Staff</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Add Staff</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad table-responsive">
+                    <form asp-action="Create" class="form-group" role="form">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="control-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StaffLink.Role.Title" class="control-label">Role Title</label>
+                            <input asp-for="StaffLink.Role.Title" class="form-control" type="" />
+                            <span asp-validation-for="StaffLink.Role.Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StaffLink.StaffType.Type" class="control-label"></label>
+                            <input asp-for="StaffLink.StaffType.Type" class="form-control" />
+                            <span asp-validation-for="StaffLink.StaffType.Type" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create Staff" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <a asp-action="Index" class="btn btn-primary" style="margin-top: 10px;">
+        <i class="fa fa-user-plus"></i>
+        Back to List
+    </a>
+</section>
+
