@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Certitrack.Data;
 using Certitrack.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Certitrack.ViewModels;
 
 namespace Certitrack.Controllers
 {
@@ -62,7 +64,49 @@ namespace Certitrack.Controllers
         // CREATE NEW STAFF (IF ADMIN)
         public IActionResult Create()
         {
-            return View();
+            Staff staff = new Staff();
+            // Lists to pass into StaffCreateViewModel
+            List<Role> roleTitleList = new List<Role>();
+            List<StaffType> staffTypeList = new List<StaffType>();
+            
+            // Get Role Titles
+            foreach (Role r in db.Role)
+            {
+                Role role = new Role { Title = r.Title };
+                StaffLink staffLink = new StaffLink { Role = role };
+                staff.StaffLink = staffLink;
+                roleTitleList.Add(staff.StaffLink.Role);
+            }
+            // Get Staff Types
+            foreach (StaffType st in db.StaffType)
+            {
+                StaffType staffType = new StaffType { Type = st.Type };
+                StaffLink staffLink = new StaffLink { StaffType = staffType };
+                staff.StaffLink = staffLink;
+                staffTypeList.Add(staff.StaffLink.StaffType);
+            }
+
+            // Create SelectList for Role Titles
+            IEnumerable<SelectListItem> roleTitleSelectList =
+                from role in roleTitleList
+                select new SelectListItem
+                {
+                    Text = role.Title,
+                    Value = role.Title
+                };
+            // Create SelectList for Staff Types
+            IEnumerable<SelectListItem> sTypeSelectList =
+                from sType in staffTypeList
+                select new SelectListItem
+                {
+                    Text = sType.Type,
+                    Value = sType.Type
+                };
+
+            // Create new StaffCreateViewModel with set list props
+            var model = new StaffCreateViewModel(roleTitleSelectList, sTypeSelectList);
+
+            return View(model);
         }
         // CREATE NEW STAFF (IF ADMIN)
         [HttpPost]
