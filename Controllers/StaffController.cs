@@ -8,6 +8,7 @@ using Certitrack.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Certitrack.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Certitrack.Controllers
 {
@@ -111,33 +112,22 @@ namespace Certitrack.Controllers
         // CREATE NEW STAFF (IF ADMIN)
         [HttpPost]
         public IActionResult Create(Staff staff)
-        { // USE STP FOR STAFF & LINK POPULATION
+        {
+            db.Database.ExecuteSqlCommand(
+                "stpAssignStaff" +
+                    " @staff_name = {0}" +
+                    ",@staff_email = {1}" +
+                    ",@staff_pw = {2}" +
+                    ",@role_title = {3}" +
+                    ",@staff_type = {4}",
+                    staff.Name,
+                    staff.Email,
+                    staff.Password, // replace with hashed_pw
+                    staff.StaffLink.Role.Title,
+                    staff.StaffLink.StaffType.Type
+                );
 
-            //var staffJson = JObject.Parse(Json(staff).Value.ToString());
-            //var staffConvert = JObject.FromObject(staff);
-
-            //var staffToCreate = new Staff
-            //{
-            //    Name = staffJson.Property("name").Value.ToString(),
-            //    Email = staffJson.Property("email").Value.ToString(),
-            //    Password = staffJson.Property("password").Value.ToString(),
-
-            //    StaffLink = new StaffLink
-            //    {
-            //        Role = new Role
-            //        {
-            //            Title = staffJson["staffLink"][0]["Role"][0]["Title"].ToString()
-            //        },
-
-            //        StaffType = new StaffType
-            //        {
-            //            Type = staffJson["staffLink"][0]["StaffType"][0]["Type"].ToString()
-            //        }
-            //    }
-            //};
-
-            return Json(staff);
-            //return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         public IActionResult Delete()

@@ -1,4 +1,4 @@
-﻿@model Certitrack.ViewModels.DropDownListAttributeViewModel
+﻿@model Certitrack.ViewModels.StaffCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -28,37 +28,37 @@
                 <div class="box-body pad table-responsive">
                     <form asp-action="Create" class="form-group" role="form">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-12">
                             <label asp-for="Staff.Name" class="control-label"></label>
                             <input asp-for="Staff.Name" class="form-control" />
                             <span asp-validation-for="Staff.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-12">
                             <label asp-for="Staff.Email" class="control-label"></label>
                             <input asp-for="Staff.Email" class="form-control" />
                             <span asp-validation-for="Staff.Email" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-12">
                             <label asp-for="Staff.Password" class="control-label"></label>
-                            <input asp-for="Staff.Password" class="form-control" />
+                            <input asp-for="Staff.Password" class="form-control validate-input" />
                             <span asp-validation-for="Staff.Password" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-6">
                             <label asp-for="Staff.StaffLink.Role.Title" class="control-label">Role</label>
                             <select asp-for="Staff.StaffLink.Role.Title" asp-items="@Model.RoleTitleList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.Role.Title" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-6">
                             <label asp-for="Staff.StaffLink.StaffType.Type" class="control-label">Staff Type</label>
                             <select asp-for="Staff.StaffLink.StaffType.Type" asp-items="@Model.StaffTypeList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.StaffType.Type" class="text-danger"></span>
                         </div>
-                        <div class="form-group" style="margin-top: 30px">
-                            <button type="submit" class="btn btn-success" style="margin-bottom: 10px">
+                        <div class="form-group col-sm-12" style="margin-top: 7px">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
                                 <i class="fa fa-user-plus"></i>
                                 Create Staff
                             </button>
-                            <a asp-action="Index" class="btn btn-danger pull-right">
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
                                 <i class="fa fa-arrow-circle-left"></i>
                                 Back to List
                             </a>
