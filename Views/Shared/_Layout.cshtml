@@ -32,7 +32,7 @@
                 <span class="logo-lg"><b>Certi</b>Track</span>
             </a>
             <!-- Header Navbar -->
-            <nav class="navbar navbar-static-top" role="navigation">
+            <nav class="navbar navbar-static-top" role="navigation" style="box-shadow: rgba(0,0,0,.5) 0 1px 3px">
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
@@ -110,13 +110,16 @@
                 </form>
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
-                <partial name="_MainMenu">
-                    <!-- /.sidebar-menu -->
+                <partial name="_MainMenu" />
+                <!-- /.sidebar-menu -->
             </section>
             <!-- /.sidebar -->
         </aside>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <!-- Status Message Partial -->
+            <Partial name="_StatusMessages" />
+            <!-- ^^^^ -->
             <!-- Content Header (Page header) -->
             @RenderBody()
             <!-- /.content -->

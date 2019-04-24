@@ -13,7 +13,7 @@ GO
 --	3. Get Staff Type Id
 --	4. Create and/or Get a Staff Link Set
 -- =============================================
-CREATE PROCEDURE stpAssignStaff
+alter PROCEDURE stpAssignStaff
 	-- STAFF PARAMS --
 	@staff_name varchar(45),
 	@staff_email varchar(50),
@@ -21,7 +21,11 @@ CREATE PROCEDURE stpAssignStaff
 	-- STAFF ROLE PARAMS --
 	@role_title varchar(30),
 	-- STAFF TYPE PARAMS --
-	@staff_type varchar(45)
+	@staff_type varchar(45),
+	-- MESSAGE OUT PARAM --
+	@message_out varchar(50) OUTPUT,
+	-- STAFF CREATION STATUS OUT PARAM --
+	@staff_created INT OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -31,6 +35,8 @@ BEGIN
 			@role_id int,
 			@staff_type_id int,
 			@message varchar(50)
+
+	SET		@staff_created = 0
 
 
 	-- 1. CREATES STAFF IF DOESN'T EXIST --
@@ -54,6 +60,8 @@ BEGIN
 
 		SELECT @staff_id AS 'Staff ID - stpAssignStaff'
 		SELECT @stpGCS AS 'Staff Creation Status - stpAssignStaff'
+
+		SET @staff_created = 1
 	END
 	/*
 		SETS @staff_id TO EXISTING STAFF MATCHING SUPPLIED DETAILS
@@ -61,11 +69,14 @@ BEGIN
 	ELSE
 	BEGIN
 		SELECT @staff_id = [id] FROM [staff]
-		WHERE [name] LIKE @staff_name
-		OR [email] LIKE @staff_email
+		WHERE [email] LIKE @staff_email
 
 		SET @message = CONCAT('Staff Already Exists - ID: ', @staff_id, ' - stpAssignStaff')
 		SELECT @message AS 'Message - stpAssignStaff'
+
+		SET @message_out = CONCAT('Staff Already Exists - ID: ', @staff_id)
+
+		SET @staff_created = 0
 	END
 
 	-- 2. GETS STAFF ROLE --
@@ -95,5 +106,7 @@ BEGIN
 	*/
 	SELECT * FROM [staff_link]
 	WHERE [staff_id] LIKE @staff_id
+
+	RETURN @staff_created
 END
 GO

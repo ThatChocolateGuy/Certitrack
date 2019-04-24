@@ -9,6 +9,10 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Certitrack.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Certitrack.Crypto;
+using Certitrack.Extensions.Alerts;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace Certitrack.Controllers
 {
@@ -113,21 +117,50 @@ namespace Certitrack.Controllers
         [HttpPost]
         public IActionResult Create(Staff staff)
         {
+            // Create hashed pw from user input
+            string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
+
+            // Output Parameters for SQL Query
+            var messageParam = new SqlParameter()
+            {
+                ParameterName = "@messageOut",
+                Direction = ParameterDirection.Output,
+                Value = DBNull.Value,
+                SqlDbType = SqlDbType.VarChar,
+                Size = 50
+            };
+            var staffCreatedParam = new SqlParameter()
+            {
+                ParameterName = "@staffCreatedOut",
+                Direction = ParameterDirection.Output,
+                Value = DBNull.Value,
+                SqlDbType = SqlDbType.Int
+            };
+
+            // Executes stpAssignStaff Stored Procedure
             db.Database.ExecuteSqlCommand(
-                "stpAssignStaff" +
-                    " @staff_name = {0}" +
-                    ",@staff_email = {1}" +
-                    ",@staff_pw = {2}" +
-                    ",@role_title = {3}" +
-                    ",@staff_type = {4}",
-                    staff.Name,
-                    staff.Email,
-                    staff.Password, // replace with hashed_pw
-                    staff.StaffLink.Role.Title,
-                    staff.StaffLink.StaffType.Type
+                @"EXEC [dbo].[stpAssignStaff]
+                    @staff_name = @name
+                    ,@staff_email = @email
+                    ,@staff_pw = @pw
+                    ,@role_title = @rt
+                    ,@staff_type = @st
+                    ,@message_out = @messageOut OUTPUT
+                    ,@staff_created = @staffCreatedOut OUTPUT"
+                    , new SqlParameter("@name", staff.Name)
+                    , new SqlParameter("@email", staff.Email)
+                    , new SqlParameter("@pw", hashed_pw)
+                    , new SqlParameter("@rt", staff.StaffLink.Role.Title)
+                    , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
+                    , messageParam
+                    , staffCreatedParam
                 );
 
-            return RedirectToAction("Index");
+            // Redirects to Staff Index w/ Alert TempData
+            if (staffCreatedParam.Value.Equals(1))
+                return RedirectToAction("Index").WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+            else
+                return RedirectToAction("Index").WithWarning("Staff Not Added", messageParam.Value.ToString());
         }
 
         public IActionResult Delete()

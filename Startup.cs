@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Certitrack.Data;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 
 namespace Certitrack
 {
@@ -40,13 +42,24 @@ namespace Certitrack
                 options.UseSqlServer(ConnectionString);
             });
 
-            services.AddMvc();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddSessionStateTempDataProvider();
+
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSession();
+
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
+
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -58,7 +71,8 @@ namespace Certitrack
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

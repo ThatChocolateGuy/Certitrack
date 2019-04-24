@@ -14,7 +14,7 @@ GO
 CREATE PROCEDURE stpGetCreateStaff 
 	@name varchar(50),
 	@email varchar(50),
-	@password varchar(20),
+	@password varchar(255),
 	@id int output -- pass back staff id
 AS
 BEGIN

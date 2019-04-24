@@ -13,6 +13,7 @@ namespace Certitrack.Models
 
         public int Id { get; set; }
         [Required]
+        [MinLength(2)]
         public string Name { get; set; }
         [Required]
         [EmailAddress]
@@ -20,6 +21,7 @@ namespace Certitrack.Models
         public string Email { get; set; }
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(6, ErrorMessage = "The {0} must be at least {1} characters long.")]
         public string Password { get; set; }
         public DateTime Created { get; set; }
 
