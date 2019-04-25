@@ -11,10 +11,16 @@ namespace Certitrack.ViewModels
     public partial class StaffCreateViewModel
     {
         public StaffCreateViewModel(
-            IEnumerable<SelectListItem> roleTitleList, IEnumerable<SelectListItem> staffTypeList)
+            IEnumerable<SelectListItem> roleTitleList,
+            IEnumerable<SelectListItem> staffTypeList )
         {
             this.RoleTitleList = roleTitleList;
             this.StaffTypeList = staffTypeList;
+        }
+
+        public StaffCreateViewModel(Staff staff)
+        {
+            Staff = staff;
         }
 
         [Required]
@@ -22,9 +28,9 @@ namespace Certitrack.ViewModels
         [Required]
         public IEnumerable<SelectListItem> StaffTypeList { get; set; }
 
+        [Required]
         public Staff Staff { get; set; }
 
-        public string Role { get; set; }
-        public string StaffType { get; set; }
+        //TODO: hash pw before passing to controller if possible
     }
 }

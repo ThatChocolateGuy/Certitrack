@@ -69,20 +69,72 @@ namespace Certitrack.Controllers
         // CREATE NEW STAFF (IF ADMIN)
         public IActionResult Create()
         {
+            var model = GetStaffCreateViewModel();
+            return View(model);
+        }
+
+        // StaffCreateViewModel Methods
+        /// <summary>
+        /// Gets a StaffCreateViewModel
+        /// </summary>
+        /// <returns>StaffCreateViewModel</returns>
+        private StaffCreateViewModel GetStaffCreateViewModel()
+        {
             Staff staff = new Staff();
+
             // Lists to pass into StaffCreateViewModel
             List<Role> roleTitleList = new List<Role>();
             List<StaffType> staffTypeList = new List<StaffType>();
-            
+
             // Get Role Titles
-            foreach (Role r in db.Role)
-            {
-                Role role = new Role { Title = r.Title };
-                StaffLink staffLink = new StaffLink { Role = role };
-                staff.StaffLink = staffLink;
-                roleTitleList.Add(staff.StaffLink.Role);
-            }
+            GetRoleTitleList(staff, roleTitleList);
             // Get Staff Types
+            GetStaffTypeList(staff, staffTypeList);
+
+            // Create SelectList for Role Titles
+            IEnumerable<SelectListItem> roleTitleSelectList = CreateRoleTitleSelectList(roleTitleList);
+            // Create SelectList for Staff Types
+            IEnumerable<SelectListItem> sTypeSelectList = CreateStaffTypeSelectList(staffTypeList);
+
+            // Create new StaffCreateViewModel with set list props
+            var model = new StaffCreateViewModel(roleTitleSelectList, sTypeSelectList);
+            return model;
+        }
+        /// <summary>
+        /// Creates a Select List for Staff Type
+        /// </summary>
+        /// <param name="staffTypeList">Staff Type List to Fill</param>
+        /// <returns>IEnumerable<SelectListItem></returns>
+        private static IEnumerable<SelectListItem> CreateStaffTypeSelectList(List<StaffType> staffTypeList)
+        {
+            return from sType in staffTypeList
+                   select new SelectListItem
+                   {
+                       Text = sType.Type,
+                       Value = sType.Type
+                   };
+        }
+        /// <summary>
+        /// Creates a Select List for Role Title
+        /// </summary>
+        /// <param name="roleTitleList">Role Title List to Fill</param>
+        /// <returns>IEnumerable<roleTitleList></returns>
+        private static IEnumerable<SelectListItem> CreateRoleTitleSelectList(List<Role> roleTitleList)
+        {
+            return from role in roleTitleList
+                   select new SelectListItem
+                   {
+                       Text = role.Title,
+                       Value = role.Title
+                   };
+        }
+        /// <summary>
+        /// Gets List of Staff Types
+        /// </summary>
+        /// <param name="staff">Staff model instance to reference</param>
+        /// <param name="staffTypeList">Staff Type list to populate</param>
+        private void GetStaffTypeList(Staff staff, List<StaffType> staffTypeList)
+        {
             foreach (StaffType st in db.StaffType)
             {
                 StaffType staffType = new StaffType { Type = st.Type };
@@ -90,33 +142,34 @@ namespace Certitrack.Controllers
                 staff.StaffLink = staffLink;
                 staffTypeList.Add(staff.StaffLink.StaffType);
             }
-
-            // Create SelectList for Role Titles
-            IEnumerable<SelectListItem> roleTitleSelectList =
-                from role in roleTitleList
-                select new SelectListItem
-                {
-                    Text = role.Title,
-                    Value = role.Title
-                };
-            // Create SelectList for Staff Types
-            IEnumerable<SelectListItem> sTypeSelectList =
-                from sType in staffTypeList
-                select new SelectListItem
-                {
-                    Text = sType.Type,
-                    Value = sType.Type
-                };
-
-            // Create new StaffCreateViewModel with set list props
-            var model = new StaffCreateViewModel(roleTitleSelectList, sTypeSelectList);
-
-            return View(model);
         }
+        /// <summary>
+        /// Gets List of Role Titles
+        /// </summary>
+        /// <param name="staff">Staff model instance to reference</param>
+        /// <param name="roleTitleList">Role Title list to populate</param>
+        private void GetRoleTitleList(Staff staff, List<Role> roleTitleList)
+        {
+            foreach (Role r in db.Role)
+            {
+                Role role = new Role { Title = r.Title };
+                StaffLink staffLink = new StaffLink { Role = role };
+                staff.StaffLink = staffLink;
+                roleTitleList.Add(staff.StaffLink.Role);
+            }
+        }
+        //
+
         // CREATE NEW STAFF (IF ADMIN)
         [HttpPost]
         public IActionResult Create(Staff staff)
         {
+            if (!ModelState.IsValid)
+            {
+                var model = GetStaffCreateViewModel();
+                return View(model).WithWarning("Something's Not Right", "Check the form");
+            }
+
             // Create hashed pw from user input
             string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
 
@@ -160,7 +213,7 @@ namespace Certitrack.Controllers
             if (staffCreatedParam.Value.Equals(1))
                 return RedirectToAction("Index").WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
             else
-                return RedirectToAction("Index").WithWarning("Staff Not Added", messageParam.Value.ToString());
+                return RedirectToAction("Index").WithDanger("Staff Not Added", messageParam.Value.ToString());
         }
 
         public IActionResult Delete()
