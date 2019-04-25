@@ -47,7 +47,7 @@
                         <!-- Password Group -->
                         <div class="form-group col-sm-12">
                             <label asp-for="Staff.Password" class="control-label"></label>
-                            <div class="form-inline row input-group">
+                            <div class="form-inline row input-group" style="display: inherit">
                                 <!-- Password -->
                                 <div class="form-group col-sm-6">
                                     <input asp-for="Staff.Password" data-minlength="6" class="form-control validate-input" id="inputPassword" placeholder="Password" required />
@@ -61,18 +61,20 @@
                             </div>
                         </div>
                         <!-- / Password Group -->
-                        <!-- Dropdown Group -->
+                        <!-- Role Title Drowpdown -->
                         <div class="form-group col-sm-6">
                             <label asp-for="Staff.StaffLink.Role.Title" class="control-label">Role</label>
                             <select asp-for="Staff.StaffLink.Role.Title" asp-items="@Model.RoleTitleList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.Role.Title" class="text-danger"></span>
                         </div>
+                        <!-- / Role Title Drowpdown -->
+                        <!-- Staff Type Drowpdown -->
                         <div class="form-group col-sm-6">
                             <label asp-for="Staff.StaffLink.StaffType.Type" class="control-label">Staff Type</label>
                             <select asp-for="Staff.StaffLink.StaffType.Type" asp-items="@Model.StaffTypeList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.StaffType.Type" class="text-danger"></span>
                         </div>
-                        <!-- / Dropdown Group -->
+                        <!-- / Staff Type Drowpdown -->
                         <!-- Button Group -->
                         <div class="form-group col-sm-12" style="margin-top: 7px">
                             <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
