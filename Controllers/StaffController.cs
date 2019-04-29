@@ -25,10 +25,12 @@ namespace Certitrack.Controllers
         {
             try
             {
-                List<Staff> staffList = new List<Staff>(); // Staff list to pass to view
-                var allStaff = db.Staff; // Get all staff from db
-
-                foreach (Staff staff in allStaff)
+                CertitrackContext db = new CertitrackContext();
+                // Staff list to pass to view
+                List<Staff> staffList = new List<Staff>();
+                
+                // Populate staffList
+                foreach (Staff staff in db.Staff)
                 {
                     // Get StaffLink record for current staff
                     staff.StaffLink = db.StaffLink
@@ -52,28 +54,154 @@ namespace Certitrack.Controllers
                 throw;
             }
         }
+        //
 
-        // DISPLAY OPEN FIELDS TO EDIT
-        public IActionResult Edit()
+        #region EDIT
+        // DISPLAY OPEN FIELDS TO EDIT (IF ADMIN)
+        public IActionResult Edit(int id)
         {
-            return View();
-        }
-        // UPDATE ENTITY MODEL & DB
-        [HttpPost]
-        public IActionResult Edit(Staff staff)
-        {
-            var staffToUpdate = new Staff();
-            return View();
-        }
+            //sets action for edit view form submission
+            ViewData["FormAction"] = "Edit";
 
-        // CREATE NEW STAFF (IF ADMIN)
-        public IActionResult Create()
-        {
+            var staff = db.Staff.Where(s => s.Id == id).Single();
+            var staffLink = db.StaffLink.Where(sl => sl.StaffId == id).Single();
+
             var model = GetStaffCreateViewModel();
+            
+            model.Staff = staff;
+            model.Staff.StaffLink = staffLink;
+
             return View(model);
         }
+        // UPDATE ENTITY MODEL & DB (IF ADMIN)
+        [HttpPost]
+        public IActionResult Edit(int id, Staff staff)
+        {
+            try //save staff to db
+            {
+                //entities to update
+                var staffToUpdate = db.Staff.Where(s => s.Id == id).Single();
+                var staffLinkToUpdate = db.StaffLink.Where(sl => sl.StaffId == id).Single();
+                /*
+                 * assign staff name & email
+                 * to entity marked for update
+                 */
+                staffToUpdate.Name = staff.Name;
+                staffToUpdate.Email = staff.Email;
 
-        // StaffCreateViewModel Methods
+                /*
+                 * I've intentionally used both Fluent and standard LINQ
+                 * syntax below to show equivalent methods of db querying
+                 * (options are good, right?)
+                 */
+
+                //assign StaffLink RoleId
+                staffLinkToUpdate.RoleId = db.Role
+                    .Where(r => r.Title == staff.StaffLink.Role.Title)
+                    .Select(rId => rId.Id)
+                    .Single();
+                //assign StaffLink StaffTypeId
+                staffLinkToUpdate.StaffTypeId = (
+                    from sType in db.StaffType
+                    where sType.Type == staff.StaffLink.StaffType.Type
+                    select sType.Id
+                ).FirstOrDefault();
+                
+                //update db with changes
+                db.UpdateRange(staffToUpdate, staffLinkToUpdate);
+                db.SaveChanges();
+
+                return RedirectToAction("Index").WithSuccess("Successful Update", staff.Name + " has been updated");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index").WithDanger("Update Not Successful", "Something went wrong. Try again.");
+                throw;
+            }
+        }
+        //
+        #endregion EDIT
+        
+        #region CREATE
+        // STAFF REGISTRATION (IF ADMIN)
+        public IActionResult Create()
+        {
+            //sets action for create view form submission
+            ViewData["FormAction"] = "Create";
+
+            var model = GetStaffCreateViewModel();
+
+            return View(model);
+        }
+        // SUBMIT NEW STAFF TO DB (IF ADMIN)
+        [HttpPost]
+        public IActionResult Create(Staff staff)
+        {
+            ViewData["FormAction"] = "Create";
+            var model = GetStaffCreateViewModel();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    model.Staff = staff;
+                    return View(model).WithWarning("Something's Not Right", "Check the form");
+                }
+
+                // Create hashed pw from user input
+                string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
+
+                // Output Parameters for SQL Query
+                var messageParam = new SqlParameter()
+                {
+                    ParameterName = "@messageOut",
+                    Direction = ParameterDirection.Output,
+                    Value = DBNull.Value,
+                    SqlDbType = SqlDbType.VarChar,
+                    Size = 50
+                };
+                var staffCreatedParam = new SqlParameter()
+                {
+                    ParameterName = "@staffCreatedOut",
+                    Direction = ParameterDirection.Output,
+                    Value = DBNull.Value,
+                    SqlDbType = SqlDbType.Int
+                };
+                
+                // Executes stpAssignStaff Stored Procedure
+                db.Database.ExecuteSqlCommand(
+                    @"EXEC [dbo].[stpAssignStaff]
+                     @staff_name = @name
+                    ,@staff_email = @email
+                    ,@staff_pw = @pw
+                    ,@role_title = @rt
+                    ,@staff_type = @st
+                    ,@message_out = @messageOut OUTPUT
+                    ,@staff_created = @staffCreatedOut OUTPUT"
+                        , new SqlParameter("@name", staff.Name)
+                        , new SqlParameter("@email", staff.Email)
+                        , new SqlParameter("@pw", hashed_pw)
+                        , new SqlParameter("@rt", staff.StaffLink.Role.Title)
+                        , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
+                        , messageParam
+                        , staffCreatedParam
+                    );
+
+                // Redirects to Staff Index w/ Alert TempData
+                if (staffCreatedParam.Value.Equals(1))
+                    return RedirectToAction("Index").WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+                else
+                    return RedirectToAction("Index").WithDanger("Staff Not Added", messageParam.Value.ToString());
+            }
+            catch (Exception)
+            {
+                model.Staff = staff;
+                return View(model);
+                throw;
+            }
+        }
+        //
+        #region StaffCreateViewModel Methods
+        //
         /// <summary>
         /// Gets a StaffCreateViewModel
         /// </summary>
@@ -108,11 +236,11 @@ namespace Certitrack.Controllers
         private static IEnumerable<SelectListItem> CreateStaffTypeSelectList(List<StaffType> staffTypeList)
         {
             return from sType in staffTypeList
-                   select new SelectListItem
-                   {
-                       Text = sType.Type,
-                       Value = sType.Type
-                   };
+                    select new SelectListItem
+                    {
+                        Text = sType.Type,
+                        Value = sType.Type
+                    };
         }
         /// <summary>
         /// Creates a Select List for Role Title
@@ -122,11 +250,11 @@ namespace Certitrack.Controllers
         private static IEnumerable<SelectListItem> CreateRoleTitleSelectList(List<Role> roleTitleList)
         {
             return from role in roleTitleList
-                   select new SelectListItem
-                   {
-                       Text = role.Title,
-                       Value = role.Title
-                   };
+                    select new SelectListItem
+                    {
+                        Text = role.Title,
+                        Value = role.Title
+                    };
         }
         /// <summary>
         /// Gets List of Staff Types
@@ -159,72 +287,31 @@ namespace Certitrack.Controllers
             }
         }
         //
-
-        // CREATE NEW STAFF (IF ADMIN)
-        [HttpPost]
-        public IActionResult Create(Staff staff)
-        {
-            if (!ModelState.IsValid)
-            {
-                var model = GetStaffCreateViewModel();
-                return View(model).WithWarning("Something's Not Right", "Check the form");
-            }
-
-            // Create hashed pw from user input
-            string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
-
-            // Output Parameters for SQL Query
-            var messageParam = new SqlParameter()
-            {
-                ParameterName = "@messageOut",
-                Direction = ParameterDirection.Output,
-                Value = DBNull.Value,
-                SqlDbType = SqlDbType.VarChar,
-                Size = 50
-            };
-            var staffCreatedParam = new SqlParameter()
-            {
-                ParameterName = "@staffCreatedOut",
-                Direction = ParameterDirection.Output,
-                Value = DBNull.Value,
-                SqlDbType = SqlDbType.Int
-            };
-
-            // Executes stpAssignStaff Stored Procedure
-            db.Database.ExecuteSqlCommand(
-                @"EXEC [dbo].[stpAssignStaff]
-                    @staff_name = @name
-                    ,@staff_email = @email
-                    ,@staff_pw = @pw
-                    ,@role_title = @rt
-                    ,@staff_type = @st
-                    ,@message_out = @messageOut OUTPUT
-                    ,@staff_created = @staffCreatedOut OUTPUT"
-                    , new SqlParameter("@name", staff.Name)
-                    , new SqlParameter("@email", staff.Email)
-                    , new SqlParameter("@pw", hashed_pw)
-                    , new SqlParameter("@rt", staff.StaffLink.Role.Title)
-                    , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
-                    , messageParam
-                    , staffCreatedParam
-                );
-
-            // Redirects to Staff Index w/ Alert TempData
-            if (staffCreatedParam.Value.Equals(1))
-                return RedirectToAction("Index").WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
-            else
-                return RedirectToAction("Index").WithDanger("Staff Not Added", messageParam.Value.ToString());
-        }
-
-        public IActionResult Delete()
-        {
-            return View();
-        }
+        #endregion StaffCreateViewModel Methods
+        //
+        #endregion CREATE
+        
         // DELETE STAFF FROM DB (IF ADMIN)
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                var staff = db.Staff.Where(s => s.Id == id).Single();
+                var staffLink = db.StaffLink.Where(sl => sl.StaffId == id).Single();
+
+                //deletes selected staff & associated staffLink record
+                db.RemoveRange(staff, staffLink);
+                db.SaveChanges();
+
+                return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
+                throw;
+            }
         }
+        //
     }
 }

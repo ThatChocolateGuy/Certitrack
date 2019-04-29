@@ -23,9 +23,7 @@ namespace Certitrack.ViewModels
             Staff = staff;
         }
 
-        [Required]
         public IEnumerable<SelectListItem> RoleTitleList { get; set; }
-        [Required]
         public IEnumerable<SelectListItem> StaffTypeList { get; set; }
 
         [Required]

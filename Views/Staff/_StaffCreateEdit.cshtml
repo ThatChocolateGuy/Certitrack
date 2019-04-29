@@ -1,0 +1,105 @@
+﻿@model Certitrack.ViewModels.StaffCreateViewModel
+
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Home</a></li>
+        <li><a href="/Staff">Staff</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="display: flex">
+        <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
+            <div class="register-box-body">
+                <div class="box-header ">
+                    <h3 class="box-title">@ViewData["SectionBreadCrumb"]</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad table-responsive">
+                    <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
+                        <!-- Model-Level Errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
+                        <!-- / Model-Level Errors -->
+                        <!-- Name -->
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Staff.Name" class="control-label"></label>
+                            <input asp-for="Staff.Name" data-minlength="3" class="form-control" required placeholder="Your Full Name" />
+                            <span asp-validation-for="Staff.Name" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Name -->
+                        <!-- Email -->
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Staff.Email" class="control-label"></label>
+                            <input asp-for="Staff.Email" class="form-control" placeholder="email@example.com" required />
+                            <span asp-validation-for="Staff.Email" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Email -->
+                        @if ((string)ViewData["Title"] == "Create")
+                        {
+                            <!-- Password Group -->
+                            <div class="form-group col-sm-12">
+                                <label asp-for="Staff.Password" class="control-label"></label>
+                                <div class="form-inline row input-group" style="display: inherit">
+                                    <!-- Password -->
+                                    <div class="form-group col-sm-6">
+                                        <input asp-for="Staff.Password" data-minlength="6" class="form-control validate-input" id="inputPassword" placeholder="Password" required />
+                                        <span asp-validation-for="Staff.Password" class="help-block with-errors">Minimum of 6 characters</span>
+                                    </div>
+                                    <!-- Confirm Password -->
+                                    <div class="form-group col-sm-6">
+                                        <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Whoops, these don't match" placeholder="Confirm" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- / Password Group -->
+                        }
+                        <!-- Role Title Drowpdown -->
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Staff.StaffLink.Role.Title" class="control-label">Role</label>
+                            <select asp-for="Staff.StaffLink.Role.Title" asp-items="@Model.RoleTitleList" class="form-control"></select>
+                            <span asp-validation-for="Staff.StaffLink.Role.Title" class="text-danger"></span>
+                        </div>
+                        <!-- / Role Title Drowpdown -->
+                        <!-- Staff Type Drowpdown -->
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Staff.StaffLink.StaffType.Type" class="control-label">Staff Type</label>
+                            <select asp-for="Staff.StaffLink.StaffType.Type" asp-items="@Model.StaffTypeList" class="form-control"></select>
+                            <span asp-validation-for="Staff.StaffLink.StaffType.Type" class="text-danger"></span>
+                        </div>
+                        <!-- / Staff Type Drowpdown -->
+                        <!-- Button Group -->
+                        <div class="box-footer form-group col-sm-12">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                                @if ((string)ViewData["Title"] == "Create")
+                                {
+                                    <i class="fas fa-user-plus"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-edit"></i>
+                                }
+                                @ViewData["SubmitButtonText"] Staff
+                            </button>
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                <i class="fa fa-arrow-circle-left"></i>
+                                Back to List
+                            </a>
+                        </div>
+                        <!-- / Button Group -->
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+

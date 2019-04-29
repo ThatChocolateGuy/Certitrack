@@ -10,7 +10,9 @@
         Staff
     </h1>
     <ol class="breadcrumb">
-        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>
+            <a href="/"><i class="fas fa-tachometer-alt"></i> Home</a>
+        </li>
         <li class="active">Staff</li>
     </ol>
     <div class="row">
@@ -80,12 +82,14 @@
                                         @Html.DisplayFor(modelItem => item.StaffLink.Role.Title)
                                     </td>
                                     <td class="text-center">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn text-green fa fa-edit">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
+                                            <i class="fas fa-user-edit text-green"></i>
                                             <span class="sr-only">Edit</span>
-                                        </a> 
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn text-red fa fa-trash-o">
-                                            <span class="sr-only">Delete</span>
                                         </a>
+                                        <button onclick="deleteUser('@item.Id', '@item.Name', '@Url.Action("Delete", "Staff")')" class="btn" style="background-color: transparent">
+                                            <i class="fas fa-trash text-red"></i>
+                                            <span class="sr-only">Delete</span>
+                                        </button>
                                     </td>
                                 </tr>
                             }

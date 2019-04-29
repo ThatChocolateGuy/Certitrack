@@ -10,7 +10,7 @@
     <!-- DataTables -->
     <link rel="stylesheet" href="~/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/bower_components/font-awesome/css/all.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="~/bower_components/Ionicons/css/ionicons.min.css">
     <!-- Theme style -->
@@ -34,7 +34,7 @@
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation" style="box-shadow: rgba(0,0,0,.5) 0 1px 3px">
                 <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="font-family: 'Font Awesome 5 Free'; font-weight: 900;" >
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <!-- Navbar Right Menu -->
@@ -128,7 +128,7 @@
         <!-- Main Footer -->
         <footer class="main-footer">
             <!-- Default to the left -->
-            <strong>Copyright &copy; @DateTime.Today.Year <a href="https://thatxrguy.com">Nem Ekpunobi</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; @DateTime.Today.Year <a href="https://thatxrguy.com" target="_blank">Nem Ekpunobi</a>.</strong> All rights reserved.
         </footer>
     </div>
     <!-- ./wrapper -->
@@ -148,42 +148,42 @@
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <!-- Custom Page Script -->
     <script>
-    $(function () {
-        $('#main-table-staff').DataTable({
-            "columnDefs": [{
-                "targets": 6,
-                "orderable": false
-            }]
-        });
-    });
-    @*function Delete(id){
-        alert(id)
-        var txt;
-        var r = confirm("Are you sure you want to Delete?");
-        if (r == true) {
-
-            $.ajax(
-            {
-                type: "POST",
-                url: '@Url.Action("Delete", "Staff")',
-                data: {
-                    id: id
-                },
-                error: function (result) {
-                    alert("error");
-                },
-                success: function (result) {
-                    if (result == true) {
-                        var baseUrl="/Index";
-                        window.location.reload();
-                    }
-                    else {
-                        alert("There is a problem, Try Later!");
-                    }
-                }
+        //formats staff index table
+        $(function () {
+            $('#main-table-staff').DataTable({
+                "columnDefs": [{
+                    "targets": 6,
+                    "orderable": false
+                }]
             });
+        });
+        //deletes staff
+        function deleteUser(id, name, url) {
+            var r = confirm("Are you sure you want to delete " + name + "?\nThis action cannot be reversed.");
+            if (r == true) {
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: { id: id },
+                    error: function () {
+                        alert("Something went wrong, Try agian!");
+                    },
+                    success: function (result) {
+                        if (result) {
+                            document.getElementsByTagName("HTML")[0].innerHTML = result;
+                            window.scroll({
+                                top: 0,
+                                left: 0,
+                                behavior: 'smooth'
+                            });
+                        }
+                        else {
+                            alert("Something went wrong, Try agian!\n");
+                        }
+                    }
+                });
+            }
         }
-    }*@
     </script>
 </body>
 </html>
