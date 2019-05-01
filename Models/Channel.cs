@@ -11,7 +11,7 @@ namespace Certitrack.Models
         }
 
         public int Id { get; set; }
-        public string Channel1 { get; set; }
+        public string ChannelName { get; set; }
 
         public ICollection<CertificateLink> CertificateLink { get; set; }
     }

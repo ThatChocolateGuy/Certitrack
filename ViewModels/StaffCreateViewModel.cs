@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Certitrack.Models;
+using Certitrack.Crypto;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Certitrack.ViewModels
@@ -14,8 +15,8 @@ namespace Certitrack.ViewModels
             IEnumerable<SelectListItem> roleTitleList,
             IEnumerable<SelectListItem> staffTypeList )
         {
-            this.RoleTitleList = roleTitleList;
-            this.StaffTypeList = staffTypeList;
+            RoleTitleList = roleTitleList;
+            StaffTypeList = staffTypeList;
         }
 
         public StaffCreateViewModel(Staff staff)
@@ -23,12 +24,10 @@ namespace Certitrack.ViewModels
             Staff = staff;
         }
 
-        public IEnumerable<SelectListItem> RoleTitleList { get; set; }
-        public IEnumerable<SelectListItem> StaffTypeList { get; set; }
-
         [Required]
         public Staff Staff { get; set; }
 
-        //TODO: hash pw before passing to controller if possible
+        public IEnumerable<SelectListItem> RoleTitleList { get; set; }
+        public IEnumerable<SelectListItem> StaffTypeList { get; set; }
     }
 }

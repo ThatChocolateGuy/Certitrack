@@ -1,0 +1,52 @@
+﻿@model Certitrack.Models.Certificate
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>Certificate</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="CertificateNo" class="control-label"></label>
+                <input asp-for="CertificateNo" class="form-control" />
+                <span asp-validation-for="CertificateNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateIssued" class="control-label"></label>
+                <input asp-for="DateIssued" class="form-control" />
+                <span asp-validation-for="DateIssued" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateRedeemed" class="control-label"></label>
+                <input asp-for="DateRedeemed" class="form-control" />
+                <span asp-validation-for="DateRedeemed" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpiryDate" class="control-label"></label>
+                <input asp-for="ExpiryDate" class="form-control" />
+                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

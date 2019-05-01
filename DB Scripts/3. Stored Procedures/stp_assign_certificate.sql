@@ -119,7 +119,7 @@ BEGIN
 		DECLARE @certificate_id int,
 				@count int = @cert_qty -- while loop iterator
 		/*
-			Populate Fields for Each Certificate Ordered
+			Populate Fields for Each Certificate Generated
 		*/
 		WHILE @count > 0
 		BEGIN

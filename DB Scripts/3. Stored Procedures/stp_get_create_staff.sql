@@ -26,6 +26,7 @@ BEGIN
 	IF NOT EXISTS (
 		SELECT 1 FROM [staff]
 		WHERE [email] LIKE @email )
+		AND @email IS NOT NULL
 	BEGIN
 		INSERT INTO [staff] ([name], [email], [password])
 		VALUES (@name, @email, @password)

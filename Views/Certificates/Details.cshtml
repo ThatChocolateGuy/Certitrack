@@ -1,0 +1,49 @@
+﻿@model Certitrack.Models.Certificate
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Certificate</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CertificateNo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CertificateNo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateIssued)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateIssued)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateRedeemed)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateRedeemed)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpiryDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpiryDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

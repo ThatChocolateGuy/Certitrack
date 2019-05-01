@@ -124,7 +124,7 @@ namespace Certitrack.Data
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Channel1)
+                entity.Property(e => e.ChannelName)
                     .IsRequired()
                     .HasColumnName("channel")
                     .HasMaxLength(30)

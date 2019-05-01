@@ -6,7 +6,10 @@
     <title>Admin Panel</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3 -->
     <link rel="stylesheet" href="~/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Date Picker -->
+    <link rel="stylesheet" href="~/bower_components/bootstrap-datepicker/build/datepicker.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="~/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
     <!-- Font Awesome -->
@@ -34,7 +37,7 @@
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation" style="box-shadow: rgba(0,0,0,.5) 0 1px 3px">
                 <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="font-family: 'Font Awesome 5 Free'; font-weight: 900;" >
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="font-family: 'Font Awesome 5 Free'; font-weight: 900;">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <!-- Navbar Right Menu -->
@@ -141,6 +144,14 @@
     <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Bootstrap Validator.js 0.11.9 -->
     <script src="~/bower_components/bootstrap/dist/js/validator.min.js"></script>
+    <!-- Bootstrap Date Picker -->
+    <script src="~/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/bower_components/inputmask/dist/inputmask/inputmask.js"></script>
+    <script src="~/bower_components/inputmask/dist/inputmask/inputmask.extensions.js"></script>
+    <script src="~/bower_components/inputmask/dist/inputmask/inputmask.phone.extensions.js"></script>
+    <script src="~/bower_components/inputmask/dist/inputmask/jquery.inputmask.js"></script>
+    <script src="~/bower_components/inputmask/dist/inputmask/bindings/inputmask.binding.js"></script>
     <!-- AdminLTE App -->
     <script src="~/dist/js/adminlte.min.js"></script>
     <!-- DataTables -->
@@ -184,6 +195,41 @@
                 });
             }
         }
+        //datepicker
+        $(function () {
+            $.fn.datepicker.defaults = { //defaults for reference
+                autoclose: true,
+                beforeShowDay: $.noop,
+                calendarWeeks: false,
+                clearBtn: false,
+                daysOfWeekDisabled: [],
+                endDate: Infinity,
+                forceParse: true,
+                format: 'mm/dd/yyyy',
+                keyboardNavigation: true,
+                language: 'en',
+                minViewMode: 0,
+                orientation: "auto",
+                rtl: false,
+                startDate: -Infinity,
+                startView: 2,
+                todayBtn: false,
+                todayHighlight: false,
+                weekStart: 0
+            };
+            $('#datepicker').datepicker({
+                format: "yyyy-mm-dd",
+                startDate: "+1m",
+                maxViewMode: 2,
+                orientation: "bottom auto",
+                daysOfWeekHighlighted: "1,2,3,4,5",
+                autoclose: true
+            });
+        });
+        //InputMask
+        $(document).ready(function () {
+            $(":input").inputmask();
+        });
     </script>
 </body>
 </html>

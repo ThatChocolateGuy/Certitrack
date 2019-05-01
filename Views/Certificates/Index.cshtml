@@ -1,20 +1,20 @@
-﻿@model IEnumerable<Certitrack.Models.Staff>
+﻿@model IEnumerable<Certitrack.Models.CertificateLink>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Current = "StaffIndex";
+    ViewBag.Current = "CertificateIndex";
 }
 
 <section class="content-header">
     <h1>
-        Staff
+        Certificates
     </h1>
     <ol class="breadcrumb">
         <li>
             <a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         </li>
-        <li class="active">Staff</li>
+        <li class="active">Certificates
     </ol>
 </section>
 
@@ -24,7 +24,7 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">Manage Staff</h3>
+                    <h3 class="box-title">Manage Certificates</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad table-responsive">
@@ -32,22 +32,19 @@
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Id)
+                                    @Html.DisplayNameFor(model => model.Certificate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Name)
+                                    @Html.DisplayNameFor(model => model.Channel)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Email)
+                                    @Html.DisplayNameFor(model => model.Customer)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Created)
+                                    @Html.DisplayNameFor(model => model.Promotion)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.StaffLink.StaffType.Type)
-                                </th>
-                                <th>
-                                    Role
+                                    @Html.DisplayNameFor(model => model.Staff)
                                 </th>
                                 <th></th>
                             </tr>
@@ -57,29 +54,30 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
+                                        @Html.DisplayFor(modelItem => item.Certificate)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
+                                        @Html.DisplayFor(modelItem => item.Channel)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Email)
+                                        @Html.DisplayFor(modelItem => item.Customer)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Created)
+                                        @Html.DisplayFor(modelItem => item.Promotion)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.StaffLink.StaffType.Type)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StaffLink.Role.Title)
+                                        @Html.DisplayFor(modelItem => item.Staff)
                                     </td>
                                     <td class="text-center">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
-                                            <i class="fas fa-user-edit text-green"></i>
+                                        <a asp-action="Edit" asp-route-id="@item.CertificateId" class="btn">
+                                            <i class="fas fa-edit text-green"></i>
                                             <span class="sr-only">Edit</span>
                                         </a>
-                                        <button onclick="deleteUser('@item.Id', '@item.Name', '@Url.Action("Delete", "Staff")')" class="btn" style="background-color: transparent">
+                                        <a asp-action="Details" asp-route-id="@item.CertificateId" class="btn">
+                                            <i class="fas fa-info-circle text-fuchsia"></i>
+                                            <span class="sr-only">Details</span>
+                                        </a>
+                                        <button onclick="deleteUser('@item.CertificateId', '@item.Certificate', '@Url.Action("Delete", "Certificates")')" class="btn" style="background-color: transparent">
                                             <i class="fas fa-trash text-red"></i>
                                             <span class="sr-only">Delete</span>
                                         </button>

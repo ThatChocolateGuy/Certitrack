@@ -1,19 +1,76 @@
 <ul class="sidebar-menu" data-widget="tree">
-    <li class="header">MENU</li>
-    <!-- Optionally, you can add icons to the links -->
-    <li><a href="/"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
-    <li class="active"><a href="/Staff"><i class="fa fa-link"></i> <span>Staff</span></a></li>
-    <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
-    <li class="treeview">
+    <li class="header">NAVIGATION</li>
+    <!-- Dashboard -->
+    <li>
+        <a href="@Url.Action("Index", "Home")">
+            <i class="fa fa-link"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <!-- / Dashboard -->
+    <!-- Staff Treeview -->
+    <li class="treeview @(ViewBag.Current == "StaffIndex" || ViewBag.Current == "StaffCreate" ? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Multilevel</span>
+            <i class="fa fa-link"></i> <span>Staff</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="#">Link in level 2</a></li>
-            <li><a href="#">Link in level 2</a></li>
+            <li class="@(ViewBag.Current == "StaffIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Staff")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Staff</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "StaffCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Staff")">
+                    <i class="fa fa-link"></i>
+                    <span>Add Member</span>
+                </a>
+            </li>
         </ul>
     </li>
+    <!-- / Staff Treeview -->
+    <!-- Certificate Treeview -->
+    <li class="treeview @(ViewBag.Current == "CertificateIndex" || ViewBag.Current == "CertificateCreate" ? "active" : ""
+    )">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Certificates</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@(ViewBag.Current == "CertificateIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Certificates")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Certificates</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "CertificateCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Certificates")">
+                    <i class="fa fa-link"></i>
+                    <span>Issue Certificate</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- / Certificate Treeview -->
 </ul>
+
+
+
+
+@*<li class="treeview">
+    <a href="#">
+        <i class="fa fa-link"></i> <span>Multilevel</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+        <li><a href="#">Link in level 2</a></li>
+        <li><a href="#">Link in level 2</a></li>
+    </ul>
+</li>*@

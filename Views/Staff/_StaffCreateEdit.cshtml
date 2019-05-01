@@ -5,7 +5,7 @@
         @ViewData["SectionHeader"]
     </h1>
     <ol class="breadcrumb">
-        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Home</a></li>
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
         <li><a href="/Staff">Staff</a></li>
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
@@ -20,7 +20,7 @@
                     <h3 class="box-title">@ViewData["SectionBreadCrumb"]</h3>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body pad table-responsive">
+                <div class="box-body pad">
                     <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
                         <!-- Model-Level Errors -->
                         <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
