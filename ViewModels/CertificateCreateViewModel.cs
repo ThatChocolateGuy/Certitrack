@@ -24,8 +24,8 @@ namespace Certitrack.ViewModels
         //certificate fields
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         [Display(Name = "Expiry Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime ExpiryDate { get; set; }
         [Required]
         [DataType(DataType.Currency)]
@@ -36,8 +36,8 @@ namespace Certitrack.ViewModels
 
         //customer fields
         [Required]
-        [MinLength(3, ErrorMessage = "The {0} must be at least {1} characters long.")]
         [Display(Name = "Customer Name")]
+        [MinLength(3, ErrorMessage = "The {0} must be at least {1} characters long.")]
         public string CustomerName { get; set; }
         [Required]
         [EmailAddress]

@@ -10,6 +10,7 @@ using Certitrack.Models;
 using Certitrack.ViewModels;
 using System.Data.SqlClient;
 using Certitrack.Extensions.Alerts;
+using Certitrack.ViewModels;
 
 namespace Certitrack.Controllers
 {
@@ -25,24 +26,25 @@ namespace Certitrack.Controllers
         // GET: Certificates
         public async Task<IActionResult> Index()
         {
-            //var certificates = await _context.Certificate.ToListAsync();
-            //var channels = await _context.Channel.ToListAsync();
-            //var customers = await _context.Customer.ToListAsync();
-            //var promotions = await _context.Promotion.ToListAsync();
-            //var staffs = await _context.Staff.ToListAsync();
+            try
+            {
+                var certificateDetails =
+                        from link in await _context.CertificateLink.ToListAsync()
+                        select new CertificateLink
+                        {
+                            Certificate = _context.Certificate.Find(link.CertificateId),
+                            Channel = _context.Channel.Find(link.ChannelId),
+                            Customer = _context.Customer.Find(link.CustomerId),
+                            Promotion = _context.Promotion.Find(link.PromotionId),
+                            Staff = _context.Staff.Find(link.StaffId)
+                        };
 
-            var certificateDetails =
-                from link in await _context.CertificateLink.ToListAsync()
-                select new CertificateLink
-                {
-                    Certificate = _context.Certificate.Find(link.CertificateId),
-                    Channel = _context.Channel.Find(link.ChannelId),
-                    Customer = _context.Customer.Find(link.CustomerId),
-                    Promotion = _context.Promotion.Find(link.PromotionId),
-                    Staff = _context.Staff.Find(link.Staff)
-                };
-
-            return View(certificateDetails);
+                return View(certificateDetails);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // GET: Certificates/Details/5
@@ -126,7 +128,7 @@ namespace Certitrack.Controllers
                 }
                 catch (Exception) { throw; }
 
-                return RedirectToAction(nameof(Index)).WithSuccess("Success!", "Certificate created for " + certificateCreateViewModel.CustomerName);
+                return RedirectToAction(nameof(Index)).WithSuccess("Success!", "Certificate(s) created for " + certificateCreateViewModel.CustomerName);
             }
             return View(certificateCreateViewModel).WithDanger("Certificate Not Created", "Something went wrong. Try again.");
         }
@@ -134,17 +136,32 @@ namespace Certitrack.Controllers
         // GET: Certificates/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            //sets action for edit view form submission
+            ViewData["FormAction"] = "Edit";
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var certificate = await _context.Certificate.FindAsync(id);
-            if (certificate == null)
+            var certificateLink = await _context.CertificateLink.FindAsync(id);
+            var order = _context.Order
+                .Where(o => o.CustomerId == certificateLink.Customer.Id).Single();
+
+            var model = new CertificateEditViewModel()
+            {
+                Certificate = certificateLink.Certificate,
+                Channel = certificateLink.Channel,
+                Customer = certificateLink.Customer,
+                Promotion = certificateLink.Promotion,
+                Order = order
+            };
+
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(certificate);
+            return View(model);
         }
 
         // POST: Certificates/Edit/5

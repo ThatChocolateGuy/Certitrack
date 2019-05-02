@@ -28,61 +28,100 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad table-responsive">
-                    <table id="main-table-staff" class="table table-bordered table-striped">
+                    <table id="main-table-cert" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <!-- Certificate -->
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Certificate)
+                                    @Html.DisplayNameFor(model => model.Certificate.CertificateNo)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Channel)
+                                    @Html.DisplayNameFor(model => model.Certificate.DateIssued)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Customer)
+                                    @Html.DisplayNameFor(model => model.Certificate.ExpiryDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Promotion)
+                                    @Html.DisplayNameFor(model => model.Certificate.Price)
                                 </th>
+                                <!-- / Certificate -->
+                                <!-- Channel -->
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Staff)
+                                    @Html.DisplayNameFor(model => model.Channel.ChannelName)
                                 </th>
+                                <!-- Customer -->
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Customer.Name)
+                                </th>
+                                <!-- / Customer -->
+                                <!-- Promo -->
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Promotion.Discount)
+                                </th>
+                                <!-- / Promo -->
+                                <!-- Staff -->
+                                <th>
+                                    Issued By
+                                </th>
+                                <!-- / Staff -->
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Certificate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Channel)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Customer)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Promotion)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Staff)
-                                    </td>
-                                    <td class="text-center">
-                                        <a asp-action="Edit" asp-route-id="@item.CertificateId" class="btn">
-                                            <i class="fas fa-edit text-green"></i>
-                                            <span class="sr-only">Edit</span>
-                                        </a>
-                                        <a asp-action="Details" asp-route-id="@item.CertificateId" class="btn">
-                                            <i class="fas fa-info-circle text-fuchsia"></i>
-                                            <span class="sr-only">Details</span>
-                                        </a>
-                                        <button onclick="deleteUser('@item.CertificateId', '@item.Certificate', '@Url.Action("Delete", "Certificates")')" class="btn" style="background-color: transparent">
-                                            <i class="fas fa-trash text-red"></i>
-                                            <span class="sr-only">Delete</span>
-                                        </button>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <!-- Certificate -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.CertificateNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.DateIssued)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.ExpiryDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.Price)
+                                </td>
+                                <!-- / Certificate -->
+                                <!-- Channel -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Channel.ChannelName)
+                                </td>
+                                <!-- / Channel -->
+                                <!-- Customer -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                                </td>
+                                <!-- / Customer -->
+                                <!-- Promo -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Promotion.Discount)
+                                </td>
+                                <!-- / Promo -->
+                                <!-- Staff -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Staff.Name)
+                                </td>
+                                <!-- / Staff -->
+                                <!-- Buttons -->
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
+                                        <i class="fas fa-edit text-green"></i>
+                                        <span class="sr-only">Edit</span>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Certificate.Id" class="btn">
+                                        <i class="fas fa-info-circle text-fuchsia"></i>
+                                        <span class="sr-only">Details</span>
+                                    </a>
+                                    <button onclick="deleteUser('@item.Certificate.Id', '@item.Certificate.Id', '@Url.Action("Delete", "Certificates")')" class="btn" style="background-color: transparent">
+                                        <i class="fas fa-trash text-red"></i>
+                                        <span class="sr-only">Delete</span>
+                                    </button>
+                                </td>
+                                <!-- / Buttons -->
+                            </tr>
                             }
                         </tbody>
                     </table>

@@ -9,7 +9,8 @@
     </li>
     <!-- / Dashboard -->
     <!-- Staff Treeview -->
-    <li class="treeview @(ViewBag.Current == "StaffIndex" || ViewBag.Current == "StaffCreate" ? "active" : "")">
+    <li class="treeview @(ViewBag.Current == "StaffIndex"
+        || ViewBag.Current == "StaffCreate" ? "active" : "")">
         <a href="#">
             <i class="fa fa-link"></i> <span>Staff</span>
             <span class="pull-right-container">
@@ -33,8 +34,9 @@
     </li>
     <!-- / Staff Treeview -->
     <!-- Certificate Treeview -->
-    <li class="treeview @(ViewBag.Current == "CertificateIndex" || ViewBag.Current == "CertificateCreate" ? "active" : ""
-    )">
+    <li class="treeview @(ViewBag.Current == "CertificateIndex"
+        || ViewBag.Current == "CertificateCreate"
+        || ViewBag.Current == "CertificateEdit"? "active" : "")">
         <a href="#">
             <i class="fa fa-link"></i> <span>Certificates</span>
             <span class="pull-right-container">

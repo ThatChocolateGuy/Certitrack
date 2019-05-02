@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Certitrack.Models
 {
@@ -11,6 +12,7 @@ namespace Certitrack.Models
         }
 
         public int Id { get; set; }
+        [DataType(DataType.Currency)]
         public int Discount { get; set; }
 
         public ICollection<CertificateLink> CertificateLink { get; set; }

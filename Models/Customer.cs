@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Certitrack.Models
 {
@@ -12,6 +13,7 @@ namespace Certitrack.Models
         }
 
         public int Id { get; set; }
+        [Display(Name = "Customer Name")]
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

@@ -12,10 +12,23 @@ namespace Certitrack.Models
         }
 
         public int Id { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "Certificate No")]
         public decimal CertificateNo { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Issued")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime DateIssued { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Redeemed")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DateRedeemed { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Expires")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime ExpiryDate { get; set; }
+        [DataType(DataType.Currency)]
+        [Display(Name = "Price")]
         public decimal Price { get; set; }
 
         public CertificateLink CertificateLink { get; set; }
