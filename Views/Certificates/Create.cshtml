@@ -140,6 +140,7 @@
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-hand-holding-usd"></i></span>
                                     <select asp-for="PromoAmt" asp-items="@Model.PromoList" class="form-control"></select>
+                                    <span class="input-group-addon">.00</span>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="PromoAmt" class="text-danger help-block with-errors"></span>

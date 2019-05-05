@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,6 @@ using Certitrack.Models;
 using Certitrack.ViewModels;
 using System.Data.SqlClient;
 using Certitrack.Extensions.Alerts;
-using Certitrack.ViewModels;
 
 namespace Certitrack.Controllers
 {
@@ -136,25 +134,56 @@ namespace Certitrack.Controllers
         // GET: Certificates/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            //sets action for edit view form submission
-            ViewData["FormAction"] = "Edit";
-
             if (id == null)
             {
                 return NotFound();
             }
 
             var certificateLink = await _context.CertificateLink.FindAsync(id);
-            var order = _context.Order
-                .Where(o => o.CustomerId == certificateLink.Customer.Id).Single();
+            var orderId = _context.OrderItem
+                .Where(oi => oi.CertificateId == id).Single().OrderId;
+            var order = await _context.Order.FindAsync(orderId);
+            
+            var staffList =
+                from staff in await _context.Staff.ToListAsync()
+                select new SelectListItem
+                {
+                    Text = staff.Name,
+                    Value = staff.Name
+                };
+            var promoList =
+                from discount in await _context.Promotion.ToListAsync()
+                select new SelectListItem
+                {
+                    Text = discount.Discount.ToString(),
+                    Value = discount.Discount.ToString()
+                };
+            var channelList =
+                from channel in await _context.Channel.ToListAsync()
+                select new SelectListItem
+                {
+                    Text = channel.ChannelName,
+                    Value = channel.ChannelName
+                };
+            var customerList =
+                from customer in await _context.Customer.ToListAsync()
+                select new SelectListItem
+                {
+                    Text = customer.Name,
+                    Value = customer.Name
+                };
 
             var model = new CertificateEditViewModel()
             {
-                Certificate = certificateLink.Certificate,
-                Channel = certificateLink.Channel,
-                Customer = certificateLink.Customer,
-                Promotion = certificateLink.Promotion,
-                Order = order
+                Certificate = _context.Certificate.Find(certificateLink.CertificateId),
+                Channel = _context.Channel.Find(certificateLink.ChannelId),
+                Customer = _context.Customer.Find(certificateLink.CustomerId),
+                Promotion = _context.Promotion.Find(certificateLink.PromotionId),
+                Order = order,
+                StaffList = staffList,
+                PromoList = promoList,
+                ChannelList = channelList,
+                CustomerList = customerList
             };
 
             if (model == null)

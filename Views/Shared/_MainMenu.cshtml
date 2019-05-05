@@ -10,7 +10,8 @@
     <!-- / Dashboard -->
     <!-- Staff Treeview -->
     <li class="treeview @(ViewBag.Current == "StaffIndex"
-        || ViewBag.Current == "StaffCreate" ? "active" : "")">
+        || ViewBag.Current == "StaffCreate"
+        || ViewBag.Current == "StaffEdit"? "active" : "")">
         <a href="#">
             <i class="fa fa-link"></i> <span>Staff</span>
             <span class="pull-right-container">

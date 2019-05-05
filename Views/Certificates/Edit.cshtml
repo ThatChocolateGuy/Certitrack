@@ -6,6 +6,7 @@
     ViewData["SectionBreadCrumb"] = "Edit Certificate";
     ViewData["Title"] = "Create";
     ViewData["SubmitButtonText"] = "Update";
+    ViewData["FormAction"] = "Edit";
     ViewBag.Current = "CertificateEdit";
 }
 
@@ -41,110 +42,110 @@
                                 <label asp-for="Certificate.CertificateNo" class="control-label"></label>
                                 <div class="input-group date">
                                     <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
+                                        <i class="fas fa-stamp"></i>
                                     </div>
-                                    <input asp-for="Certificate.CertificateNo" type="text" class="form-control" required />
+                                    <input asp-for="Certificate.CertificateNo" type="text" class="form-control" disabled />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.CertificateNo" class="text-danger help-block with-errors"></span>
                             </div>
                             <!-- / CertificateNo -->
+                            <!-- Customer -->
+                            <div class="form-group col-sm-4">
+                                <label asp-for="Customer.Name" class="control-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-user"></i></span>
+                                    <select asp-for="Customer.Name" asp-items="@Model.CustomerList" class="form-control" required></select>
+                                </div>
+                                <!-- / .input-group -->
+                                <span asp-validation-for="Customer.Name" class="text-danger help-block with-errors"></span>
+                            </div>
+                            <!-- / Customer -->
+                            <!-- Channel -->
+                            <div class="form-group col-sm-4">
+                                <label asp-for="Channel.ChannelName" class="control-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-at"></i></span>
+                                    <select asp-for="Channel.ChannelName" asp-items="@Model.ChannelList" class="form-control" required></select>
+                                </div>
+                                <!-- / .input-group -->
+                                <span asp-validation-for="Channel.ChannelName" class="text-danger help-block with-errors"></span>
+                            </div>
+                            <!-- / Channel -->
+                        </div>                        
+
+                        <div class="row box-body pad">
                             <!-- DateIssued -->
-                            <div class="form-group col-xs-7 col-sm-4">
+                            <div class="form-group col-sm-4">
                                 <label asp-for="Certificate.DateIssued" class="control-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
-                                    <input asp-for="Certificate.DateIssued" class="form-control" required />
+                                    <span class="input-group-addon"><i class="fas fa-calendar-plus"></i></span>
+                                    <input asp-for="Certificate.DateIssued" class="form-control" disabled />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.DateIssued" class="text-danger help-block with-errors"></span>
                             </div>
                             <!-- / DateIssued -->
-
-                            <!-- Certificate Quantity -->
-                            <div class="form-group col-xs-5 col-sm-4">
-                                <label asp-for="CertQty" class="control-label"></label>
+                            <!-- ExpiryDate -->
+                            <div class="form-group col-sm-4">
+                                <label asp-for="Certificate.ExpiryDate" class="control-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-sort-numeric-up"></i></span>
-                                    <input asp-for="CertQty" type="number" min="1" class="form-control" value="1" />
+                                    <span class="input-group-addon"><i class="fas fa-calendar-times"></i></span>
+                                    <input asp-for="Certificate.ExpiryDate" class="form-control" disabled />
                                 </div>
                                 <!-- / .input-group -->
-                                <span asp-validation-for="CertQty" class="text-danger help-block with-errors"></span>
+                                <span asp-validation-for="Certificate.ExpiryDate" class="text-danger help-block with-errors"></span>
                             </div>
-                            <!-- / Certificate Quantity -->
-                        </div>
-
-                        <!-- Customer Name -->
-                        <div class="form-group col-sm-12">
-                            <label asp-for="CustomerName" class="control-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                <input asp-for="CustomerName" minlength="3" class="form-control" placeholder="Full Name" required />
-                            </div>
-                            <!-- / .input-group -->
-                            <span asp-validation-for="CustomerName" class="text-danger help-block with-errors"></span>
-                        </div>
-                        <!-- / Customer Name -->
-
-                        <div class="row box-body pad">
-                            <!-- Customer Email -->
-                            <div class="form-group col-sm-6">
-                                <label asp-for="CustomerEmail" class="control-label"></label>
+                            <!-- / ExpiryDate -->
+                            <!-- DateRedeemed -->
+                            <div class="form-group col-sm-4">
+                                <label asp-for="Certificate.DateRedeemed" class="control-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-at"></i></span>
-                                    <input asp-for="CustomerEmail" class="form-control" placeholder="email@example.com" required />
+                                    <span class="input-group-addon"><i class="fas fa-calendar-check"></i></span>
+                                    <input asp-for="Certificate.DateRedeemed" class="form-control" />
                                 </div>
                                 <!-- / .input-group -->
-                                <span asp-validation-for="CustomerEmail" class="text-danger help-block with-errors"></span>
+                                <span asp-validation-for="Certificate.DateRedeemed" class="text-danger help-block with-errors"></span>
                             </div>
-                            <!-- / Customer Email -->
-                            <!-- Customer Phone -->
-                            <div class="form-group col-sm-6">
-                                <label asp-for="CustomerPhone" class="control-label"></label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-mobile"></i></span>
-                                    <input asp-for="CustomerPhone" class="form-control" data-inputmask="'mask': '(999) 999-9999'" placeholder="(555) 555-5555" required />
-                                </div>
-                                <!-- / .input-group -->
-                                <span asp-validation-for="CustomerPhone" class="text-danger help-block with-errors"></span>
-                            </div>
-                            <!-- / Customer Phone -->
+                            <!-- / DateRedeemed -->
                         </div>
 
                         <div class="row box-body pad">
-                            <!-- Staff Name -->
+                            <!-- Price -->
                             <div class="form-group col-sm-4">
-                                <label asp-for="StaffName" class="control-label"></label>
+                                <label asp-for="Certificate.Price" class="control-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <select asp-for="StaffName" asp-items="@Model.StaffList" class="form-control"></select>
+                                    <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                                    <input asp-for="Certificate.Price" class="form-control" required />
+                                    <span class="input-group-addon">.00</span>
                                 </div>
                                 <!-- / .input-group -->
-                                <span asp-validation-for="StaffName" class="text-danger help-block with-errors"></span>
+                                <span asp-validation-for="Certificate.Price" class="text-danger help-block with-errors"></span>
                             </div>
-                            <!-- / Staff Name -->
-                            <!-- Channel -->
+                            <!-- / Price -->
+                            <!-- Discount -->
                             <div class="form-group col-sm-4">
-                                <label asp-for="ChannelName" class="control-label"></label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-map-marker-alt"></i></span>
-                                    <select asp-for="ChannelName" asp-items="@Model.ChannelList" class="form-control"></select>
-                                </div>
-                                <!-- / .input-group -->
-                                <span asp-validation-for="ChannelName" class="text-danger help-block with-errors"></span>
-                            </div>
-                            <!-- / Channel -->
-                            <!-- Promo -->
-                            <div class="form-group col-sm-4">
-                                <label asp-for="PromoAmt" class="control-label"></label>
+                                <label asp-for="Promotion.Discount" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-hand-holding-usd"></i></span>
-                                    <select asp-for="PromoAmt" asp-items="@Model.PromoList" class="form-control"></select>
+                                    <select asp-for="Promotion.Discount" asp-items="@Model.PromoList" class="form-control" required></select>
+                                    <span class="input-group-addon">.00</span>
                                 </div>
                                 <!-- / .input-group -->
-                                <span asp-validation-for="PromoAmt" class="text-danger help-block with-errors"></span>
+                                <span asp-validation-for="Promotion.Discount" class="text-danger help-block with-errors"></span>
                             </div>
-                            <!-- / Promo -->
+                            <!-- / Discount -->
+                            <!-- Staff -->
+                            <div class="form-group col-sm-4">
+                                <label asp-for="Staff.Name" class="control-label">Staff Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-user"></i></span>
+                                    <select asp-for="Staff.Name" asp-items="@Model.StaffList" class="form-control"></select>
+                                </div>
+                                <!-- / .input-group -->
+                                <span asp-validation-for="Staff.Name" class="text-danger help-block with-errors"></span>
+                            </div>
+                            <!-- / Staff -->
                         </div>
 
                         <!-- Button Group -->
@@ -169,45 +170,3 @@
     </div>
     <!-- /.row -->
 </section>
-
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CertificateNo" class="control-label"></label>
-                <input asp-for="CertificateNo" class="form-control" />
-                <span asp-validation-for="CertificateNo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateIssued" class="control-label"></label>
-                <input asp-for="DateIssued" class="form-control" />
-                <span asp-validation-for="DateIssued" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateRedeemed" class="control-label"></label>
-                <input asp-for="DateRedeemed" class="form-control" />
-                <span asp-validation-for="DateRedeemed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ExpiryDate" class="control-label"></label>
-                <input asp-for="ExpiryDate" class="form-control" />
-                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

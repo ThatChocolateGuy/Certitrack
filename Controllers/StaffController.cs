@@ -61,9 +61,6 @@ namespace Certitrack.Controllers
         // DISPLAY OPEN FIELDS TO EDIT (IF ADMIN)
         public IActionResult Edit(int? id)
         {
-            //sets action for edit view form submission
-            ViewData["FormAction"] = "Edit";
-
             var staff = _context.Staff.Find(id);
             var staffLink = _context.StaffLink.Find(id);
 
