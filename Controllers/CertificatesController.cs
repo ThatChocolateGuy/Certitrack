@@ -248,13 +248,41 @@ namespace Certitrack.Controllers
 
         // POST: Certificates/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        //[ValidateAntiForgeryToken]
+        public async Task<string> DeleteConfirmed(int id)
         {
             var certificate = await _context.Certificate.FindAsync(id);
+            var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+            var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+
+            _context.CertificateLink.Remove(certificateLink);
             _context.Certificate.Remove(certificate);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            
+            return "Certificate deleted for " + customer.Name;
+        }
+
+        // POST: Certificates/Redeem/5
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<string> Redeem(int id)
+        {
+            try
+            {
+                var certificate = await _context.Certificate.FindAsync(id);
+                var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+
+                certificate.DateRedeemed = DateTime.Today;
+                _context.Certificate.Update(certificate);
+                await _context.SaveChangesAsync();
+                
+                return "Certificate redeemed for " + customer.Name;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private bool CertificateExists(int id)

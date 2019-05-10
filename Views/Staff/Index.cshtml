@@ -76,11 +76,16 @@
                                     </td>
                                     <td class="text-center">
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
-                                            <i class="fas fa-user-edit text-green"></i>
+                                            <i class="fas fa-user-edit text-primary" data-toggle="tooltip" title="Edit"></i>
                                             <span class="sr-only">Edit</span>
                                         </a>
-                                        <button onclick="deleteUser('@item.Id', '@item.Name', '@Url.Action("Delete", "Staff")')" class="btn" style="background-color: transparent">
-                                            <i class="fas fa-trash text-red"></i>
+                                        <button id="delete-@item.Id"
+                                                data-staff-id="@item.Id"
+                                                data-message="@item.Name"
+                                                data-url="@Url.Action("Delete", "Staff")"
+                                                onclick="deleteUser('@item.Id', '@item.Name', '@Url.Action("Delete", "Staff")')"
+                                                class="btn" style="background-color: transparent">
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" title="Delete"></i>
                                             <span class="sr-only">Delete</span>
                                         </button>
                                     </td>

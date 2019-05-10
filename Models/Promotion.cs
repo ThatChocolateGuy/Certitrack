@@ -12,6 +12,7 @@ namespace Certitrack.Models
         }
 
         public int Id { get; set; }
+        [Display(Name = "Promo")]
         [DataType(DataType.Currency)]
         public int Discount { get; set; }
 

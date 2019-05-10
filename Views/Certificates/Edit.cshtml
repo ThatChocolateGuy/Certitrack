@@ -36,14 +36,12 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
                         <!-- / Model-Level Errors -->
 
-                        <div class="row box-body pad">
+                        <div class="row">
                             <!-- CertificateNo -->
                             <div class="form-group col-sm-4">
                                 <label asp-for="Certificate.CertificateNo" class="control-label"></label>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fas fa-stamp"></i>
-                                    </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-stamp"></i></span>
                                     <input asp-for="Certificate.CertificateNo" type="text" class="form-control" disabled />
                                 </div>
                                 <!-- / .input-group -->
@@ -55,7 +53,7 @@
                                 <label asp-for="Customer.Name" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <select asp-for="Customer.Name" asp-items="@Model.CustomerList" class="form-control" required></select>
+                                    <select asp-for="Customer.Name" asp-items="@Model.CustomerList" class="form-control select2" required></select>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Customer.Name" class="text-danger help-block with-errors"></span>
@@ -65,8 +63,8 @@
                             <div class="form-group col-sm-4">
                                 <label asp-for="Channel.ChannelName" class="control-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="fas fa-at"></i></span>
-                                    <select asp-for="Channel.ChannelName" asp-items="@Model.ChannelList" class="form-control" required></select>
+                                    <span class="input-group-addon"><i class="fas fa-route"></i></span>
+                                    <select asp-for="Channel.ChannelName" asp-items="@Model.ChannelList" class="form-control select2" required></select>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Channel.ChannelName" class="text-danger help-block with-errors"></span>
@@ -74,13 +72,13 @@
                             <!-- / Channel -->
                         </div>                        
 
-                        <div class="row box-body pad">
+                        <div class="row">
                             <!-- DateIssued -->
                             <div class="form-group col-sm-4">
                                 <label asp-for="Certificate.DateIssued" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-calendar-plus"></i></span>
-                                    <input asp-for="Certificate.DateIssued" class="form-control" disabled />
+                                    <input asp-for="Certificate.DateIssued" type="text" class="form-control" disabled />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.DateIssued" class="text-danger help-block with-errors"></span>
@@ -91,7 +89,7 @@
                                 <label asp-for="Certificate.ExpiryDate" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-calendar-times"></i></span>
-                                    <input asp-for="Certificate.ExpiryDate" class="form-control" disabled />
+                                    <input asp-for="Certificate.ExpiryDate" type="text" class="form-control datepicker" />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.ExpiryDate" class="text-danger help-block with-errors"></span>
@@ -102,7 +100,7 @@
                                 <label asp-for="Certificate.DateRedeemed" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-calendar-check"></i></span>
-                                    <input asp-for="Certificate.DateRedeemed" class="form-control" />
+                                    <input asp-for="Certificate.DateRedeemed" type="text" class="form-control datepicker" placeholder="@DateTime.Today.ToString("yyyy-MM-dd")"/>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.DateRedeemed" class="text-danger help-block with-errors"></span>
@@ -110,7 +108,7 @@
                             <!-- / DateRedeemed -->
                         </div>
 
-                        <div class="row box-body pad">
+                        <div class="row">
                             <!-- Price -->
                             <div class="form-group col-sm-4">
                                 <label asp-for="Certificate.Price" class="control-label"></label>
@@ -140,7 +138,7 @@
                                 <label asp-for="Staff.Name" class="control-label">Staff Name</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <select asp-for="Staff.Name" asp-items="@Model.StaffList" class="form-control"></select>
+                                    <select asp-for="Staff.Name" asp-items="@Model.StaffList" class="form-control select2"></select>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Staff.Name" class="text-danger help-block with-errors"></span>

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="~/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- Bootstrap Date Picker -->
     <link rel="stylesheet" href="~/bower_components/bootstrap-datepicker/build/datepicker.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/bower_components/select2/dist/css/select2.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="~/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
     <!-- Font Awesome -->
@@ -122,7 +124,28 @@
         <div class="content-wrapper">
             <!-- Status Message Partial -->
             <Partial name="_StatusMessages" />
+            <div id="status-messages"></div>
             <!-- ^^^^ -->
+            <!-- Bootstrap Modal -->
+            <div class="modal modal modal-warning fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="my-modal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirm</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4 id="myModalLabel"></h4>
+                            <input type="hidden" id="post-data" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline pull-left" id="modal-btn-yes">Yes</button>
+                            <button type="button" class="btn btn-outline" id="modal-btn-no">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / Bootstrap Modal -->
             <!-- Content Header (Page header) -->
             @RenderBody()
             <!-- /.content -->
@@ -146,6 +169,8 @@
     <script src="~/bower_components/bootstrap/dist/js/validator.min.js"></script>
     <!-- Bootstrap Date Picker -->
     <script src="~/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/bower_components/select2/dist/js/select2.full.min.js"></script>
     <!-- InputMask -->
     <script src="~/bower_components/inputmask/dist/inputmask/inputmask.js"></script>
     <script src="~/bower_components/inputmask/dist/inputmask/inputmask.extensions.js"></script>
@@ -159,7 +184,103 @@
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <!-- Custom Page Script -->
     <script>
-        //formats staff index table
+        $("#modal-btn-yes").on("click", function () {
+            $("#my-modal").modal('hide');
+            return true;
+        });
+        $("#modal-btn-no").on("click", function () {
+            $("#my-modal").modal('hide');
+            return false;
+        });
+
+        $(':button').click(function () {
+            $(this.id).data('clicked', false);
+
+            switch (this.id) {
+                case 'modal-btn-yes':
+                    console.log(this.id + " clicked");
+
+                    var eId = $('#post-data').data('id');
+                    var el = document.getElementById(eId);
+                    var certId, staffId, url, message;
+
+                    console.log(eId);
+                    console.log(certId = el.dataset["certId"]);
+                    console.log(staffId = el.dataset["staffId"]);
+                    console.log(message = el.dataset["message"]);
+                    console.log(url = el.dataset["url"]);
+
+                    if (certId)
+                        ajaxCall(certId, message, url);
+                    else if (staffId)
+                        ajaxCall(staffId, message, url);
+
+                    break;
+                case 'modal-btn-no':
+                    console.log(this.id + " clicked");
+                    break;
+                default:
+                    console.log(this.id + " clicked");
+                    var el = document.getElementById(this.id);
+                    if (el.dataset["certId"] || el.dataset["staffId"]) {
+                        if (el.dataset["certId"])
+                            console.log(el.dataset["certId"]);
+                        else if (el.dataset["staffId"])
+                            console.log(el.dataset["staffId"]);
+                        console.log(el.dataset["message"]);
+                        console.log(el.dataset["url"]);
+                        console.log('<-------------->');
+                    }
+                    
+                    $("#post-data").data("id", this.id);
+                    break;
+            }
+        });
+
+        //Bootstrap confirmation modal message
+        var modalConfirm = function (modalLabel) {
+            $("#myModalLabel").html(modalLabel);
+        };
+        //ajax call
+        function ajaxCall(id, message, url) {
+            $.ajax({
+                method: "POST",
+                url: url + '/' + id,
+                data: {},
+                error: function () {
+                    alert("Something went wrong, Try agian!");
+                },
+                success: function (result) {
+                    if (result) {
+                        sessionStorage.setItem("_refresh.location", true);
+                        sessionStorage.setItem("_alert.result", result);
+
+                        window.scroll({
+                            top: 0,
+                            left: 0,
+                            behavior: 'smooth'
+                        });
+                        
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Something went wrong, Try agian!\n");
+                    }
+                }
+            });
+        }
+
+        //delete staff
+        function deleteUser(id, name, url) {
+            $("#my-modal").modal('show');
+            modalConfirm("Are you sure you want to delete " + name + "?<hr>This action cannot be reversed.");
+        }
+        //redeem certificate
+        function redeem(id, certNo, url) {
+            $("#my-modal").modal('show');
+            modalConfirm("Redeem Certificate: #" + certNo + " ?");
+        }
+        //format staff index table
         $(function () {
             $('#main-table-staff').DataTable({
                 "columnDefs": [{
@@ -174,33 +295,6 @@
                 }]
             });
         });
-        //deletes staff
-        function deleteUser(id, name, url) {
-            var r = confirm("Are you sure you want to delete " + name + "?\nThis action cannot be reversed.");
-            if (r == true) {
-                $.ajax({
-                    method: "POST",
-                    url: url,
-                    data: { id: id },
-                    error: function () {
-                        alert("Something went wrong, Try agian!");
-                    },
-                    success: function (result) {
-                        if (result) {
-                            document.getElementsByTagName("HTML")[0].innerHTML = result;
-                            window.scroll({
-                                top: 0,
-                                left: 0,
-                                behavior: 'smooth'
-                            });
-                        }
-                        else {
-                            alert("Something went wrong, Try agian!\n");
-                        }
-                    }
-                });
-            }
-        }
         //datepicker
         $(function () {
             $.fn.datepicker.defaults = { //defaults for reference
@@ -211,7 +305,7 @@
                 daysOfWeekDisabled: [],
                 endDate: Infinity,
                 forceParse: true,
-                format: 'mm/dd/yyyy',
+                format: 'yyyy-mm-dd',
                 keyboardNavigation: true,
                 language: 'en',
                 minViewMode: 0,
@@ -223,18 +317,46 @@
                 todayHighlight: false,
                 weekStart: 0
             };
-            $('#datepicker').datepicker({
-                format: "yyyy-mm-dd",
+            $('#set-expiry').datepicker({
+                format: 'yyyy-mm-dd',
                 startDate: "+1m",
-                maxViewMode: 2,
+                maxViewMode: 1,
                 orientation: "bottom auto",
                 daysOfWeekHighlighted: "1,2,3,4,5",
-                autoclose: true
+                todayBtn: true,
+                todayHighlight: true
+            });
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                maxViewMode: 1,
+                orientation: "bottom auto",
+                daysOfWeekHighlighted: "1,2,3,4,5",
+                todayBtn: true,
+                todayHighlight: true
             });
         });
-        //InputMask
+        //onDocumentReady
         $(document).ready(function () {
+            //InputMask
             $(":input").inputmask();
+            //Select2
+            $('.select2').select2({
+                width: '100%'
+            });
+            //Bootstrap tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+            //Bootsrap alert modal
+            if (sessionStorage.getItem("_refresh.location")) {
+                document.getElementById("status-messages").innerHTML =
+                    "<div class=\"alert alert-success alert-dismissible\" role=\"alert\" style=\"margin-top: -2px; box-shadow: rgba(0,0,0,.5) 0 1px 3px\">" +
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +
+                            "<span aria-hidden=\"true\">&times;</span>" +
+                        "</button>" +
+                        "<strong>Success</strong>" +
+                        "<span class=\"pull-right\">" + sessionStorage.getItem("_alert.result") + "</span>" +
+                    "</div>";
+                sessionStorage.setItem("_refresh.location", false);
+            }
         });
     </script>
 </body>
