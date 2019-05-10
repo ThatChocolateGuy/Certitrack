@@ -225,7 +225,7 @@ namespace Certitrack.Controllers
         
         // DELETE STAFF FROM DB (IF ADMIN)
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public string Delete(int id)
         {
             try

@@ -248,7 +248,7 @@ namespace Certitrack.Controllers
 
         // POST: Certificates/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<string> DeleteConfirmed(int id)
         {
             var certificate = await _context.Certificate.FindAsync(id);
@@ -264,7 +264,7 @@ namespace Certitrack.Controllers
 
         // POST: Certificates/Redeem/5
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<string> Redeem(int id)
         {
             try

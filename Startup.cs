@@ -42,6 +42,12 @@ namespace Certitrack
                 options.UseSqlServer(ConnectionString);
             });
 
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = "X-CSRF-TOKEN-CERTITRACK";
+                options.FormFieldName = "CSRF-TOKEN-CERTITRACK-FORM";
+            });
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddSessionStateTempDataProvider();
