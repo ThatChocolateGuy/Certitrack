@@ -346,7 +346,7 @@
             //Bootstrap tooltip
             $('[data-toggle="tooltip"]').tooltip();
             //Bootsrap alert modal
-            if (sessionStorage.getItem("_refresh.location")) {
+            if (sessionStorage.getItem("_refresh.location") == "true") {
                 document.getElementById("status-messages").innerHTML =
                     "<div class=\"alert alert-success alert-dismissible\" role=\"alert\" style=\"margin-top: -2px; box-shadow: rgba(0,0,0,.5) 0 1px 3px\">" +
                         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +

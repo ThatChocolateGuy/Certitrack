@@ -225,8 +225,8 @@ namespace Certitrack.Controllers
         
         // DELETE STAFF FROM DB (IF ADMIN)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        //[ValidateAntiForgeryToken]
+        public string Delete(int id)
         {
             try
             {
@@ -237,11 +237,12 @@ namespace Certitrack.Controllers
                 _context.RemoveRange(staff, staffLink);
                 _context.SaveChanges();
 
-                return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
+                return staff.Name + " has successfully been removed from the team";
+                //return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
             }
             catch (Exception)
             {
-                return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
+                //return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
                 throw;
             }
         }
