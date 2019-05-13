@@ -12,11 +12,13 @@ namespace Certitrack.ViewModels
         public CertificateCreateViewModel(
             IEnumerable<SelectListItem> staffList,
             IEnumerable<SelectListItem> channelList,
-            IEnumerable<SelectListItem> promoList )
+            IEnumerable<SelectListItem> promoList,
+            IEnumerable<SelectListItem> customerNameList)
         {
             StaffList = staffList;
             ChannelList = channelList;
             PromoList = promoList;
+            CustomerNameList = customerNameList;
         }
 
         public CertificateCreateViewModel() { }
@@ -62,5 +64,6 @@ namespace Certitrack.ViewModels
         public IEnumerable<SelectListItem> StaffList { get; set; }
         public IEnumerable<SelectListItem> ChannelList { get; set; }
         public IEnumerable<SelectListItem> PromoList { get; set; }
+        public IEnumerable<SelectListItem> CustomerNameList { get; set; }
     }
 }

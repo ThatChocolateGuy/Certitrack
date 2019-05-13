@@ -43,7 +43,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input asp-for="ExpiryDate" type="text" id="set-expiry" class="form-control" required value="@DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd")" />
+                                    <input asp-for="ExpiryDate" type="text" id="set-expiry" class="form-control" disabled value="@DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd")" />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="ExpiryDate" class="text-danger help-block with-errors"></span>
@@ -76,22 +76,34 @@
 
                         <div class="row">
                             <!-- Customer Name -->
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-md-6">
                                 <label asp-for="CustomerName" class="control-label"></label>
                                 <div class="input-group">
+
                                     <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <input asp-for="CustomerName" minlength="3" class="form-control" placeholder="Full Name" required />
+                                    <input asp-for="CustomerName" id="customer-toggle-input" minlength="3" class="form-control" placeholder="Full Name" required/>
+                                    <select asp-for="CustomerName" asp-items="@Model.CustomerNameList" id="customer-toggle-select" style="display: none"
+                                            class="form-control" required><option></option></select>
+                                    <div class="input-group-btn">
+                                        <button id="customer-toggle" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            <span id="customer-toggle-text">New</span> <i class="fas fa-caret-down"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li id="new-customer" class="active"><a>New</a></li>
+                                            <li id="existing-customer"><a>Existing</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="CustomerName" class="text-danger help-block with-errors"></span>
                             </div>
                             <!-- / Customer Name -->
                             <!-- Customer Email -->
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-md-6">
                                 <label asp-for="CustomerEmail" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-at"></i></span>
-                                    <input asp-for="CustomerEmail" class="form-control" placeholder="email@example.com" required />
+                                    <input asp-for="CustomerEmail" id="customer-email-input" class="form-control" placeholder="email@example.com" required/>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="CustomerEmail" class="text-danger help-block with-errors"></span>

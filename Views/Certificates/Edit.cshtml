@@ -64,7 +64,7 @@
                                 <label asp-for="Channel.ChannelName" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-route"></i></span>
-                                    <select asp-for="Channel.ChannelName" asp-items="@Model.ChannelList" class="form-control select2" required></select>
+                                    <select asp-for="Channel.ChannelName" asp-items="@Model.ChannelList" class="form-control select2 select2-name" required></select>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Channel.ChannelName" class="text-danger help-block with-errors"></span>

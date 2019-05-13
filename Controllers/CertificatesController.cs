@@ -63,32 +63,58 @@ namespace Certitrack.Controllers
             return View(certificate);
         }
 
+        // GET: Certificates/CreateWithCustomer/5
+        [HttpPost]
+        public async Task<string> CreateWithCustomer(string customerName)
+        {
+            if (customerName == null)
+            {
+                return null;
+            }
+
+            var customer = await _context.Customer
+                .FirstOrDefaultAsync(c => c.Name == customerName);
+
+            return customer.Email;
+        }
+
         // GET: Certificates/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var staffNames =
-                from staff in _context.Staff.ToList()
+                from staff in await _context.Staff.ToListAsync()
                 select new SelectListItem
                 {
                     Text = staff.Name,
                     Value = staff.Name
                 };
             var channels =
-                from channel in _context.Channel.ToList()
+                from channel in await _context.Channel.ToListAsync()
                 select new SelectListItem
                 {
                     Text = channel.ChannelName,
                     Value = channel.ChannelName
                 };
             var promos =
-                from promo in _context.Promotion.ToList()
+                from promo in await _context.Promotion.ToListAsync()
                 select new SelectListItem
                 {
                     Text = promo.Discount.ToString(),
                     Value = promo.Discount.ToString()
                 };
+            var customerNames =
+                from customer in await _context.Customer.ToListAsync()
+                select new SelectListItem
+                {
+                    Text = customer.Name.ToString(),
+                    Value = customer.Name.ToString()
+                };
 
-            var model = new CertificateCreateViewModel(staffList: staffNames, channelList: channels, promoList: promos);
+            var model = new CertificateCreateViewModel(
+                staffList: staffNames,
+                channelList: channels,
+                promoList: promos,
+                customerNameList: customerNames);
 
             return View(model);
         }
@@ -98,7 +124,9 @@ namespace Certitrack.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ExpiryDate,Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt")] CertificateCreateViewModel certificateCreateViewModel)
+        public IActionResult Create(
+            [Bind("ExpiryDate,Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt"
+            )] CertificateCreateViewModel certificateCreateViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +134,7 @@ namespace Certitrack.Controllers
                 {
                     _context.Database.ExecuteSqlCommand(@"
                     EXEC stpAssignCertificate
-                        @customer_name = @customerName
+                         @customer_name = @customerName
                         ,@customer_email = @customerEmail
                         ,@customer_phone = @customerPhone
                         ,@staff_name = @staffName
@@ -198,9 +226,10 @@ namespace Certitrack.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CertificateNo,DateIssued,DateRedeemed,ExpiryDate,Price")] Certificate certificate)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Certificate, Customer, Channel, Promotion, Staff")] CertificateEditViewModel certificateEditViewModel)
         {
-            if (id != certificate.Id)
+            if (id != certificateEditViewModel.Certificate.Id)
             {
                 return NotFound();
             }
@@ -209,12 +238,17 @@ namespace Certitrack.Controllers
             {
                 try
                 {
-                    _context.Update(certificate);
+                    _context.UpdateRange(
+                        certificateEditViewModel.Certificate,
+                        certificateEditViewModel.Channel,
+                        certificateEditViewModel.Customer,
+                        certificateEditViewModel.Promotion,
+                        certificateEditViewModel.Staff);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CertificateExists(certificate.Id))
+                    if (!CertificateExists(certificateEditViewModel.Certificate.Id))
                     {
                         return NotFound();
                     }
@@ -223,27 +257,12 @@ namespace Certitrack.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index))
+                    .WithSuccess("Update Successful",
+                        "Certificate " + certificateEditViewModel.Certificate.CertificateNo + "updated successfully");
             }
-            return View(certificate);
-        }
-
-        // GET: Certificates/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var certificate = await _context.Certificate
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (certificate == null)
-            {
-                return NotFound();
-            }
-
-            return View(certificate);
+            return RedirectToAction(nameof(Index))
+                .WithDanger("Update Not Successful", "Something went wrong. Try again.");
         }
 
         // POST: Certificates/Delete/5
