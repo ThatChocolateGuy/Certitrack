@@ -115,16 +115,20 @@
                                                     data-message="@item.Certificate.CertificateNo"
                                                     data-url="@Url.Action("Redeem", "Certificates")"
                                                     class="btn " style="background-color: transparent"
-                                                    onclick="redeem(
-                                                    '@item.Certificate.Id',
-                                                    '@item.Certificate.CertificateNo',
-                                                    '@Url.Action("Redeem", "Certificates")')">
-                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" title="Redeem"></i>
+                                                    onclick="redeem('@item.Certificate.CertificateNo')">
+                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
                                                 <span class="sr-only">Redeem</span>
                                             </button>
                                         }
+                                        else
+                                        {
+                                            <button class="btn " style="background-color: transparent" disabled="disabled">
+                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
+                                                <span class="sr-only">Redeemed</span>
+                                            </button>
+                                        }
                                         <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
-                                            <i class="fas fa-edit text-primary" data-toggle="tooltip" title="Edit"></i>
+                                            <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
                                             <span class="sr-only">Edit</span>
                                         </a>
                                         <button id="delete-@item.Certificate.Id"
@@ -132,11 +136,8 @@
                                                 data-message="@item.Certificate.CertificateNo"
                                                 data-url="@Url.Action("Delete", "Certificates")"
                                                 class="btn" style="background-color: transparent"
-                                                onclick="deleteUser(
-                                                '@item.Certificate.Id',
-                                                'Certificate: #@item.Certificate.CertificateNo',
-                                                '@Url.Action("Delete", "Certificates")')">
-                                            <i class="fas fa-trash text-red" data-toggle="tooltip" title="Delete"></i>
+                                                onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')">
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
                                             <span class="sr-only">Delete</span>
                                         </button>
                                     </td>

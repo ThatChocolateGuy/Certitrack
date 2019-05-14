@@ -9,6 +9,7 @@ using Certitrack.Models;
 using Certitrack.ViewModels;
 using System.Data.SqlClient;
 using Certitrack.Extensions.Alerts;
+using System.Collections.Generic;
 
 namespace Certitrack.Controllers
 {
@@ -63,9 +64,9 @@ namespace Certitrack.Controllers
             return View(certificate);
         }
 
-        // GET: Certificates/CreateWithCustomer/5
+        // POST: Certificates/GetCustomerEmail/5
         [HttpPost]
-        public async Task<string> CreateWithCustomer(string customerName)
+        public async Task<List<string>> GetCustomerEmail(string customerName)
         {
             if (customerName == null)
             {
@@ -75,7 +76,11 @@ namespace Certitrack.Controllers
             var customer = await _context.Customer
                 .FirstOrDefaultAsync(c => c.Name == customerName);
 
-            return customer.Email;
+            var customerDetails = new List<string>();
+            customerDetails.Add(customer.Email);
+            customerDetails.Add(customer.Phone);
+
+            return customerDetails;
         }
 
         // GET: Certificates/Create
@@ -125,14 +130,14 @@ namespace Certitrack.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
-            [Bind("ExpiryDate,Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt"
+            [Bind("Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt"
             )] CertificateCreateViewModel certificateCreateViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Database.ExecuteSqlCommand(@"
+                    var result = _context.Database.ExecuteSqlCommand(@"
                     EXEC stpAssignCertificate
                          @customer_name = @customerName
                         ,@customer_email = @customerEmail
@@ -227,42 +232,70 @@ namespace Certitrack.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Certificate, Customer, Channel, Promotion, Staff")] CertificateEditViewModel certificateEditViewModel)
+            [Bind("Customer,Channel,Certificate,Price,Promotion,Staff")] CertificateEditViewModel certificateEditViewModel)
         {
-            if (id != certificateEditViewModel.Certificate.Id)
+            if (certificateEditViewModel == null)
             {
-                return NotFound();
+                throw new ArgumentNullException(nameof(certificateEditViewModel));
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.UpdateRange(
-                        certificateEditViewModel.Certificate,
-                        certificateEditViewModel.Channel,
-                        certificateEditViewModel.Customer,
-                        certificateEditViewModel.Promotion,
-                        certificateEditViewModel.Staff);
+                    var certificate = await _context.Certificate.FindAsync(id);
+                    var certificateLink = await _context.CertificateLink.FindAsync(id);
+                    
+                    var channel = await _context.Channel
+                        .Where(ch => ch.Id == certificateLink.ChannelId)
+                        .FirstOrDefaultAsync();
+                    var customer = await _context.Customer
+                        .Where(c => c.Id == certificateLink.CustomerId)
+                        .FirstOrDefaultAsync();
+                    var promotion = await _context.Promotion
+                        .Where(p => p.Id == certificateLink.PromotionId)
+                        .FirstOrDefaultAsync();
+                    var staff = await _context.Staff
+                        .Where(s => s.Id == certificateLink.StaffId)
+                        .FirstOrDefaultAsync();
+
+                    certificate.ExpiryDate = certificateEditViewModel.Certificate.ExpiryDate;
+                    certificate.DateRedeemed = certificateEditViewModel.Certificate.DateRedeemed;
+                    certificate.Price = certificateEditViewModel.Certificate.Price;
+
+                    certificateLink.ChannelId = await _context.Channel
+                        .Where(ch => ch.ChannelName == certificateEditViewModel.Channel.ChannelName)
+                        .Select(ch => ch.Id)
+                        .FirstOrDefaultAsync();
+                    certificateLink.CustomerId = await _context.Customer
+                        .Where(c => c.Name == certificateEditViewModel.Customer.Name)
+                        .Select(c => c.Id)
+                        .FirstOrDefaultAsync();
+                    certificateLink.PromotionId = await _context.Promotion
+                        .Where(p => p.Discount == certificateEditViewModel.Promotion.Discount)
+                        .Select(p => p.Id)
+                        .FirstOrDefaultAsync();
+                    certificateLink.StaffId = await _context.Staff
+                        .Where(s => s.Name == certificateEditViewModel.Staff.Name)
+                        .Select(s => s.Id)
+                        .FirstOrDefaultAsync();
+
+                    _context.UpdateRange(certificate, certificateLink);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CertificateExists(certificateEditViewModel.Certificate.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Update Successful",
-                        "Certificate " + certificateEditViewModel.Certificate.CertificateNo + "updated successfully");
+                        "Certificate " +
+                        _context.Certificate.FindAsync(id).Result.CertificateNo +
+                        " updated successfully");
             }
             return RedirectToAction(nameof(Index))
                 .WithDanger("Update Not Successful", "Something went wrong. Try again.");
+
         }
 
         // POST: Certificates/Delete/5

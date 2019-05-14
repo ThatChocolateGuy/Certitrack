@@ -1,5 +1,6 @@
 ﻿.dropdown-menu {
     background-color: #222d32;
+    min-width: 10px;
 }
 
 .dropdown-menu > li {

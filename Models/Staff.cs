@@ -15,11 +15,11 @@ namespace Certitrack.Models
         [Required]
         [MinLength(3, ErrorMessage = "The {0} must be at least {1} characters long.")]
         public string Name { get; set; }
-        [Required]
+        //[Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
-        [Required]
+        //[Required]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "The {0} must be at least {1} characters long.")]
         public string Password { get ; set; }

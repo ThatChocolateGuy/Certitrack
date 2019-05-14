@@ -1,11 +1,10 @@
-﻿//click fns
+﻿
+//click fns
 $("#modal-btn-yes").on("click", function () {
     $("#my-modal").modal('hide');
-    return true;
 });
 $("#modal-btn-no").on("click", function () {
     $("#my-modal").modal('hide');
-    return false;
 });
 $("#new-customer").on("click", function () {
     dropdownButton("New");
@@ -14,21 +13,14 @@ $("#existing-customer").on("click", function () {
     dropdownButton("Existing");
 });
 $(':button').click(function () {
+    var certId, staffId, url;
     $(this.id).data('clicked', false);
-
     switch (this.id) {
         case 'modal-btn-yes':
             console.log(this.id + " clicked");
 
             var eId = $('#post-data').data('id');
-            var el = document.getElementById(eId);
-            var certId, staffId, url, message;
-
-            console.log(eId);
-            console.log(certId = el.dataset["certId"]);
-            console.log(staffId = el.dataset["staffId"]);
-            console.log(message = el.dataset["message"]);
-            console.log(url = el.dataset["url"]);
+            getEl(eId);
 
             if (certId)
                 ajaxCall(certId, url);
@@ -41,19 +33,15 @@ $(':button').click(function () {
             break;
         default:
             console.log(this.id + " clicked");
-            var el = document.getElementById(this.id);
-            if (el.dataset["certId"] || el.dataset["staffId"]) {
-                if (el.dataset["certId"])
-                    console.log(el.dataset["certId"]);
-                else if (el.dataset["staffId"])
-                    console.log(el.dataset["staffId"]);
-                console.log(el.dataset["message"]);
-                console.log(el.dataset["url"]);
-                console.log('<-------------->');
-            }
-
             $("#post-data").data("id", this.id);
             break;
+    }
+    //get element & assign cert data to it
+    function getEl(id) {
+        var el = document.getElementById(id);
+        certId = el.dataset.certId;
+        staffId = el.dataset.staffId;
+        url = el.dataset.url;
     }
 });
 //select list on-change fn (certificate create)
@@ -62,44 +50,44 @@ $("select#customer-toggle-select").change(function () {
         //gets value of selected dropdown option
         var selectedCustomer = $(this).children("option:selected").val();
         //ajax call to retrieve customer email
-        ajaxCallSelect(selectedCustomer, "/Certificates/CreateWithCustomer");
-        //
-        function ajaxCallSelect(selectedCustomer, url) {
-            var pData = $.extend({ customerName: selectedCustomer },
-                { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
+        ajaxCallSelect(selectedCustomer, "/Certificates/GetCustomerEmail");
+    }
+    function ajaxCallSelect(selectedCustomer, url) {
+        var pData = $.extend({ customerName: selectedCustomer },
+            { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
 
-            $.ajax({
-                method: "POST",
-                url: url,
-                headers: {
-                    "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val()
-                },
-                data: pData,
-                error: function () {
-                    alert("Something went wrong, Try agian!");
-                },
-                success: function (result) {
-                    if (result) {
-                        $("#customer-email-input").val(result);
-                    }
-                    else {
-                        alert("Something went wrong, Try agian!");
-                    }
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {
+                "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val()
+            },
+            data: pData,
+            error: function () {
+                alert("Something went wrong, Try agian!");
+            },
+            success: function (result) {
+                if (result) {
+                    $("#customer-email-input").val(result[0]);
+                    $("#customer-phone-input").val(result[1]);
                 }
-            });
-        }
+                else {
+                    alert("Something went wrong, Try agian!");
+                }
+            }
+        });
     }
 });
 
 //form dropdown button - elements to control (certificate create)
-var cusToggleSelect = document.getElementById("#customer-toggle-select");
-var cusToggleInput = document.getElementById("#customer-toggle-input");
-var cusEmailInput = document.getElementById("#customer-email-input");
-var newCustomer = document.getElementById("#new-customer");
-var existingCustomer = document.getElementById("#existing-customer");
+var cusToggleSelect = document.getElementById("customer-toggle-select");
+var cusToggleInput = document.getElementById("customer-toggle-input");
+var cusEmailInput = document.getElementById("customer-email-input");
+var newCustomer = document.getElementById("new-customer");
+var existingCustomer = document.getElementById("existing-customer");
 //placeholder nodes
 var node1 = document.createElement("div"); node1.id = "node1";
-var node3 = document.createElement("div"); node3.id = "node3";
+var node2 = document.createElement("div"); node2.id = "node2";
 //dropdown button selection method
 var dropdownButton = function (text) {
     //replace dropdown button text
@@ -107,22 +95,29 @@ var dropdownButton = function (text) {
 
     //retain position in DOM with placeholder nodes
     if (cusToggleInput) {
+        $("#customer-toggle-input").prop("required", false);
+        $("#customer-toggle-input").attr("data-val", false);
         cusToggleInput.replaceWith(node1);
     }
     if (cusToggleSelect) {
-        cusToggleSelect.replaceWith(node3);
+        $("#customer-toggle-select").prop("required", false);
+        $("#customer-toggle-select").attr("data-val", false);
+        cusToggleSelect.replaceWith(node2);
     }
 
     if (text == "Existing") {
         //replace placeholder node with select element
-        if (node3) {
-            node3.replaceWith(cusToggleSelect);
+        if (node2) {
+            node2.replaceWith(cusToggleSelect);
+            $("#customer-toggle-select").prop("required", true);
+            $("#customer-toggle-select").attr("data-val", true);
         }
 
         //display select element if not shown
         if (!cusToggleSelect.style.display == "initial") {
             cusToggleSelect.style.display = "initial";
             cusEmailToggleSelect.style.display = "initial";
+            console.log("display select Elements");
         }
 
         //add select2 classes to select elements
@@ -139,7 +134,7 @@ var dropdownButton = function (text) {
         //enable select2 on newly displayed DOM element
         $(".select2-name").select2({
             placeholder: ' Full Name',
-            width: 'resolve'
+            width: '100%'
         });
 
         //prevents select2 span input from scaling abnormally
@@ -152,6 +147,8 @@ var dropdownButton = function (text) {
         //replace placeholder node with input element
         if (node1) {
             node1.replaceWith(cusToggleInput);
+            $("#customer-toggle-input").prop("required", true);
+            $("#customer-toggle-input").attr("data-val", true);
         }
 
         //set selected dropdown list item to active element
@@ -160,7 +157,7 @@ var dropdownButton = function (text) {
             newCustomer.classList.add("active");
         }
     }
-}
+};
 
 //Bootstrap confirmation modal message
 var modalConfirm = function (modalLabel) {
@@ -202,16 +199,16 @@ function ajaxCall(id, url) {
 }
 
 //delete staff
-function deleteUser(id, name, url) {
+function deleteUser(name) {
     $("#my-modal").modal('show');
     modalConfirm("Are you sure you want to delete " + name + "?<hr>This action cannot be reversed.");
 }
 //redeem certificate
-function redeem(id, certNo, url) {
+function redeem(certNo) {
     $("#my-modal").modal('show');
     modalConfirm("Redeem Certificate: #" + certNo + " ?");
 }
-//format staff index table
+//format index tables
 $(function () {
     $('#main-table-staff').DataTable({
         "columnDefs": [{
@@ -222,7 +219,7 @@ $(function () {
     $('#main-table-cert').DataTable({
         "columnDefs": [{
             "targets": 8,
-            "orderable": false
+            "orderable": true
         }]
     });
 });
@@ -268,7 +265,7 @@ $(function () {
 });
 
 //onDocumentReady
-$(document).ready(function () {
+$(document).ready(() => {
     //InputMask
     $(":input").inputmask();
     //Select2
@@ -289,4 +286,11 @@ $(document).ready(function () {
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
+    //reload Bootstrap tooltip on pagination click or table search
+    $("#main-table-cert_wrapper").click(() => {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $('[type="search"]').keyup(() => {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 });

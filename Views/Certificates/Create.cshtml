@@ -81,9 +81,9 @@
                                 <div class="input-group">
 
                                     <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <input asp-for="CustomerName" id="customer-toggle-input" minlength="3" class="form-control" placeholder="Full Name" required/>
+                                    <input asp-for="CustomerName" id="customer-toggle-input" minlength="3" class="form-control" placeholder="Full Name" />
                                     <select asp-for="CustomerName" asp-items="@Model.CustomerNameList" id="customer-toggle-select" style="display: none"
-                                            class="form-control" required><option></option></select>
+                                            class="form-control"><option></option></select>
                                     <div class="input-group-btn">
                                         <button id="customer-toggle" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                                             <span id="customer-toggle-text">New</span> <i class="fas fa-caret-down"></i>
@@ -103,7 +103,7 @@
                                 <label asp-for="CustomerEmail" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-at"></i></span>
-                                    <input asp-for="CustomerEmail" id="customer-email-input" class="form-control" placeholder="email@example.com" required/>
+                                    <input asp-for="CustomerEmail" id="customer-email-input" class="form-control" placeholder="email@example.com" />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="CustomerEmail" class="text-danger help-block with-errors"></span>
@@ -118,7 +118,7 @@
                                 <label asp-for="CustomerPhone" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-mobile"></i></span>
-                                    <input asp-for="CustomerPhone" class="form-control" data-inputmask="'mask': '(999) 999-9999'" placeholder="(555) 555-5555" required />
+                                    <input asp-for="CustomerPhone" id="customer-phone-input" class="form-control" data-inputmask="'mask': '(999) 999-9999'" placeholder="(555) 555-5555" required />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="CustomerPhone" class="text-danger help-block with-errors"></span>
