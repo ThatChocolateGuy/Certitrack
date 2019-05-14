@@ -1,5 +1,4 @@
-﻿
-//click fns
+﻿//click fns
 $("#modal-btn-yes").on("click", function () {
     $("#my-modal").modal('hide');
 });
@@ -208,8 +207,9 @@ function redeem(certNo) {
     $("#my-modal").modal('show');
     modalConfirm("Redeem Certificate: #" + certNo + " ?");
 }
-//format index tables
+//on DOM ready
 $(function () {
+    //format index tables
     $('#main-table-staff').DataTable({
         "columnDefs": [{
             "targets": 6,
@@ -222,9 +222,22 @@ $(function () {
             "orderable": true
         }]
     });
-});
-//datepicker
-$(function () {
+    //InputMask
+    $(":input").inputmask();
+    //Select2
+    $('.select2').select2({
+        width: '100%'
+    });
+    //Bootstrap tooltip
+    $('[data-toggle="tooltip"]').tooltip();
+    //reload Bootstrap tooltip on pagination click or table search
+    $("#main-table-cert_wrapper").click(() => {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $('[type="search"]').keyup(() => {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+    //datepicker
     $.fn.datepicker.defaults = { //defaults for reference
         autoclose: true,
         beforeShowDay: $.noop,
@@ -262,18 +275,6 @@ $(function () {
         todayBtn: true,
         todayHighlight: true
     });
-});
-
-//onDocumentReady
-$(document).ready(() => {
-    //InputMask
-    $(":input").inputmask();
-    //Select2
-    $('.select2').select2({
-        width: '100%'
-    });
-    //Bootstrap tooltip
-    $('[data-toggle="tooltip"]').tooltip();
     //Bootsrap alert modal
     if (sessionStorage.getItem("_refresh.location") == "true") {
         document.getElementById("status-messages").innerHTML =
@@ -286,11 +287,4 @@ $(document).ready(() => {
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
-    //reload Bootstrap tooltip on pagination click or table search
-    $("#main-table-cert_wrapper").click(() => {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-    $('[type="search"]').keyup(() => {
-        $('[data-toggle="tooltip"]').tooltip();
-    })
 });
