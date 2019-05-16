@@ -65,84 +65,94 @@
                                     Issued By
                                 </th>
                                 <!-- / Staff -->
+                                <!-- Redeemed -->
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Certificate.DateRedeemed)
+                                </th>
+                                <!-- / Redeemed -->
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <!-- Certificate -->
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Certificate.CertificateNo)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Certificate.DateIssued)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Certificate.ExpiryDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Certificate.Price)
-                                    </td>
-                                    <!-- / Certificate -->
-                                    <!-- Channel -->
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Channel.ChannelName)
-                                    </td>
-                                    <!-- / Channel -->
-                                    <!-- Customer -->
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Customer.Name)
-                                    </td>
-                                    <!-- / Customer -->
-                                    <!-- Promo -->
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Promotion.Discount)
-                                    </td>
-                                    <!-- / Promo -->
-                                    <!-- Staff -->
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Staff.Name)
-                                    </td>
-                                    <!-- / Staff -->
-                                    <!-- Buttons -->
-                                    <td class="text-center">
-                                        @if (item.Certificate.DateRedeemed == null)
-                                        {
-                                            <button id="redeem-@item.Certificate.Id"
-                                                    data-cert-id="@item.Certificate.Id"
-                                                    data-message="@item.Certificate.CertificateNo"
-                                                    data-url="@Url.Action("Redeem", "Certificates")"
-                                                    class="btn " style="background-color: transparent"
-                                                    onclick="redeem('@item.Certificate.CertificateNo')">
-                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
-                                                <span class="sr-only">Redeem</span>
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn " style="background-color: transparent" disabled="disabled">
-                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
-                                                <span class="sr-only">Redeemed</span>
-                                            </button>
-                                        }
-                                        <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
-                                            <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
-                                            <span class="sr-only">Edit</span>
-                                        </a>
-                                        <button id="delete-@item.Certificate.Id"
+                            <tr>
+                                <!-- Certificate -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.CertificateNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.DateIssued)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.ExpiryDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.Price)
+                                </td>
+                                <!-- / Certificate -->
+                                <!-- Channel -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Channel.ChannelName)
+                                </td>
+                                <!-- / Channel -->
+                                <!-- Customer -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                                </td>
+                                <!-- / Customer -->
+                                <!-- Promo -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Promotion.Discount)
+                                </td>
+                                <!-- / Promo -->
+                                <!-- Staff -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Staff.Name)
+                                </td>
+                                <!-- / Staff -->
+                                <!-- Redeemed -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Certificate.DateRedeemed)
+                                </td>
+                                <!-- / Redeemed -->
+                                <!-- Buttons -->
+                                <td class="text-center">
+                                    @if (item.Certificate.DateRedeemed == null)
+                                    {
+                                        <button id="redeem-@item.Certificate.Id"
                                                 data-cert-id="@item.Certificate.Id"
                                                 data-message="@item.Certificate.CertificateNo"
-                                                data-url="@Url.Action("Delete", "Certificates")"
-                                                class="btn" style="background-color: transparent"
-                                                onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')">
-                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
-                                            <span class="sr-only">Delete</span>
+                                                data-url="@Url.Action("Redeem", "Certificates")"
+                                                class="btn " style="background-color: transparent"
+                                                onclick="redeem('@item.Certificate.CertificateNo')">
+                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
+                                            <span class="sr-only">Redeem</span>
                                         </button>
-                                    </td>
-                                    <!-- / Buttons -->
-                                </tr>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn " style="background-color: transparent" disabled="disabled">
+                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
+                                            <span class="sr-only">Redeemed</span>
+                                        </button>
+                                    }
+                                    <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
+                                        <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                        <span class="sr-only">Edit</span>
+                                    </a>
+                                    <button id="delete-@item.Certificate.Id"
+                                            data-cert-id="@item.Certificate.Id"
+                                            data-message="@item.Certificate.CertificateNo"
+                                            data-url="@Url.Action("Delete", "Certificates")"
+                                            class="btn" style="background-color: transparent"
+                                            onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')">
+                                        <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                        <span class="sr-only">Delete</span>
+                                    </button>
+                                </td>
+                                <!-- / Buttons -->
+                            </tr>
                             }
                         </tbody>
                     </table>

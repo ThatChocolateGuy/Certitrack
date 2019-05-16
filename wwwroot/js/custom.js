@@ -162,6 +162,7 @@ var dropdownButton = function (text) {
 var modalConfirm = function (modalLabel) {
     $("#myModalLabel").html(modalLabel);
 };
+
 //ajax call
 function ajaxCall(id, url) {
     var pData = $.extend({ id: id },
@@ -207,6 +208,7 @@ function redeem(certNo) {
     $("#my-modal").modal('show');
     modalConfirm("Redeem Certificate: #" + certNo + " ?");
 }
+
 //on DOM ready
 $(function () {
     //format index tables
