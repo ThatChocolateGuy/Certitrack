@@ -76,9 +76,11 @@ namespace Certitrack.Controllers
             var customer = await _context.Customer
                 .FirstOrDefaultAsync(c => c.Name == customerName);
 
-            var customerDetails = new List<string>();
-            customerDetails.Add(customer.Email);
-            customerDetails.Add(customer.Phone);
+            var customerDetails = new List<string>
+            {
+                customer.Email,
+                customer.Phone
+            };
 
             return customerDetails;
         }

@@ -1,4 +1,4 @@
-﻿@model Certitrack.Models.Customer
+﻿@model Certitrack.ViewModels.CustomerViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,27 +11,53 @@
     <h4>Customer</h4>
     <hr />
     <dl class="dl-horizontal">
+        <!-- Customer -->
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Customer.Id)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Customer.Id)
         </dd>
+
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Customer.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Customer.Name)
         </dd>
+
         <dt>
-            @Html.DisplayNameFor(model => model.Phone)
+            @Html.DisplayNameFor(model => model.Customer.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Phone)
+            @Html.DisplayFor(model => model.Customer.Email)
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Phone)
+        </dd>
+        <!-- / Customer -->
+        <!-- Orders -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Order.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Order.Id)
+        </dd>
+        @*@foreach()*@
+        <dt>
+            @Html.DisplayNameFor(model => model.Order.OrderItem)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Order.OrderItem.Count)
+        </dd>
+        <!-- / Orders -->
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Customer.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

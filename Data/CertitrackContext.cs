@@ -165,7 +165,7 @@ namespace Certitrack.Data
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Order)
+                    .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("FK_customer_order");
             });

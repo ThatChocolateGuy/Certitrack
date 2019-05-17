@@ -31,7 +31,7 @@ namespace certitrack_certificate_manager.Controllers
                     Name = customer.Name,
                     Email = customer.Email,
                     Phone = customer.Phone,
-                    Order = GetOrders(customer.Id)
+                    Orders = GetOrders(customer.Id)
                 };
 
             return View(customers);
@@ -52,7 +52,15 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            return View(customer);
+            var orders = GetOrders(customer.Id);
+
+            var model = new CustomerViewModel
+            {
+                Customer = customer,
+                OrderList = orders
+            };
+
+            return View(model);
         }
 
         // GET: Customers/Create
@@ -164,9 +172,8 @@ namespace certitrack_certificate_manager.Controllers
 
         private List<Order> GetOrders(int custId)
         {
-            return (from order in _context.Order
-                    where order.CustomerId.Equals(custId)
-                    select order).ToList();
+            return _context.Order
+                .Where(o => o.CustomerId == custId).ToList();
         }
     }
 }

@@ -55,9 +55,7 @@ namespace Certitrack.Controllers
                 throw;
             }
         }
-        //
 
-        #region EDIT
         // DISPLAY OPEN FIELDS TO EDIT (IF ADMIN)
         public IActionResult Edit(int? id)
         {
@@ -118,10 +116,7 @@ namespace Certitrack.Controllers
                 throw;
             }
         }
-        //
-        #endregion EDIT
         
-        #region CREATE
         // STAFF REGISTRATION (IF ADMIN)
         public IActionResult Create()
         {
@@ -193,7 +188,31 @@ namespace Certitrack.Controllers
             }
             catch (Exception) { throw; }
         }
-        //
+        
+        // DELETE STAFF FROM DB (IF ADMIN)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public string Delete(int id)
+        {
+            try
+            {
+                var staff = _context.Staff.Where(s => s.Id == id).Single();
+                var staffLink = _context.StaffLink.Where(sl => sl.StaffId == id).Single();
+
+                //deletes selected staff & associated staffLink record
+                _context.RemoveRange(staff, staffLink);
+                _context.SaveChanges();
+
+                return staff.Name + " has successfully been removed from the team";
+                //return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
+            }
+            catch (Exception)
+            {
+                //return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
+                throw;
+            }
+        }
+
         /// <summary>
         /// Gets a StaffCreateViewModel
         /// </summary>
@@ -220,32 +239,5 @@ namespace Certitrack.Controllers
                 roleTitleList: roleTitles, staffTypeList: staffTypes);
             return model;
         }
-        //
-        #endregion CREATE
-        
-        // DELETE STAFF FROM DB (IF ADMIN)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public string Delete(int id)
-        {
-            try
-            {
-                var staff = _context.Staff.Where(s => s.Id == id).Single();
-                var staffLink = _context.StaffLink.Where(sl => sl.StaffId == id).Single();
-
-                //deletes selected staff & associated staffLink record
-                _context.RemoveRange(staff, staffLink);
-                _context.SaveChanges();
-
-                return staff.Name + " has successfully been removed from the team";
-                //return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
-            }
-            catch (Exception)
-            {
-                //return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
-                throw;
-            }
-        }
-        //
     }
 }

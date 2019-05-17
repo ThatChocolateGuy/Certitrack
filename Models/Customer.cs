@@ -9,7 +9,7 @@ namespace Certitrack.Models
         public Customer()
         {
             CertificateLink = new HashSet<CertificateLink>();
-            Order = new HashSet<Order>();
+            Orders = new HashSet<Order>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,6 @@ namespace Certitrack.Models
         public string Phone { get; set; }
 
         public ICollection<CertificateLink> CertificateLink { get; set; }
-        public ICollection<Order> Order { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
