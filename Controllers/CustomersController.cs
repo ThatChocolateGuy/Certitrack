@@ -31,7 +31,8 @@ namespace certitrack_certificate_manager.Controllers
                     Name = customer.Name,
                     Email = customer.Email,
                     Phone = customer.Phone,
-                    Orders = GetOrders(customer.Id)
+                    Orders = _context.Order
+                        .Where(o => o.CustomerId == customer.Id).ToList()
                 };
 
             return View(customers);
@@ -52,12 +53,30 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var orders = GetOrders(customer.Id);
+            var orders = await
+                (from order in _context.Order
+                where order.CustomerId == customer.Id
+                select new Order
+                {
+                    CustomerId = customer.Id,
+                    Id = order.Id,
+                    OrderItems = _context.OrderItem
+                        .Where(oi => oi.OrderId == order.Id).ToList(),
+                }).ToListAsync();
+
+            foreach (var order in orders)
+            {
+                foreach (var orderItem in order.OrderItems)
+                {
+                    orderItem.Certificate =
+                        await _context.Certificate.FindAsync(orderItem.CertificateId);
+                }
+            }
 
             var model = new CustomerViewModel
             {
                 Customer = customer,
-                OrderList = orders
+                Orders = orders
             };
 
             return View(model);
@@ -168,12 +187,6 @@ namespace certitrack_certificate_manager.Controllers
         private bool CustomerExists(int id)
         {
             return _context.Customer.Any(e => e.Id == id);
-        }
-
-        private List<Order> GetOrders(int custId)
-        {
-            return _context.Order
-                .Where(o => o.CustomerId == custId).ToList();
         }
     }
 }

@@ -186,7 +186,7 @@ namespace Certitrack.Data
                     .HasConstraintName("FK_certificate_oItem");
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderItem)
+                    .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_order_oItem");

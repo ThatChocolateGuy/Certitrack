@@ -3,61 +3,178 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["SectionHeader"] = "Customer Details";
+    ViewData["SectionBreadCrumb"] = "Customer Details";
+    ViewData["Title"] = "Customer Details";
+    ViewBag.Current = "CustomerDetails";
+
+    decimal totalValue = 0;
 }
 
-<h2>Details</h2>
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/Customers">Customers</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
 
-<div>
-    <h4>Customer</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <!-- Customer -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Customer.Id)
-        </dd>
+<!-- Main content -->
+<section class="content">
+    <div class="col">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#customer">Customer</a></li>
+                <li><a data-toggle="tab" href="#orders">Orders</a></li>
+                <li><a data-toggle="tab" href="#certificates">Certificates</a></li>
+            </ul>
+            <!-- / .nav-tabs -->
+            <div class="tab-content">
+                <!-- Customer -->
+                <div id="customer" class="tab-pane fade in active">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Customer.Id)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Customer.Id)
+                        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Customer.Name)
-        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Customer.Name)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Customer.Name)
+                        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.Email)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Customer.Email)
-        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Customer.Email)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Customer.Email)
+                        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.Phone)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Customer.Phone)
-        </dd>
-        <!-- / Customer -->
-        <!-- Orders -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Order.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Order.Id)
-        </dd>
-        @*@foreach()*@
-        <dt>
-            @Html.DisplayNameFor(model => model.Order.OrderItem)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Order.OrderItem.Count)
-        </dd>
-        <!-- / Orders -->
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Customer.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Customer.Phone)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Customer.Phone)
+                        </dd>
+                    </dl>
+                </div>
+                <!-- / Customer -->
+                <!-- Orders - create partial to display enumerable list of orders -->
+                <div id="orders" class="tab-pane fade">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Order ID
+                                </th>
+                                <th>
+                                    Certificate Qty
+                                </th>
+                                <th>
+                                    Total Order Value
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.Orders)
+                            {
+                                totalValue = 0;
+                                <tr>
+                                    <td>
+                                        @order.Id
+                                    </td>
+                                    <td>
+                                        @order.OrderItems.Count
+                                    </td>
+                                    <td>
+                                        @foreach (var orderItem in order.OrderItems)
+                                        {
+                                            totalValue += orderItem.Certificate.Price;
+                                        }
+                                        $@totalValue
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- / Orders -->
+                <!-- Certificates -->
+                <div id="certificates" class="tab-pane fade">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Certificate No.
+                                </th>
+                                <th>
+                                    Date Issued
+                                </th>
+                                <th>
+                                    Expiry Date
+                                </th>
+                                <th>
+                                    Price
+                                </th>
+                                <th>
+                                    Date Redeemed
+                                </th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            foreach (var orderItem in order.OrderItems)
+                            {
+                            <tr>
+                                <td>
+                                    @orderItem.Certificate.CertificateNo
+                                </td>
+                                <td>
+                                    @orderItem.Certificate.DateIssued.ToShortDateString()
+                                </td>
+                                <td>
+                                    @orderItem.Certificate.ExpiryDate.ToShortDateString()
+                                </td>
+                                <td>
+                                    $@orderItem.Certificate.Price
+                                </td>
+                                <td>
+                                    @orderItem.Certificate.DateRedeemed
+                                </td>
+                            </tr>
+                            }
+                        }
+                    </tbody>
+                    </table>
+                </div>
+                <!-- / Certificates -->
+            </div>
+            <!-- / .tab-content -->
+        </div>
+        <!-- / .nav-tabs-custom -->
+        <!-- Buttons -->
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Customer.Id"
+               class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                <i class="fas fa-edit"></i>
+                <span>Edit Customer</span>
+            </a>
+            <a asp-action="Index"
+               class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                <i class="fa fa-arrow-circle-left"></i>
+                <span>Back to List</span>
+            </a>
+        </div>
+        <!-- / Buttons -->
+    </div>
+    <!-- / .col -->
+</section>
+<!-- / Main content -->

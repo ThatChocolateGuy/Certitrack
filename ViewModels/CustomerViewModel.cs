@@ -10,9 +10,6 @@ namespace Certitrack.ViewModels
     public class CustomerViewModel
     {
         public Customer Customer { get; set; }
-        public Order Order { get; set; }
-
-        public IEnumerable<Customer> CustomerList { get; set; }
-        public IEnumerable<Order> OrderList { get; set; }
+        public IEnumerable<Order> Orders { get; set; }
     }
 }

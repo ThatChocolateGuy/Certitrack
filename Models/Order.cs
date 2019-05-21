@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Certitrack.Models
 {
@@ -7,13 +8,13 @@ namespace Certitrack.Models
     {
         public Order()
         {
-            OrderItem = new HashSet<OrderItem>();
+            OrderItems = new HashSet<OrderItem>();
         }
 
         public int Id { get; set; }
         public int CustomerId { get; set; }
 
         public Customer Customer { get; set; }
-        public ICollection<OrderItem> OrderItem { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

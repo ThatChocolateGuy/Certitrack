@@ -70,7 +70,7 @@
                                 <span asp-validation-for="Channel.ChannelName" class="text-danger help-block with-errors"></span>
                             </div>
                             <!-- / Channel -->
-                        </div>                        
+                        </div>
 
                         <div class="row">
                             <!-- DateIssued -->
@@ -100,7 +100,7 @@
                                 <label asp-for="Certificate.DateRedeemed" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-calendar-check"></i></span>
-                                    <input asp-for="Certificate.DateRedeemed" type="text" class="form-control datepicker" placeholder="@DateTime.Today.ToString("yyyy-MM-dd")"/>
+                                    <input asp-for="Certificate.DateRedeemed" type="text" class="form-control datepicker" placeholder="@DateTime.Today.ToString("yyyy-MM-dd")" />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Certificate.DateRedeemed" class="text-danger help-block with-errors"></span>
@@ -168,3 +168,4 @@
     </div>
     <!-- /.row -->
 </section>
+<!-- / Main content -->
