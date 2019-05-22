@@ -24,7 +24,7 @@ namespace Certitrack.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DateRedeemed { get; set; }
         [DataType(DataType.Date)]
-        [Display(Name = "Expires")]
+        [Display(Name = "Expiry")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime ExpiryDate { get; set; }
         [DataType(DataType.Currency)]

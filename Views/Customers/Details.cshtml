@@ -33,7 +33,6 @@
             </ul>
             <!-- / .nav-tabs -->
             <div class="tab-content">
-                <!-- Customer -->
                 <div id="customer" class="tab-pane fade in active">
                     <dl class="dl-horizontal">
                         <dt>
@@ -65,8 +64,7 @@
                         </dd>
                     </dl>
                 </div>
-                <!-- / Customer -->
-                <!-- Orders - create partial to display enumerable list of orders -->
+                <!-- / #customer -->
                 <div id="orders" class="tab-pane fade">
                     <table class="table">
                         <thead>
@@ -105,8 +103,7 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- / Orders -->
-                <!-- Certificates -->
+                <!-- / #orders -->
                 <div id="certificates" class="tab-pane fade">
                     <table class="table">
                         <thead>
@@ -147,7 +144,7 @@
                                     $@orderItem.Certificate.Price
                                 </td>
                                 <td>
-                                    @orderItem.Certificate.DateRedeemed
+                                    @orderItem.Certificate.DateRedeemed.ToString()
                                 </td>
                             </tr>
                             }
@@ -155,7 +152,7 @@
                     </tbody>
                     </table>
                 </div>
-                <!-- / Certificates -->
+                <!-- / #certificates -->
             </div>
             <!-- / .tab-content -->
         </div>

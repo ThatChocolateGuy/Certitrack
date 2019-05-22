@@ -133,7 +133,7 @@ var dropdownButton = function (text) {
         //enable select2 on newly displayed DOM element
         $(".select2-name").select2({
             placeholder: ' Full Name',
-            width: '100%'
+            width: 'resolve'
         });
 
         //prevents select2 span input from scaling abnormally
@@ -233,7 +233,7 @@ $(function () {
     //Bootstrap tooltip
     $('[data-toggle="tooltip"]').tooltip();
     //reload Bootstrap tooltip on pagination click or table search
-    $("#main-table-cert_wrapper").click(() => {
+    $("#main-table-cert_wrapper, #main-table-staff_wrapper").click(() => {
         $('[data-toggle="tooltip"]').tooltip();
     });
     $('[type="search"]').keyup(() => {
