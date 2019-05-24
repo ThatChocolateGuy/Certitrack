@@ -211,19 +211,14 @@ function redeem(certNo) {
 
 //on DOM ready
 $(function () {
-    //format index tables
+    //format tables
     $('#main-table-staff').DataTable({
         "columnDefs": [{
             "targets": 6,
             "orderable": false
         }]
     });
-    $('#main-table-cert').DataTable({
-        "columnDefs": [{
-            "targets": 8,
-            "orderable": true
-        }]
-    });
+    $("table").DataTable();
     //InputMask
     $(":input").inputmask();
     //Select2
@@ -232,8 +227,8 @@ $(function () {
     });
     //Bootstrap tooltip
     $('[data-toggle="tooltip"]').tooltip();
-    //reload Bootstrap tooltip on pagination click or table search
-    $("#main-table-cert_wrapper, #main-table-staff_wrapper").click(() => {
+    //reload Bootstrap tooltip on table interaction
+    $(".dataTables_wrapper").click(() => {
         $('[data-toggle="tooltip"]').tooltip();
     });
     $('[type="search"]').keyup(() => {
@@ -289,4 +284,12 @@ $(function () {
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
+
+    var containerCollapse = $('#container-collapse').html;
+    $('#container-collapse').html = '<div id="container-collapse"></div>';
+    $('#container-collapse').remove();
+
+    $('[data-toggle="collapse"]').click(() => {
+        $('#container-collapse').html = containerCollapse;
+    });
 });

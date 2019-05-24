@@ -8,6 +8,11 @@
     ViewData["Title"] = "Customer Details";
     ViewBag.Current = "CustomerDetails";
 
+    TempData["_ReturnRoute.Controller"] = "Customers";
+    TempData["_ReturnRoute.Action"] = "Details";
+    TempData["_ReturnRoute.Id"] = Model.Customer.Id;
+    TempData["_ReturnRoute.ViewLabel"] = "Customer";
+
     decimal totalValue = 0;
 }
 
@@ -65,12 +70,12 @@
                     </dl>
                 </div>
                 <!-- / #customer -->
-                <div id="orders" class="tab-pane fade">
-                    <table class="table">
+                <div id="orders" class="tab-pane fade table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>
-                                    Order ID
+                                    Order Id
                                 </th>
                                 <th>
                                     Certificate Qty
@@ -104,10 +109,13 @@
                     </table>
                 </div>
                 <!-- / #orders -->
-                <div id="certificates" class="tab-pane fade">
-                    <table class="table">
+                <div id="certificates" class="tab-pane fade table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th>
+                                    Order Id
+                                </th>
                                 <th>
                                     Certificate No.
                                 </th>
@@ -123,35 +131,112 @@
                                 <th>
                                     Date Redeemed
                                 </th>
+                                <th></th>
                             </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model.Orders)
-                        {
-                            foreach (var orderItem in order.OrderItems)
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.Orders)
                             {
-                            <tr>
-                                <td>
-                                    @orderItem.Certificate.CertificateNo
-                                </td>
-                                <td>
-                                    @orderItem.Certificate.DateIssued.ToShortDateString()
-                                </td>
-                                <td>
-                                    @orderItem.Certificate.ExpiryDate.ToShortDateString()
-                                </td>
-                                <td>
-                                    $@orderItem.Certificate.Price
-                                </td>
-                                <td>
-                                    @orderItem.Certificate.DateRedeemed.ToString()
-                                </td>
-                            </tr>
-                            }
-                        }
-                    </tbody>
-                    </table>
-                </div>
+                                foreach (var orderItem in order.OrderItems)
+                                {
+                                    <tr class="panel">
+                                        <td>
+                                            @orderItem.OrderId
+                                        </td>
+                                        <td>
+                                            <a data-toggle="collapse" href="#collapseTwo">
+                                                @orderItem.Certificate.CertificateNo
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.DateIssued.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.ExpiryDate.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            $@orderItem.Certificate.Price
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.DateRedeemed.ToString()
+                                        </td>
+                                        <!-- Buttons -->
+                                        <td class="text-center">
+                                            @if (orderItem.Certificate.DateRedeemed == null)
+                                            {
+                                                <button id="redeem-@orderItem.Certificate.Id"
+                                                        data-cert-id="@orderItem.Certificate.Id"
+                                                        data-message="@orderItem.Certificate.CertificateNo"
+                                                        data-url="@Url.Action("Redeem", "Certificates")"
+                                                        class="btn " style="background-color: transparent"
+                                                        onclick="redeem('@orderItem.Certificate.CertificateNo')">
+                                                    <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
+                                                    <span class="sr-only">Redeem</span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn " style="background-color: transparent" disabled="disabled">
+                                                    <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
+                                                    <span class="sr-only">Redeemed</span>
+                                                </button>
+                                            }
+                                            <a asp-action="Edit" asp-controller="Certificates" asp-route-id="@orderItem.Certificate.Id" class="btn">
+                                                <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                                <span class="sr-only">Edit</span>
+                                            </a>
+                                            <button id="delete-@orderItem.Certificate.Id"
+                                                    data-cert-id="@orderItem.Certificate.Id"
+                                                    data-message="@orderItem.Certificate.CertificateNo"
+                                                    data-url="@Url.Action("Delete", "Certificates")"
+                                                    class="btn" style="background-color: transparent"
+                                                    onclick="deleteUser('Certificate: #@orderItem.Certificate.CertificateNo')">
+                                                <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                                <span class="sr-only">Delete</span>
+                                            </button>
+                                        </td>
+                                        <!-- / Buttons -->
+                                        <div id="container-collapse">
+                                    <tr id="collapseTwo" class="panel-collapse collapse">
+                                        <table>
+                                            <thead>
+                                            <th colspan="2">TableHead</th>
+                                            <th colspan="3">TableHead</th>
+                                            <th colspan="2">TableHead</th>
+                                            </thead>
+                                            <tbody>
+                                            <td colspan="2">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                                </p>
+                                            </td>
+                                            <td colspan="3">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                                </p>
+                                            </td>
+                                            <td colspan="2">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                                </p>
+                                            </td>
+                                </tbody>
+                            </table>
+                                
+                                </tr>
+</div>
+                        </tr>
+                    }
+                }
+                            </tbody>
+                            </table>
+                        </div>
                 <!-- / #certificates -->
             </div>
             <!-- / .tab-content -->

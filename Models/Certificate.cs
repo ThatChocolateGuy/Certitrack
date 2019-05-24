@@ -29,7 +29,7 @@ namespace Certitrack.Models
         public DateTime ExpiryDate { get; set; }
         [DataType(DataType.Currency)]
         [Display(Name = "Price")]
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         public CertificateLink CertificateLink { get; set; }
         public ICollection<OrderItem> OrderItem { get; set; }

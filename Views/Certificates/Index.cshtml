@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Current = "CertificateIndex";
+    TempData["_ReturnRoute.Controller"] = "Index";
 }
 
 <section class="content-header">
@@ -29,7 +30,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad table-responsive">
-                    <table id="main-table-cert" class="table table-bordered table-striped">
+                    <table id="main-table-cert" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <!-- Certificate -->
