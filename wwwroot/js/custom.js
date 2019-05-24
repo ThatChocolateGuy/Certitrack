@@ -139,7 +139,12 @@ $(function () {
         }]
     });
     $("#main-table-cert").DataTable();
-    $(".main-table-customer").DataTable();
+    $("#main-table-customer-order").DataTable({
+        order: [[0, 'desc']]
+    });
+    $("#main-table-customer-cert").DataTable({
+        order: [[1, 'desc']]
+    });
     //InputMask
     $(":input").inputmask();
     //Select2

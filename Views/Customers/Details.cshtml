@@ -14,6 +14,7 @@
     TempData["_ReturnRoute.ViewLabel"] = "Customer";
 
     decimal totalValue = 0;
+    DateTime dateTime = DateTime.Today;
 }
 
 <section class="content-header">
@@ -71,7 +72,7 @@
                 </div>
                 <!-- / #customer -->
                 <div id="orders" class="tab-pane fade table-responsive">
-                    <table class="main-table-customer table table-bordered table-striped table-hover">
+                    <table id="main-table-customer-order" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>
@@ -82,6 +83,9 @@
                                 </th>
                                 <th>
                                     Total Order Value
+                                </th>
+                                <th>
+                                    Order Date
                                 </th>
                             </tr>
                         </thead>
@@ -103,6 +107,13 @@
                                         }
                                         $@totalValue
                                     </td>
+                                    <td>
+                                        @foreach(var orderItem in order.OrderItems)
+                                        {
+                                            dateTime = orderItem.Certificate.DateIssued;
+                                        }
+                                        @dateTime.ToString("yyyy-MM-dd")
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -110,7 +121,7 @@
                 </div>
                 <!-- / #orders -->
                 <div id="certificates" class="tab-pane fade table-responsive">
-                    <table class="main-table-customer table table-bordered table-striped table-hover">
+                    <table id="main-table-customer-cert" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>
@@ -150,31 +161,31 @@
                                 {
                                     <tr>
                                         <td>
-                                            @orderItem.OrderId
+                                            @Html.DisplayFor(orderId => orderItem.OrderId)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.CertificateNo
+                                            @Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.CertificateLink.Staff.Name
+                                            @Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.DateIssued.ToShortDateString()
+                                            @Html.DisplayFor(dateIssued => orderItem.Certificate.DateIssued)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.ExpiryDate.ToShortDateString()
+                                            @Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)
                                         </td>
                                         <td>
-                                            $@orderItem.Certificate.Price
+                                            @Html.DisplayFor(price => orderItem.Certificate.Price)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.CertificateLink.Promotion.Discount
+                                            @Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.CertificateLink.Channel.ChannelName
+                                            @Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)
                                         </td>
                                         <td>
-                                            @orderItem.Certificate.DateRedeemed.ToString()
+                                            @Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)
                                         </td>
                                         <!-- Buttons -->
                                         <td class="text-center">
