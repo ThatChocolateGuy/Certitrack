@@ -71,7 +71,7 @@
                 </div>
                 <!-- / #customer -->
                 <div id="orders" class="tab-pane fade table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="main-table-customer table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>
@@ -110,7 +110,7 @@
                 </div>
                 <!-- / #orders -->
                 <div id="certificates" class="tab-pane fade table-responsive">
-                    <table id="main-table-customer" class="table table-bordered table-striped table-hover">
+                    <table class="main-table-customer table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>
@@ -120,6 +120,9 @@
                                     Certificate No.
                                 </th>
                                 <th>
+                                    Issued By
+                                </th>
+                                <th>
                                     Date Issued
                                 </th>
                                 <th>
@@ -127,6 +130,12 @@
                                 </th>
                                 <th>
                                     Price
+                                </th>
+                                <th>
+                                    Promo
+                                </th>
+                                <th>
+                                    Channel
                                 </th>
                                 <th>
                                     Date Redeemed
@@ -139,98 +148,72 @@
                             {
                                 foreach (var orderItem in order.OrderItems)
                                 {
-                                    <div class="panel">
-                                        <tr>
-                                            <td>
-                                                @orderItem.OrderId
-                                            </td>
-                                            <td>
-                                                <a data-toggle="collapse" href="#collapseTwo">
-                                                    @orderItem.Certificate.CertificateNo
-                                                </a>
-                                            </td>
-                                            <td>
-                                                @orderItem.Certificate.DateIssued.ToShortDateString()
-                                            </td>
-                                            <td>
-                                                @orderItem.Certificate.ExpiryDate.ToShortDateString()
-                                            </td>
-                                            <td>
-                                                $@orderItem.Certificate.Price
-                                            </td>
-                                            <td>
-                                                @orderItem.Certificate.DateRedeemed.ToString()
-                                            </td>
-                                            <!-- Buttons -->
-                                            <td class="text-center">
-                                                @if (orderItem.Certificate.DateRedeemed == null)
-                                                {
-                                                    <button id="redeem-@orderItem.Certificate.Id"
-                                                            data-cert-id="@orderItem.Certificate.Id"
-                                                            data-message="@orderItem.Certificate.CertificateNo"
-                                                            data-url="@Url.Action("Redeem", "Certificates")"
-                                                            class="btn " style="background-color: transparent"
-                                                            onclick="redeem('@orderItem.Certificate.CertificateNo')">
-                                                        <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
-                                                        <span class="sr-only">Redeem</span>
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    <button class="btn " style="background-color: transparent" disabled="disabled">
-                                                        <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
-                                                        <span class="sr-only">Redeemed</span>
-                                                    </button>
-                                                }
-                                                <a asp-action="Edit" asp-controller="Certificates" asp-route-id="@orderItem.Certificate.Id" class="btn">
-                                                    <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
-                                                    <span class="sr-only">Edit</span>
-                                                </a>
-                                                <button id="delete-@orderItem.Certificate.Id"
+                                    <tr>
+                                        <td>
+                                            @orderItem.OrderId
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.CertificateNo
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.CertificateLink.Staff.Name
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.DateIssued.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.ExpiryDate.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            $@orderItem.Certificate.Price
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.CertificateLink.Promotion.Discount
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.CertificateLink.Channel.ChannelName
+                                        </td>
+                                        <td>
+                                            @orderItem.Certificate.DateRedeemed.ToString()
+                                        </td>
+                                        <!-- Buttons -->
+                                        <td class="text-center">
+                                            @if (orderItem.Certificate.DateRedeemed == null)
+                                            {
+                                                <button id="redeem-@orderItem.Certificate.Id"
                                                         data-cert-id="@orderItem.Certificate.Id"
-                                                        data-message="@orderItem.Certificate.CertificateNo"
-                                                        data-url="@Url.Action("Delete", "Certificates")"
-                                                        class="btn" style="background-color: transparent"
-                                                        onclick="deleteUser('Certificate: #@orderItem.Certificate.CertificateNo')">
-                                                    <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
-                                                    <span class="sr-only">Delete</span>
+                                                        data-message="@orderItem.Certificate.CertificateNo" data-url="@Url.Action("Redeem", "Certificates" )" class="btn " style="background-color: transparent"
+                                                        onclick="redeem('@orderItem.Certificate.CertificateNo')">
+                                                    <i class="fas fa-ticket-alt text-green" data-toggle="tooltip"
+                                                       data-placement="left" title="Redeem"></i>
+                                                    <span class="sr-only">Redeem</span>
                                                 </button>
-                                            </td>
-                                            <!-- / Buttons -->
-                                        </tr>
-                                        <div id="">
-                                            <tr id="collapseTwo" class="panel-collapse collapse">
-                                                <td colspan="2">
-                                                    <h6>
-                                                        Promo
-                                                    </h6>
-                                                    <p>
-                                                        promoData
-                                                    </p>
-                                                </td>
-                                                <td colspan="3">
-                                                    <h6>
-                                                        Issued By
-                                                    </h6>
-                                                    <p>
-                                                        staffData
-                                                    </p>
-                                                </td>
-                                                <td colspan="2">
-                                                    <h6>
-                                                        Channel
-                                                    </h6>
-                                                    <p>
-                                                        channelData
-                                                    </p>
-                                                </td>
-                                                <td style="display: none;"></td>
-                                                <td style="display: none;"></td>
-                                                <td style="display: none;"></td>
-                                                <td style="display: none;"></td>
-                                            </tr>
-                                        </div>
-                                    </div>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn " style="background-color: transparent" disabled="disabled">
+                                                    <i class="fas fa-ticket-alt text-green" data-toggle="tooltip"
+                                                       data-placement="left" title="Redeemed"></i>
+                                                    <span class="sr-only">Redeemed</span>
+                                                </button>
+                                            }
+                                            <a asp-action="Edit" asp-controller="Certificates"
+                                               asp-route-id="@orderItem.Certificate.Id" class="btn">
+                                                <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left"
+                                                   title="Edit"></i>
+                                                <span class="sr-only">Edit</span>
+                                            </a>
+                                            <button id="delete-@orderItem.Certificate.Id"
+                                                    data-cert-id="@orderItem.Certificate.Id"
+                                                    data-message="@orderItem.Certificate.CertificateNo" data-url="@Url.Action("Delete", "Certificates" )" class="btn" style="background-color: transparent"
+                                                    onclick="deleteUser('Certificate: #@orderItem.Certificate.CertificateNo')">
+                                                <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left"
+                                                   title="Delete"></i>
+                                                <span class="sr-only">Delete</span>
+                                            </button>
+                                        </td>
+                                        <!-- / Buttons -->
+                                    </tr>
                                 }
                             }
                         </tbody>
@@ -243,13 +226,12 @@
         <!-- / .nav-tabs-custom -->
         <!-- Buttons -->
         <div>
-            <a asp-action="Edit" asp-route-id="@Model.Customer.Id"
-               class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+            <a asp-action="Edit" asp-route-id="@Model.Customer.Id" class="btn btn-success col-sm"
+               style="margin-bottom: 10px; max-width: 100%">
                 <i class="fas fa-edit"></i>
                 <span>Edit Customer</span>
             </a>
-            <a asp-action="Index"
-               class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
                 <i class="fa fa-arrow-circle-left"></i>
                 <span>Back to List</span>
             </a>

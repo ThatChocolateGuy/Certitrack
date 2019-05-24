@@ -139,7 +139,7 @@ $(function () {
         }]
     });
     $("#main-table-cert").DataTable();
-    $("#main-table-customer").DataTable();
+    $(".main-table-customer").DataTable();
     //InputMask
     $(":input").inputmask();
     //Select2

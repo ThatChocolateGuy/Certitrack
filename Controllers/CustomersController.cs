@@ -70,6 +70,15 @@ namespace certitrack_certificate_manager.Controllers
                 {
                     orderItem.Certificate =
                         await _context.Certificate.FindAsync(orderItem.CertificateId);
+                    orderItem.Certificate.CertificateLink =
+                        await _context.CertificateLink.FindAsync(orderItem.CertificateId);
+
+                    orderItem.Certificate.CertificateLink.Staff =
+                        await _context.Staff.FindAsync(orderItem.Certificate.CertificateLink.StaffId);
+                    orderItem.Certificate.CertificateLink.Promotion =
+                        await _context.Promotion.FindAsync(orderItem.Certificate.CertificateLink.PromotionId);
+                    orderItem.Certificate.CertificateLink.Channel =
+                        await _context.Channel.FindAsync(orderItem.Certificate.CertificateLink.ChannelId);
                 }
             }
 
