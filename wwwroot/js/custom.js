@@ -1,84 +1,4 @@
-﻿//click fns
-$("#modal-btn-yes").on("click", function () {
-    $("#my-modal").modal('hide');
-});
-$("#modal-btn-no").on("click", function () {
-    $("#my-modal").modal('hide');
-});
-$("#new-customer").on("click", function () {
-    dropdownButton("New");
-});
-$("#existing-customer").on("click", function () {
-    dropdownButton("Existing");
-});
-$(':button').click(function () {
-    var certId, staffId, url;
-    $(this.id).data('clicked', false);
-    switch (this.id) {
-        case 'modal-btn-yes':
-            console.log(this.id + " clicked");
-
-            var eId = $('#post-data').data('id');
-            getEl(eId);
-
-            if (certId)
-                ajaxCall(certId, url);
-            else if (staffId)
-                ajaxCall(staffId, url);
-
-            break;
-        case 'modal-btn-no':
-            console.log(this.id + " clicked");
-            break;
-        default:
-            console.log(this.id + " clicked");
-            $("#post-data").data("id", this.id);
-            break;
-    }
-    //get element & assign cert data to it
-    function getEl(id) {
-        var el = document.getElementById(id);
-        certId = el.dataset.certId;
-        staffId = el.dataset.staffId;
-        url = el.dataset.url;
-    }
-});
-//select list on-change fn (certificate create)
-$("select#customer-toggle-select").change(function () {
-    if ($(this).children("option:selected").val()) {
-        //gets value of selected dropdown option
-        var selectedCustomer = $(this).children("option:selected").val();
-        //ajax call to retrieve customer email
-        ajaxCallSelect(selectedCustomer, "/Certificates/GetCustomerEmail");
-    }
-    function ajaxCallSelect(selectedCustomer, url) {
-        var pData = $.extend({ customerName: selectedCustomer },
-            { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
-
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {
-                "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val()
-            },
-            data: pData,
-            error: function () {
-                alert("Something went wrong, Try agian!");
-            },
-            success: function (result) {
-                if (result) {
-                    $("#customer-email-input").val(result[0]);
-                    $("#customer-phone-input").val(result[1]);
-                }
-                else {
-                    alert("Something went wrong, Try agian!");
-                }
-            }
-        });
-    }
-});
-
-//form dropdown button - elements to control (certificate create)
+﻿//form dropdown button - elements to control (certificate create)
 var cusToggleSelect = document.getElementById("customer-toggle-select");
 var cusToggleInput = document.getElementById("customer-toggle-input");
 var cusEmailInput = document.getElementById("customer-email-input");
@@ -211,14 +131,15 @@ function redeem(certNo) {
 
 //on DOM ready
 $(function () {
-    //format tables
+    //format DataTables
     $('#main-table-staff').DataTable({
         "columnDefs": [{
             "targets": 6,
             "orderable": false
         }]
     });
-    $("table").DataTable();
+    $("#main-table-cert").DataTable();
+    $("#main-table-customer").DataTable();
     //InputMask
     $(":input").inputmask();
     //Select2
@@ -284,6 +205,87 @@ $(function () {
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
+
+    //click fns
+    $("#modal-btn-yes").on("click", function () {
+        $("#my-modal").modal('hide');
+    });
+    $("#modal-btn-no").on("click", function () {
+        $("#my-modal").modal('hide');
+    });
+    $("#new-customer").on("click", function () {
+        dropdownButton("New");
+    });
+    $("#existing-customer").on("click", function () {
+        dropdownButton("Existing");
+    });
+    $(':button').click(function () {
+        var certId, staffId, url;
+        $(this.id).data('clicked', false);
+        switch (this.id) {
+            case 'modal-btn-yes':
+                console.log(this.id + " clicked");
+
+                var eId = $('#post-data').data('id');
+                getEl(eId);
+
+                if (certId)
+                    ajaxCall(certId, url);
+                else if (staffId)
+                    ajaxCall(staffId, url);
+
+                break;
+            case 'modal-btn-no':
+                console.log(this.id + " clicked");
+                break;
+            default:
+                console.log(this.id + " clicked");
+                $("#post-data").data("id", this.id);
+                break;
+        }
+        //get element & assign cert data to it
+        function getEl(id) {
+            var el = document.getElementById(id);
+            certId = el.dataset.certId;
+            staffId = el.dataset.staffId;
+            url = el.dataset.url;
+        }
+    });
+
+    //select list on-change fn (certificate create)
+    $("select#customer-toggle-select").change(function () {
+        if ($(this).children("option:selected").val()) {
+            //gets value of selected dropdown option
+            var selectedCustomer = $(this).children("option:selected").val();
+            //ajax call to retrieve customer email
+            ajaxCallSelect(selectedCustomer, "/Certificates/GetCustomerEmail");
+        }
+        function ajaxCallSelect(selectedCustomer, url) {
+            var pData = $.extend({ customerName: selectedCustomer },
+                { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                headers: {
+                    "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val()
+                },
+                data: pData,
+                error: function () {
+                    alert("Something went wrong, Try agian!");
+                },
+                success: function (result) {
+                    if (result) {
+                        $("#customer-email-input").val(result[0]);
+                        $("#customer-phone-input").val(result[1]);
+                    }
+                    else {
+                        alert("Something went wrong, Try agian!");
+                    }
+                }
+            });
+        }
+    });
 
     var containerCollapse = $('#container-collapse').html;
     $('#container-collapse').html = '<div id="container-collapse"></div>';
