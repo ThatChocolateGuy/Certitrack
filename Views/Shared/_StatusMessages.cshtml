@@ -10,7 +10,17 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        <strong>@title</strong>
+        <strong>
+            @if (type == "alert-success")
+            {
+                <i class="icon fa fa-check"></i>
+            }
+            else if (type == "alert-danger")
+            {
+                <i class="icon fa fa-ban"></i>
+            }
+            @title
+        </strong>
         <span class="pull-right">@body</span>
     </div>
 }

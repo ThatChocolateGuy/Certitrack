@@ -139,6 +139,12 @@ $(function () {
         }]
     });
     $("#main-table-cert").DataTable();
+    $('#main-table-customer').DataTable({
+        "columnDefs": [{
+            "targets": 4,
+            "orderable": false
+        }]
+    });
     $("#main-table-customer-order").DataTable({
         order: [[0, 'desc']]
     });
@@ -205,12 +211,14 @@ $(function () {
             "    <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +
             "        <span aria-hidden=\"true\">&times;</span>" +
             "    </button>" +
-            "    <strong>Success</strong>" +
+            "    <strong>" +
+            "       <i class=\"icon fa fa-check\"></i>" +
+            "       Success" +
+            "    </strong>" +
             "    <span class=\"pull-right\">" + sessionStorage.getItem("_alert.result") + "</span>" +
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
-
     //click fns
     $("#modal-btn-yes").on("click", function () {
         $("#my-modal").modal('hide');
@@ -224,9 +232,11 @@ $(function () {
     $("#existing-customer").on("click", function () {
         dropdownButton("Existing");
     });
-    $(':button').click(function () {
+    $(':button, .btn').click(function () {
         var certId, staffId, url;
+
         $(this.id).data('clicked', false);
+
         switch (this.id) {
             case 'modal-btn-yes':
                 console.log(this.id + " clicked");
@@ -256,7 +266,6 @@ $(function () {
             url = el.dataset.url;
         }
     });
-
     //select list on-change fn (certificate create)
     $("select#customer-toggle-select").change(function () {
         if ($(this).children("option:selected").val()) {
@@ -290,13 +299,5 @@ $(function () {
                 }
             });
         }
-    });
-
-    var containerCollapse = $('#container-collapse').html;
-    $('#container-collapse').html = '<div id="container-collapse"></div>';
-    $('#container-collapse').remove();
-
-    $('[data-toggle="collapse"]').click(() => {
-        $('#container-collapse').html = containerCollapse;
     });
 });

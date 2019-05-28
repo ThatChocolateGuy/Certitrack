@@ -30,6 +30,7 @@
 
 <!-- Main content -->
 <section class="content">
+    @Html.AntiForgeryToken()
     <div class="col">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -41,28 +42,28 @@
             <div class="tab-content">
                 <div id="customer" class="tab-pane fade in active">
                     <dl class="dl-horizontal">
-                        <dt>
+                        <dt class="text-muted">
                             @Html.DisplayNameFor(model => model.Customer.Id)
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.Customer.Id)
                         </dd>
 
-                        <dt>
+                        <dt class="text-muted">
                             @Html.DisplayNameFor(model => model.Customer.Name)
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.Customer.Name)
                         </dd>
 
-                        <dt>
+                        <dt class="text-muted">
                             @Html.DisplayNameFor(model => model.Customer.Email)
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.Customer.Email)
                         </dd>
 
-                        <dt>
+                        <dt class="text-muted">
                             @Html.DisplayNameFor(model => model.Customer.Phone)
                         </dt>
                         <dd>
@@ -193,7 +194,9 @@
                                             {
                                                 <button id="redeem-@orderItem.Certificate.Id"
                                                         data-cert-id="@orderItem.Certificate.Id"
-                                                        data-message="@orderItem.Certificate.CertificateNo" data-url="@Url.Action("Redeem", "Certificates" )" class="btn " style="background-color: transparent"
+                                                        data-message="@orderItem.Certificate.CertificateNo"
+                                                        data-url="@Url.Action("Redeem", "Certificates" )"
+                                                        class="btn " style="background-color: transparent"
                                                         onclick="redeem('@orderItem.Certificate.CertificateNo')">
                                                     <i class="fas fa-ticket-alt text-green" data-toggle="tooltip"
                                                        data-placement="left" title="Redeem"></i>
@@ -216,7 +219,9 @@
                                             </a>
                                             <button id="delete-@orderItem.Certificate.Id"
                                                     data-cert-id="@orderItem.Certificate.Id"
-                                                    data-message="@orderItem.Certificate.CertificateNo" data-url="@Url.Action("Delete", "Certificates" )" class="btn" style="background-color: transparent"
+                                                    data-message="@orderItem.Certificate.CertificateNo"
+                                                    data-url="@Url.Action("Delete", "Certificates" )"
+                                                    class="btn" style="background-color: transparent"
                                                     onclick="deleteUser('Certificate: #@orderItem.Certificate.CertificateNo')">
                                                 <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left"
                                                    title="Delete"></i>

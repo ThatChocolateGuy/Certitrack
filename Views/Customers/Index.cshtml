@@ -3,53 +3,93 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Current = "CustomerIndex";
 }
 
-<h2>Index</h2>
+<section class="content-header">
+    <h1>
+        Customers
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        </li>
+        <li class="active">Customers</li>
+    </ol>
+</section>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                Total Orders
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Orders.Count)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- Main content -->
+<section class="content">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Manage Customers</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad table-responsive">
+                    <table id="main-table-customer" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Email)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Phone)
+                                </th>
+                                <th>
+                                    Total Orders
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id">
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Phone)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Orders.Count)
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
+                                            <i class="fas fa-user-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                            <span class="sr-only">Edit</span>
+                                        </a>
+                                        <button id="delete-@item.Id"
+                                                data-staff-id="@item.Id"
+                                                data-message="@item.Name"
+                                                data-url="@Url.Action("Delete", "Customers")"
+                                                onclick="deleteUser('@item.Name')"
+                                                class="btn" style="background-color: transparent">
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                            <span class="sr-only">Delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>

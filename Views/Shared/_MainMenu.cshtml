@@ -60,6 +60,33 @@
         </ul>
     </li>
     <!-- / Certificate Treeview -->
+    <!-- Customer Treeview -->
+    <li class="treeview @(ViewBag.Current == "CustomerIndex"
+        || ViewBag.Current == "CustomerCreate"
+        || ViewBag.Current == "CustomerEdit"
+        || ViewBag.Current == "CustomerDetails"? "active" : "")">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Customers</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@(ViewBag.Current == "CustomerIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Customers")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Customers</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "CustomerCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Customers")">
+                    <i class="fa fa-link"></i>
+                    <span>Register Customer</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- / Customer Treeview -->
 </ul>
 
 
