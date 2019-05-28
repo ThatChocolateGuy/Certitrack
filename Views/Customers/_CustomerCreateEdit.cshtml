@@ -1,0 +1,92 @@
+﻿@model Certitrack.Models.Customer
+
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/Customers">Customers</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="display: flex">
+        <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
+            <div class="register-box-body">
+                <div class="box-header ">
+                    <h3 class="box-title">@ViewData["SectionBreadCrumb"]</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad">
+                    <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
+                        <!-- Model-Level Errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
+                        <!-- / Model-Level Errors -->
+                        <!-- Customer Name -->
+                        <div class="form-group col-md-12">
+                            <label asp-for="Name" class="control-label">Name</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fas fa-user"></i></span>
+                                <input asp-for="Name" id="customer-toggle-input" data-minlength="3" class="form-control" placeholder="Full Name" required />
+                            </div>
+                            <!-- / .input-group -->
+                            <span asp-validation-for="Name" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Customer Name -->
+                        <!-- Customer Email -->
+                        <div class="form-group col-md-12">
+                            <label asp-for="Email" class="control-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fas fa-at"></i></span>
+                                <input asp-for="Email" id="customer-email-input" class="form-control" placeholder="email@example.com" required
+                                    type="email" data-error="Invalid Email. Does it look like 'example@email.com?'"/>
+                            </div>
+                            <!-- / .input-group -->
+                            <span asp-validation-for="Email" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Customer Email -->
+                        <!-- Customer Phone -->
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fas fa-mobile"></i></span>
+                                <input asp-for="Phone" id="customer-phone-input" class="form-control" data-inputmask="'mask': '(999) 999-9999'" placeholder="(555) 555-5555" required
+                                    type="tel" pattern="\(\d{3}\)\s\d{3}-\d{4}"/>
+                            </div>
+                            <!-- / .input-group -->
+                            <span asp-validation-for="Phone" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Customer Phone -->
+                        <!-- Button Group -->
+                        <div class="box-footer form-group col-sm-12">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                                @if ((string)ViewData["Title"] == "Create")
+                                {
+                                    <i class="fas fa-user-plus"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-edit"></i>
+                                }
+                                @ViewData["SubmitButtonText"] Customer
+                            </button>
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                <i class="fa fa-arrow-circle-left"></i>
+                                Back to List
+                            </a>
+                        </div>
+                        <!-- / Button Group -->
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
