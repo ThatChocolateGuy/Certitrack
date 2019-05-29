@@ -174,58 +174,65 @@ namespace Certitrack.Controllers
                 return NotFound();
             }
 
-            var certificateLink = await _context.CertificateLink.FindAsync(id);
-            var orderId = _context.OrderItem
-                .Where(oi => oi.CertificateId == id).Single().OrderId;
-            var order = await _context.Order.FindAsync(orderId);
-            
-            var staffList =
-                from staff in await _context.Staff.ToListAsync()
-                select new SelectListItem
+            try
+            {
+                var certificateLink = await _context.CertificateLink.FindAsync(id);
+                var orderId = _context.OrderItem
+                    .Where(oi => oi.CertificateId == id).Single().OrderId;
+                var order = await _context.Order.FindAsync(orderId);
+
+                var staffList =
+                    from staff in await _context.Staff.ToListAsync()
+                    select new SelectListItem
+                    {
+                        Text = staff.Name,
+                        Value = staff.Name
+                    };
+                var promoList =
+                    from discount in await _context.Promotion.ToListAsync()
+                    select new SelectListItem
+                    {
+                        Text = discount.Discount.ToString(),
+                        Value = discount.Discount.ToString()
+                    };
+                var channelList =
+                    from channel in await _context.Channel.ToListAsync()
+                    select new SelectListItem
+                    {
+                        Text = channel.ChannelName,
+                        Value = channel.ChannelName
+                    };
+                var customerList =
+                    from customer in await _context.Customer.ToListAsync()
+                    select new SelectListItem
+                    {
+                        Text = customer.Name,
+                        Value = customer.Name
+                    };
+
+                var model = new CertificateEditViewModel()
                 {
-                    Text = staff.Name,
-                    Value = staff.Name
-                };
-            var promoList =
-                from discount in await _context.Promotion.ToListAsync()
-                select new SelectListItem
-                {
-                    Text = discount.Discount.ToString(),
-                    Value = discount.Discount.ToString()
-                };
-            var channelList =
-                from channel in await _context.Channel.ToListAsync()
-                select new SelectListItem
-                {
-                    Text = channel.ChannelName,
-                    Value = channel.ChannelName
-                };
-            var customerList =
-                from customer in await _context.Customer.ToListAsync()
-                select new SelectListItem
-                {
-                    Text = customer.Name,
-                    Value = customer.Name
+                    Certificate = _context.Certificate.Find(certificateLink.CertificateId),
+                    Channel = _context.Channel.Find(certificateLink.ChannelId),
+                    Customer = _context.Customer.Find(certificateLink.CustomerId),
+                    Promotion = _context.Promotion.Find(certificateLink.PromotionId),
+                    Order = order,
+                    StaffList = staffList,
+                    PromoList = promoList,
+                    ChannelList = channelList,
+                    CustomerList = customerList
                 };
 
-            var model = new CertificateEditViewModel()
-            {
-                Certificate = _context.Certificate.Find(certificateLink.CertificateId),
-                Channel = _context.Channel.Find(certificateLink.ChannelId),
-                Customer = _context.Customer.Find(certificateLink.CustomerId),
-                Promotion = _context.Promotion.Find(certificateLink.PromotionId),
-                Order = order,
-                StaffList = staffList,
-                PromoList = promoList,
-                ChannelList = channelList,
-                CustomerList = customerList
-            };
-
-            if (model == null)
-            {
-                return NotFound();
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                return View(model);
             }
-            return View(model);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // POST: Certificates/Edit/5
@@ -240,6 +247,10 @@ namespace Certitrack.Controllers
             {
                 throw new ArgumentNullException(nameof(certificateEditViewModel));
             }
+
+            if (!CertificateExists(id))
+                return RedirectToAction(nameof(Edit))
+                    .WithDanger("Update Not Successful", "Certificate Id: " + id + " doesn't exist");
 
             if (ModelState.IsValid)
             {
@@ -290,7 +301,7 @@ namespace Certitrack.Controllers
                     throw;
                 }
 
-                //redirects back to customer details if user navigated from there as origin
+                //redirects back to customer details if origin view
                 if (TempData["_ReturnRoute.Update.Controller"] != null)
                 {
                     var _ReturnRouteController = TempData["_ReturnRoute.Update.Controller"];
@@ -312,7 +323,6 @@ namespace Certitrack.Controllers
             }
             return RedirectToAction(nameof(Index))
                 .WithDanger("Update Not Successful", "Something went wrong. Try again.");
-
         }
 
         // POST: Certificates/Delete/5
@@ -320,15 +330,26 @@ namespace Certitrack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<string> DeleteConfirmed(int id)
         {
-            var certificate = await _context.Certificate.FindAsync(id);
-            var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
-            var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+            try
+            {
+                if (!CertificateExists(id))
+                    return "Certificate Id: " + id + " doesn't exist";
 
-            _context.CertificateLink.Remove(certificateLink);
-            _context.Certificate.Remove(certificate);
-            await _context.SaveChangesAsync();
-            
-            return "Certificate deleted for " + customer.Name;
+                var certificate = await _context.Certificate.FindAsync(id);
+                var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+
+                _context.CertificateLink.Remove(certificateLink);
+                _context.Certificate.Remove(certificate);
+                await _context.SaveChangesAsync();
+
+                return "Certificate deleted for " + customer.Name;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // POST: Certificates/Redeem/5
@@ -338,6 +359,9 @@ namespace Certitrack.Controllers
         {
             try
             {
+                if (!CertificateExists(id))
+                    return "Certificate Id: " + id + " doesn't exist";
+
                 var certificate = await _context.Certificate.FindAsync(id);
                 var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
                 var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);

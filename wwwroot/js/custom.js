@@ -95,7 +95,8 @@ function ajaxCall(id, url) {
             "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val()
         },
         data: pData,
-        error: function () {
+        error: function (result) {
+            console.log("Result: " + result);
             alert("Something went wrong, Try agian!");
         },
         success: function (result) {
@@ -112,18 +113,19 @@ function ajaxCall(id, url) {
                 window.location.reload();
             }
             else {
+                console.log("Result: " + result);
                 alert("Something went wrong, Try agian!\n");
             }
         }
     });
 }
 
-//delete staff
+//delete fn
 function deleteUser(name) {
     $("#my-modal").modal('show');
     modalConfirm("Are you sure you want to delete " + name + "?<hr>This action cannot be reversed.");
 }
-//redeem certificate
+//redeem certificate fn
 function redeem(certNo) {
     $("#my-modal").modal('show');
     modalConfirm("Redeem Certificate: #" + certNo + " ?");

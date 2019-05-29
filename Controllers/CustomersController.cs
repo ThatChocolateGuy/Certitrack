@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Certitrack.Data;
 using Certitrack.Models;
 using Certitrack.ViewModels;
+using Certitrack.Extensions.Alerts;
 
 namespace certitrack_certificate_manager.Controllers
 {
@@ -141,6 +142,10 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
+            if (!CustomerExists(id))
+                return RedirectToAction(nameof(Edit))
+                    .WithDanger("Update Not Successful", "Customer Id: " + id + " doesn't exist");
+
             if (ModelState.IsValid)
             {
                 try
@@ -159,38 +164,56 @@ namespace certitrack_certificate_manager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index))
+                    .WithSuccess("Update Successful", customer.Name + " updated successfully");
             }
-            return View(customer);
-        }
-
-        // GET: Customers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customer
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
             return View(customer);
         }
 
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<string> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customer.FindAsync(id);
-            _context.Customer.Remove(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (!CustomerExists(id))
+                return "Customer Id: " + id + " doesn't exist";
+            try
+            {
+                var customer = await _context.Customer.FindAsync(id);
+                var orders = await _context.Order
+                    .Where(o => o.CustomerId == id).ToListAsync();
+                List<OrderItem> orderItems = null;
+                List<Certificate> certificates = new List<Certificate>();
+                List<CertificateLink> certificateLinks = new List<CertificateLink>();
+
+                foreach (var order in orders)
+                {
+                    orderItems = await _context.OrderItem
+                        .Where(oi => oi.OrderId == order.Id).ToListAsync();
+                    foreach (var orderItem in orderItems)
+                    {
+                        var certificate = await _context.Certificate
+                            .Where(c => c.Id == orderItem.CertificateId).FirstOrDefaultAsync();
+                        var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                        certificates.Add(certificate);
+                        certificateLinks.Add(certificateLink);
+                    }
+                }
+
+                _context.CertificateLink.RemoveRange(certificateLinks);
+                _context.Certificate.RemoveRange(certificates);
+                _context.OrderItem.RemoveRange(orderItems);
+                _context.Order.RemoveRange(orders);
+                _context.Customer.Remove(customer);
+                await _context.SaveChangesAsync();
+
+                return customer.Name + " deleted";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+                throw;
+            }
         }
 
         private bool CustomerExists(int id)
