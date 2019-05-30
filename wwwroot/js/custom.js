@@ -87,7 +87,6 @@ var modalConfirm = function (modalLabel) {
 function ajaxCall(id, url) {
     var pData = $.extend({ id: id },
         { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
-
     $.ajax({
         method: "POST",
         url: url,
@@ -103,13 +102,11 @@ function ajaxCall(id, url) {
             if (result) {
                 sessionStorage.setItem("_refresh.location", true);
                 sessionStorage.setItem("_alert.result", result);
-
                 window.scroll({
                     top: 0,
                     left: 0,
                     behavior: 'smooth'
                 });
-
                 window.location.reload();
             }
             else {
@@ -236,21 +233,16 @@ $(function () {
     });
     $(':button, .btn').click(function () {
         var certId, staffId, url;
-
         $(this.id).data('clicked', false);
-
         switch (this.id) {
             case 'modal-btn-yes':
                 console.log(this.id + " clicked");
-
                 var eId = $('#post-data').data('id');
                 getEl(eId);
-
                 if (certId)
                     ajaxCall(certId, url);
                 else if (staffId)
                     ajaxCall(staffId, url);
-
                 break;
             case 'modal-btn-no':
                 console.log(this.id + " clicked");
@@ -279,7 +271,6 @@ $(function () {
         function ajaxCallSelect(selectedCustomer, url) {
             var pData = $.extend({ customerName: selectedCustomer },
                 { "CSRF-TOKEN-CERTITRACK-FORM": $('input[name="CSRF-TOKEN-CERTITRACK-FORM"]').val() });
-
             $.ajax({
                 method: "POST",
                 url: url,

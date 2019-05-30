@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Certitrack.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                Qty
+            </th>
+            <th>
+                Customer
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var order in Model) {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@order.Id">
+                    @Html.DisplayFor(modelItem => order.Id)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => order.OrderItems.Count)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => order.Customer.Name)
+            </td>
+            <td class="text-center">
+                @Html.AntiForgeryToken()
+                <a asp-action="Edit" asp-route-id="@order.Id" class="btn">
+                    <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                    <span class="sr-only">Edit</span>
+                </a>
+                <button id="delete-@order.Id"
+                        data-staff-id="@order.Id"
+                        data-url="@Url.Action("Delete", "Orders")"
+                        onclick="deleteUser('order #@order.Id for @order.Customer.Name')"
+                        class="btn" style="background-color: transparent">
+                    <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                    <span class="sr-only">Delete</span>
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
