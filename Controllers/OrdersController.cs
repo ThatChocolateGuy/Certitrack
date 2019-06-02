@@ -38,7 +38,19 @@ namespace certitrack_certificate_manager.Controllers
 
             var order = await _context.Order
                 .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
+            order.OrderItems = await _context.OrderItem
+                .Include(oi => oi.Certificate).ThenInclude(cl => cl.CertificateLink)
+                .Where(oi => oi.OrderId == order.Id).ToListAsync();
+            foreach (var orderItem in order.OrderItems)
+            {
+                orderItem.Certificate.CertificateLink = await _context.CertificateLink
+                    .Include(cl => cl.Staff)
+                    .Include(cl => cl.Promotion)
+                    .Include(cl => cl.Channel)
+                    .FirstOrDefaultAsync(cl => cl.CertificateId == orderItem.CertificateId);
+            }
+            
             if (order == null)
             {
                 return NotFound();

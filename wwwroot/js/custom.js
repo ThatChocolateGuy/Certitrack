@@ -125,7 +125,7 @@ function deleteUser(name) {
 //redeem certificate fn
 function redeem(certNo) {
     $("#my-modal").modal('show');
-    modalConfirm("Redeem Certificate: #" + certNo + " ?");
+    modalConfirm("Redeem Certificate #" + certNo + " ?");
 }
 
 //on DOM ready

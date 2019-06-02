@@ -10,16 +10,153 @@
 <div>
     <h4>Order</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Customer.Email)
-        </dd>
-    </dl>
+
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#order">Order</a></li>
+            <li><a data-toggle="tab" href="#certificates">Certificates</a></li>
+        </ul>
+        <!-- / .nav-tabs -->
+        <div class="tab-content">
+            <div id="orders" class="tab-pane fade in active">
+                <dl class="dl-horizontal">
+                    <dt class="text-muted">
+                        @Html.DisplayNameFor(modelItem => modelItem.Id)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => modelItem.Id)
+                    </dd>
+                    <dt class="text-muted">
+                        Qty
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => modelItem.OrderItems.Count)
+                    </dd>
+                    <dt class="text-muted">
+                        @Html.DisplayNameFor(modelItem => modelItem.Customer.Name)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => modelItem.Customer.Name)
+                    </dd>
+                </dl>
+            </div>
+            <div id="certificates" class="tab-pane fade table-responsive">
+                <table id="main-table-customer-cert" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Certificate No.
+                            </th>
+                            <th>
+                                Issued By
+                            </th>
+                            <th>
+                                Date Issued
+                            </th>
+                            <th>
+                                Expiry Date
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Promo
+                            </th>
+                            <th>
+                                Channel
+                            </th>
+                            <th>
+                                Date Redeemed
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var orderItem in Model.OrderItems)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(dateIssued => orderItem.Certificate.DateIssued)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(price => orderItem.Certificate.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)
+                                </td>
+                                <!-- Buttons -->
+                                <td class="text-center">
+                                    @if (orderItem.Certificate.DateRedeemed == null)
+                                    {
+                                        <button id="redeem-@orderItem.Certificate.Id"
+                                                data-cert-id="@orderItem.Certificate.Id"
+                                                data-url="@Url.Action("Redeem", "Certificates" )"
+                                                class="btn " style="background-color: transparent"
+                                                onclick="redeem('@orderItem.Certificate.CertificateNo')">
+                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip"
+                                                data-placement="left" title="Redeem"></i>
+                                            <span class="sr-only">Redeem</span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn " style="background-color: transparent" disabled="disabled">
+                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip"
+                                                data-placement="left" title="Redeemed"></i>
+                                            <span class="sr-only">Redeemed</span>
+                                        </button>
+                                    }
+                                    <a asp-action="Edit" asp-controller="Certificates"
+                                        asp-route-id="@orderItem.Certificate.Id" class="btn">
+                                        <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left"
+                                            title="Edit"></i>
+                                        <span class="sr-only">Edit</span>
+                                    </a>
+                                    <button id="delete-@orderItem.Certificate.Id"
+                                            data-cert-id="@orderItem.Certificate.Id"
+                                            data-url="@Url.Action("Delete", "Certificates" )"
+                                            class="btn" style="background-color: transparent"
+                                            onclick="deleteUser('Certificate #@orderItem.Certificate.CertificateNo')">
+                                        <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left"
+                                            title="Delete"></i>
+                                        <span class="sr-only">Delete</span>
+                                    </button>
+                                </td>
+                                <!-- / Buttons -->
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Buttons -->
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Customer.Id" class="btn btn-success col-sm"
+           style="margin-bottom: 10px; max-width: 100%">
+            <i class="fas fa-edit"></i>
+            <span>Edit Order</span>
+        </a>
+        <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+            <i class="fa fa-arrow-circle-left"></i>
+            <span>Back to List</span>
+        </a>
+    </div>
+    <!-- / Buttons -->
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    
