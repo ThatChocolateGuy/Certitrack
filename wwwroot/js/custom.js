@@ -150,6 +150,12 @@ $(function () {
     $("#main-table-customer-cert").DataTable({
         order: [[1, 'desc']]
     });
+    $("#main-table-order").DataTable({
+        "columnDefs": [{
+            "targets": 3,
+            "orderable": false
+        }]
+    });
     //InputMask
     $(":input").inputmask();
     //Select2

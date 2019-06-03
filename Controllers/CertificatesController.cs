@@ -304,17 +304,21 @@ namespace Certitrack.Controllers
                 //redirects back to customer details if origin view
                 if (TempData["_ReturnRoute.Update.Controller"] != null)
                 {
+                    string message = null;
                     var _ReturnRouteController = TempData["_ReturnRoute.Update.Controller"];
                     TempData["_ReturnRoute.Update.Controller"] = null;
 
+                    if ((string)_ReturnRouteController == "Certificates" ||
+                        (string)_ReturnRouteController == "Orders")
+                    {
+                        message = "Certificate #" +
+                            _context.Certificate.FindAsync(id).Result.CertificateNo + " updated successfully";
+                    }
+
                     return Redirect("/" + _ReturnRouteController +
-                        "/" + TempData["_ReturnRoute.Update.Action"] + "/" + TempData["_ReturnRoute.Update.Id"])
-                    .WithSuccess("Update Successful",
-                        "Certificate " +
-                        _context.Certificate.FindAsync(id).Result.CertificateNo +
-                        " updated successfully");
-                }
-                
+                            "/" + TempData["_ReturnRoute.Update.Action"] + "/" + TempData["_ReturnRoute.Update.Id"])
+                                .WithSuccess("Update Successful", message);
+                }                
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Update Successful",
                         "Certificate " +

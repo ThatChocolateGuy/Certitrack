@@ -27,7 +27,7 @@
         <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
             <div class="register-box-body">
                 <div class="box-header ">
-                    <h3 class="box-title">Certificate Details</h3>
+                    <h3 class="box-title">Edit Certificate</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad">
@@ -160,7 +160,27 @@
                                 var _ReturnRouteId = TempData["_ReturnRoute.Id"];
 
                                 TempData["_ReturnRoute.Controller"] = null;
-                                
+
+                                TempData["_ReturnRoute.Update.Controller"] = _ReturnRouteController;
+                                TempData["_ReturnRoute.Update.Action"] = _ReturnRouteAction;
+                                TempData["_ReturnRoute.Update.Id"] = _ReturnRouteId;
+
+                                <a asp-controller="@_ReturnRouteController"
+                                   asp-action="@_ReturnRouteAction"
+                                   asp-route-id="@_ReturnRouteId"
+                                   class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                    <i class="fa fa-arrow-circle-left"></i>
+                                    <span>Back to @TempData["_ReturnRoute.ViewLabel"]</span>
+                                </a>
+                            }
+                            else if ((string)TempData["_ReturnRoute.Controller"] == "Orders")
+                            {
+                                var _ReturnRouteController = TempData["_ReturnRoute.Controller"];
+                                var _ReturnRouteAction = TempData["_ReturnRoute.Action"];
+                                var _ReturnRouteId = TempData["_ReturnRoute.Id"];
+
+                                TempData["_ReturnRoute.Controller"] = null;
+
                                 TempData["_ReturnRoute.Update.Controller"] = _ReturnRouteController;
                                 TempData["_ReturnRoute.Update.Action"] = _ReturnRouteAction;
                                 TempData["_ReturnRoute.Update.Id"] = _ReturnRouteId;

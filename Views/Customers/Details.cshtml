@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
     ViewData["SectionHeader"] = "Customer Details";
     ViewData["SectionBreadCrumb"] = "Customer Details";
     ViewData["Title"] = "Customer Details";
@@ -27,6 +28,7 @@
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
 </section>
+<!-- / .content-header -->
 
 <!-- Main content -->
 <section class="content">
@@ -109,7 +111,7 @@
                                         $@totalValue
                                     </td>
                                     <td>
-                                        @foreach(var orderItem in order.OrderItems)
+                                        @foreach (var orderItem in order.OrderItems)
                                         {
                                             dateTime = orderItem.Certificate.DateIssued;
                                         }

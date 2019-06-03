@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Certitrack.Data;
 using Certitrack.Models;
+using Certitrack.Extensions.Alerts;
 
 namespace certitrack_certificate_manager.Controllers
 {
@@ -91,12 +92,14 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.Order
+                .Include(o => o.Customer)
+                .FirstOrDefaultAsync(o => o.Id == id);
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Email", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Name", order.CustomerId);
             return View(order);
         }
 
@@ -130,10 +133,12 @@ namespace certitrack_certificate_manager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index))
+                    .WithSuccess("Update Successful", "Order #" + order.Id + " updated successfully");
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Email", order.CustomerId);
-            return View(order);
+            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Name", order.CustomerId);
+            return View(order)
+                .WithWarning("Uh-Oh!", "Something went wrong, try again.");
         }
 
         // GET: Orders/Delete/5
@@ -166,10 +171,9 @@ namespace certitrack_certificate_manager.Controllers
                     .Include(o => o.OrderItems)
                     .Include(o => o.Customer)
                     .FirstOrDefaultAsync(o => o.Id == id);
-                var message = "Order #" + order.Id + " for " + order.Customer.Name + " deleted";
                 _context.Order.Remove(order);
                 await _context.SaveChangesAsync();
-                return message;
+                return "Order #" + order.Id + " for " + order.Customer.Name + " deleted";
             }
             catch (Exception e)
             {

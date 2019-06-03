@@ -3,30 +3,81 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["SectionHeader"] = "Orders";
+    ViewData["SectionBreadCrumb"] = "Edit Order";
+    ViewData["FormAction"] = "Edit";
+
+    ViewBag.Current = "OrdersEdit";
 }
 
-<h2>Edit</h2>
-
-<h4>Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/Orders">Orders</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
+<!-- / .content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="display: flex">
+        <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
+            <div class="register-box-body">
+                <div class="box-header ">
+                    <h3 class="box-title">Edit Customer Associated with Order</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad">
+                    <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
+                        <!-- Model-Level Errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
+                        <!-- / Model-Level Errors -->
+                        <div class="col-sm-2">
+                            <dl>
+                                <dt>
+                                    @Html.LabelFor(model => model.Id)
+                                </dt>
+                                <dd>
+                                    <h4>
+                                        @Html.DisplayFor(model => model.Id)
+                                    </h4>
+                                </dd>
+                            </dl>
+                        </div>
+                        <!-- Customer Name -->
+                        <div class="form-group col-sm-10">
+                            <label asp-for="Customer.Name" class="control-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fas fa-user"></i></span>
+                                <select asp-for="CustomerId" asp-items="ViewBag.CustomerId" class="form-control select2" required></select>
+                            </div>
+                            <!-- / .input-group -->
+                            <span asp-validation-for="Customer.Name" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Customer Name -->
+                        <!-- Button Group -->
+                        <div class="box-footer form-group col-sm-12">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Update Order</span>
+                            </button>
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                <i class="fa fa-arrow-circle-left"></i>
+                                Back to List
+                            </a>
+                        </div>
+                        <!-- / Button Group -->
+                    </form>
+                </div>
+                <!-- /.box-body -->
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+    <!-- /.row -->
+</section>

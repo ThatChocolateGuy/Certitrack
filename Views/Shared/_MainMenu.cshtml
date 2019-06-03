@@ -34,7 +34,7 @@
         </ul>
     </li>
     <!-- / Staff Treeview -->
-    <!-- Certificate Treeview -->
+    <!-- Certificates Treeview -->
     <li class="treeview @(ViewBag.Current == "CertificateIndex"
         || ViewBag.Current == "CertificateCreate"
         || ViewBag.Current == "CertificateEdit"? "active" : "")">
@@ -59,8 +59,8 @@
             </li>
         </ul>
     </li>
-    <!-- / Certificate Treeview -->
-    <!-- Customer Treeview -->
+    <!-- / Certificates Treeview -->
+    <!-- Customers Treeview -->
     <li class="treeview @(ViewBag.Current == "CustomerIndex"
         || ViewBag.Current == "CustomerCreate"
         || ViewBag.Current == "CustomerEdit"
@@ -86,21 +86,15 @@
             </li>
         </ul>
     </li>
-    <!-- / Customer Treeview -->
+    <!-- / Customers Treeview -->
+    <!-- Orders Treeview -->
+    <li class="@(ViewBag.Current == "OrdersIndex"
+        || ViewBag.Current == "OrdersEdit"
+        || ViewBag.Current == "OrdersDetails"? "active" : "")">
+        <a href="@Url.Action("Index", "Orders")">
+            <i class="fa fa-link"></i>
+            <span>Orders</span>
+        </a>
+    </li>
+    <!-- / Orders Treeview -->
 </ul>
-
-
-
-
-@*<li class="treeview">
-    <a href="#">
-        <i class="fa fa-link"></i> <span>Multilevel</span>
-        <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-        </span>
-    </a>
-    <ul class="treeview-menu">
-        <li><a href="#">Link in level 2</a></li>
-        <li><a href="#">Link in level 2</a></li>
-    </ul>
-</li>*@
