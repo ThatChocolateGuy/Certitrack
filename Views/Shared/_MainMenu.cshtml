@@ -97,4 +97,31 @@
         </a>
     </li>
     <!-- / Orders Treeview -->
+    <!-- Channels Treeview -->
+    <li class="treeview @(ViewBag.Current == "ChannelsIndex"
+        || ViewBag.Current == "ChannelsCreate"
+        || ViewBag.Current == "ChannelsEdit"
+        || ViewBag.Current == "ChannelsDetails"? "active" : "")">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Channels</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@(ViewBag.Current == "ChannelsIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Channels")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Channels</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "ChannelsCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Channels")">
+                    <i class="fa fa-link"></i>
+                    <span>Add Channel</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- / Channels Treeview -->
 </ul>

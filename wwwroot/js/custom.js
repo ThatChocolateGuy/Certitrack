@@ -156,6 +156,12 @@ $(function () {
             "orderable": false
         }]
     });
+    $("#main-table-channel").DataTable({
+        "columnDefs": [{
+            "targets": 1,
+            "orderable": false
+        }]
+    });
     //InputMask
     $(":input").inputmask();
     //Select2
