@@ -3,29 +3,76 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["FormAction"] = "Create";
+    ViewData["SectionHeader"] = "Channels";
+    ViewData["SectionBreadCrumb"] = "Add Channel";
+    ViewData["SubmitButtonText"] = "Add";
+
+    ViewBag.Current = "ChannelsCreate";
 }
 
-<h2>Create</h2>
-
-<h4>Channel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ChannelName" class="control-label"></label>
-                <input asp-for="ChannelName" class="form-control" />
-                <span asp-validation-for="ChannelName" class="text-danger"></span>
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/channels">Channels</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
+<!-- / .content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="display: flex">
+        <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
+            <div class="register-box-body">
+                <div class="box-header ">
+                    <h3 class="box-title">Add New Channel</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad">
+                    <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
+                        <!-- Model-Level Errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
+                        <!-- / Model-Level Errors -->
+                        <div class="row">
+                            <!-- Channnel Neme -->
+                            <div class="form-group col-sm-12">
+                                <label asp-for="ChannelName" class="control-label"></label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-road"></i>
+                                    </div>
+                                    <input asp-for="ChannelName" class="form-control" />
+                                </div>
+                                <!-- / .input-group -->
+                                <span asp-validation-for="ChannelName" class="text-danger help-block with-errors"></span>
+                            </div>
+                            <!-- / Channnel Neme -->
+                        </div>
+                        <!-- / .row -->
+                        <!-- Button Group -->
+                        <div class="box-footer form-group col-sm-12">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                                <i class="fas fa-plus"></i>
+                                <span>@ViewData["SubmitButtonText"] Channel</span>
+                            </button>
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                <i class="fa fa-arrow-circle-left"></i>
+                                <span>Back to List</span>
+                            </a>
+                        </div>
+                        <!-- / Button Group -->
+                    </form>
+                </div>
+                <!-- /.box-body -->
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <!-- /.row -->
+</section>
 
