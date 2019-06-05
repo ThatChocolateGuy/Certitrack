@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Certitrack.Models.Promotion>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Current = "PromoIndex";
+}
+
+<section class="content-header">
+    <h1>
+        Promotions
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        </li>
+        <li class="active">Promotions
+</ol>
+</section>
+<!-- / .content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Manage Promotions</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad table-responsive">
+                    <table id="main-table-promo" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Discount)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var promotion in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => promotion.Discount)
+                                    </td>
+                                    <!-- buttons -->
+                                    <td class="text-center">
+                                        @Html.AntiForgeryToken()
+                                        <a asp-action="Edit" asp-route-id="@promotion.Id" class="btn">
+                                            <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                            <span class="sr-only">Edit</span>
+                                        </a>
+                                        <button id="delete-@promotion.Id"
+                                                data-staff-id="@promotion.Id"
+                                                data-url="@Url.Action("Delete", "Promotions")"
+                                                onclick="deleteUser('the $@promotion.Discount promo')"
+                                                class="btn" style="background-color: transparent">
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                            <span class="sr-only">Delete</span>
+                                        </button>
+                                    </td>
+                                    <!-- / buttons -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>

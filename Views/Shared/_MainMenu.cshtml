@@ -124,4 +124,30 @@
         </ul>
     </li>
     <!-- / Channels Treeview -->
+    <!-- Promotions Treeview -->
+    <li class="treeview @(ViewBag.Current == "PromoIndex"
+        || ViewBag.Current == "PromoCreate"
+        || ViewBag.Current == "PromoEdit"? "active" : "")">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Promotions</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@(ViewBag.Current == "PromoIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Promotions")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Promotions</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "PromoCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Promotions")">
+                    <i class="fa fa-link"></i>
+                    <span>Create Promotion</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- / Promotions Treeview -->
 </ul>

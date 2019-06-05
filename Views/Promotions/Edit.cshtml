@@ -1,0 +1,71 @@
+﻿@model Certitrack.Models.Promotion
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["SectionHeader"] = "Promotions";
+    ViewData["SectionBreadCrumb"] = "Edit Promotion";
+    ViewData["FormAction"] = "Edit";
+
+    ViewBag.Current = "PromoEdit";
+}
+
+<section class="content-header">
+    <h1 class="text">
+        @ViewData["SectionHeader"]
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/Promotions">Promotions</a></li>
+        <li class="active">@ViewData["SectionBreadCrumb"]</li>
+    </ol>
+</section>
+<!-- / .content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="display: flex">
+        <div class="col-xs-12 col-md-10 col-lg-8" style="margin: 0 auto">
+            <div class="register-box-body">
+                <div class="box-header ">
+                    <h3 class="box-title">@ViewBag.SectionBreadCrumb</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body pad">
+                    <form asp-action="@ViewData["FormAction"]" class="form-group" data-toggle="validator" role="form">
+                        <!-- Model-Level Errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger help-block with-errors"></div>
+                        <!-- / Model-Level Errors -->
+                        <!-- Promotion -->
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Discount" class="control-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                                <input asp-for="Discount" class="form-control" required />
+                            </div>
+                            <!-- / .input-group -->
+                            <span asp-validation-for="Discount" class="text-danger help-block with-errors"></span>
+                        </div>
+                        <!-- / Promotion -->
+                        <!-- Button Group -->
+                        <div class="box-footer form-group col-sm-12">
+                            <button type="submit" class="btn btn-success col-sm" style="margin-bottom: 10px; max-width: 100%">
+                                <i class="fas fa-edit"></i>
+                                <span>Update Promotion</span>
+                            </button>
+                            <a asp-action="Index" class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                <i class="fa fa-arrow-circle-left"></i>
+                                Back to List
+                            </a>
+                        </div>
+                        <!-- / Button Group -->
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>

@@ -162,6 +162,12 @@ $(function () {
             "orderable": false
         }]
     });
+    $("#main-table-promo").DataTable({
+        "columnDefs": [{
+            "targets": 1,
+            "orderable": false
+        }]
+    });
     //InputMask
     $(":input").inputmask();
     //Select2
@@ -230,7 +236,7 @@ $(function () {
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
-    //click fns
+    //click listeners
     $("#modal-btn-yes").on("click", function () {
         $("#my-modal").modal('hide');
     });
@@ -272,7 +278,7 @@ $(function () {
             url = el.dataset.url;
         }
     });
-    //select list on-change fn (certificate create)
+    //select list on-change listener (certificate create)
     $("select#customer-toggle-select").change(function () {
         if ($(this).children("option:selected").val()) {
             //gets value of selected dropdown option
