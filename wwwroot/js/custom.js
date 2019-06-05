@@ -168,6 +168,12 @@ $(function () {
             "orderable": false
         }]
     });
+    $("#main-table-role").DataTable({
+        "columnDefs": [{
+            "targets": 2,
+            "orderable": false
+        }]
+    });
     //InputMask
     $(":input").inputmask();
     //Select2

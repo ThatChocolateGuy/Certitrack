@@ -50,7 +50,7 @@ BEGIN
 	CREATE TABLE [role] (
 		[id]          	INT          	NOT NULL 	IDENTITY 	PRIMARY KEY,
 		[title]       	VARCHAR (30) 	NOT NULL,
-		[description] 	TEXT        	NOT NULL
+		[description] 	VARCHAR (255)   NOT NULL
 	); -- ADMIN, THERAPIST, ETC.
 END
 

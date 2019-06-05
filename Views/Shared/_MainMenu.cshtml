@@ -150,4 +150,30 @@
         </ul>
     </li>
     <!-- / Promotions Treeview -->
+    <!-- Roles Treeview -->
+    <li class="treeview @(ViewBag.Current == "RolesIndex"
+        || ViewBag.Current == "RolesCreate"
+        || ViewBag.Current == "RolesEdit"? "active" : "")">
+        <a href="#">
+            <i class="fa fa-link"></i> <span>Roles</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="@(ViewBag.Current == "RolesIndex" ? "active" : "")">
+                <a href="@Url.Action("Index", "Roles")">
+                    <i class="fa fa-link"></i>
+                    <span>Manage Roles</span>
+                </a>
+            </li>
+            <li class="@(ViewBag.Current == "RolesCreate" ? "active" : "")">
+                <a href="@Url.Action("Create", "Roles")">
+                    <i class="fa fa-link"></i>
+                    <span>Create Role</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- / Roles Treeview -->
 </ul>
