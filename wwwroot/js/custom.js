@@ -127,18 +127,47 @@ function redeem(certNo) {
     $("#my-modal").modal('show');
     modalConfirm("Redeem Certificate #" + certNo + " ?");
 }
+//btnGroup (redeem, edit, delete) fn
+function btnGroup(_btn) {
+    var certId, staffId, url;
+    $(_btn.id).data('clicked', false);
+    switch (_btn.id) {
+        case 'modal-btn-yes':
+            console.log(_btn.id + " clicked");
+            var eId = $('#post-data').data('id');
+            if (eId != null && (eId.includes("redeem") || eId.includes("delete"))) {
+                getEl(eId);
+                if (certId)
+                    ajaxCall(certId, url);
+                else if (staffId)
+                    ajaxCall(staffId, url);
+            }
+            break;
+        default:
+            console.log(_btn.id + " clicked");
+            $("#post-data").data("id", _btn.id);
+            break;
+    }
+    //get element & assign cert data to it
+    function getEl(id) {
+        var el = document.getElementById(id);
+        certId = el.dataset.certId;
+        staffId = el.dataset.staffId;
+        url = el.dataset.url;
+    }
+}
 
 //on DOM ready
 $(function () {
     //format DataTables
-    $('#main-table-staff').DataTable({
+    $("#main-table-staff").DataTable({
         "columnDefs": [{
             "targets": 6,
             "orderable": false
         }]
     });
     $("#main-table-cert").DataTable();
-    $('#main-table-customer').DataTable({
+    $("#main-table-customer").DataTable({
         "columnDefs": [{
             "targets": 4,
             "orderable": false
@@ -177,17 +206,20 @@ $(function () {
     //InputMask
     $(":input").inputmask();
     //Select2
-    $('.select2').select2({
-        width: '100%'
+    $(".select2").select2({
+        width: "100%"
     });
     //Bootstrap tooltip
-    $('[data-toggle="tooltip"]').tooltip();
+    $("[data-toggle='tooltip']").tooltip();
     //reload Bootstrap tooltip on table interaction
     $(".dataTables_wrapper").click(() => {
-        $('[data-toggle="tooltip"]').tooltip();
+        $("[data-toggle='tooltip']").tooltip();
+        var btn = this.activeElement;
+        if (btn.id.includes("redeem") || btn.id.includes("delete"))
+            btnGroup(btn);
     });
-    $('[type="search"]').keyup(() => {
-        $('[data-toggle="tooltip"]').tooltip();
+    $("[type='search']").keyup(() => {
+        $("[data-toggle='tooltip']").tooltip();
     })
     //datepicker
     $.fn.datepicker.defaults = { //defaults for reference
@@ -245,6 +277,7 @@ $(function () {
     //click listeners
     $("#modal-btn-yes").on("click", function () {
         $("#my-modal").modal('hide');
+        btnGroup(this);
     });
     $("#modal-btn-no").on("click", function () {
         $("#my-modal").modal('hide');
@@ -255,35 +288,7 @@ $(function () {
     $("#existing-customer").on("click", function () {
         dropdownButton("Existing");
     });
-    $(':button, .btn').click(function () {
-        var certId, staffId, url;
-        $(this.id).data('clicked', false);
-        switch (this.id) {
-            case 'modal-btn-yes':
-                console.log(this.id + " clicked");
-                var eId = $('#post-data').data('id');
-                getEl(eId);
-                if (certId)
-                    ajaxCall(certId, url);
-                else if (staffId)
-                    ajaxCall(staffId, url);
-                break;
-            case 'modal-btn-no':
-                console.log(this.id + " clicked");
-                break;
-            default:
-                console.log(this.id + " clicked");
-                $("#post-data").data("id", this.id);
-                break;
-        }
-        //get element & assign cert data to it
-        function getEl(id) {
-            var el = document.getElementById(id);
-            certId = el.dataset.certId;
-            staffId = el.dataset.staffId;
-            url = el.dataset.url;
-        }
-    });
+    //$(":button, .btn").click(btnGroup(this.activeElement));
     //select list on-change listener (certificate create)
     $("select#customer-toggle-select").change(function () {
         if ($(this).children("option:selected").val()) {
@@ -318,3 +323,4 @@ $(function () {
         }
     });
 });
+

@@ -161,9 +161,9 @@ namespace Certitrack.Controllers
                 }
                 catch (Exception) { throw; }
 
-                return RedirectToAction(nameof(Index)).WithSuccess("Success!", "Certificate(s) created for " + certificateCreateViewModel.CustomerName);
+                return RedirectToAction(nameof(Index)).WithSuccess("Success!", "Certificate(s) issued for " + certificateCreateViewModel.CustomerName);
             }
-            return View(certificateCreateViewModel).WithDanger("Certificate Not Created", "Something went wrong. Try again.");
+            return View(certificateCreateViewModel).WithDanger("Uh-Oh!", "Something went wrong. Try again.");
         }
 
         // GET: Certificates/Edit/5
@@ -321,7 +321,7 @@ namespace Certitrack.Controllers
                 }                
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Update Successful",
-                        "Certificate " +
+                        "Certificate #" +
                         _context.Certificate.FindAsync(id).Result.CertificateNo +
                         " updated successfully");
             }
@@ -347,7 +347,7 @@ namespace Certitrack.Controllers
                 _context.Certificate.Remove(certificate);
                 await _context.SaveChangesAsync();
 
-                return "Certificate deleted for " + customer.Name;
+                return "Certificate #" + certificate.CertificateNo + " deleted for " + customer.Name;
             }
             catch (Exception)
             {
@@ -374,7 +374,7 @@ namespace Certitrack.Controllers
                 _context.Certificate.Update(certificate);
                 await _context.SaveChangesAsync();
                 
-                return "Certificate redeemed for " + customer.Name;
+                return "Certificate #" + certificate.CertificateNo + " redeemed for " + customer.Name;
             }
             catch (Exception)
             {

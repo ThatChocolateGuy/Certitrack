@@ -109,9 +109,11 @@ namespace certitrack_certificate_manager.Controllers
             {
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index))
+                    .WithSuccess("Registration Successful", customer.Name + " was successfully registered as a new customer.");
             }
-            return View(customer);
+            return View(customer)
+                .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
         }
 
         // GET: Customers/Edit/5

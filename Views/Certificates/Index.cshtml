@@ -13,7 +13,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
         </li>
         <li class="active">Certificates
     </ol>
@@ -125,15 +125,15 @@
                                                 data-cert-id="@item.Certificate.Id"
                                                 data-message="@item.Certificate.CertificateNo"
                                                 data-url="@Url.Action("Redeem", "Certificates")"
-                                                class="btn " style="background-color: transparent"
-                                                onclick="redeem('@item.Certificate.CertificateNo')">
+                                                onclick="redeem('@item.Certificate.CertificateNo')"
+                                                class="btn" style="background-color: transparent">
                                             <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
                                             <span class="sr-only">Redeem</span>
                                         </button>
                                     }
                                     else
                                     {
-                                        <button class="btn " style="background-color: transparent" disabled="disabled">
+                                        <button class="btn" style="background-color: transparent" disabled="disabled">
                                             <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
                                             <span class="sr-only">Redeemed</span>
                                         </button>
@@ -146,8 +146,8 @@
                                             data-cert-id="@item.Certificate.Id"
                                             data-message="@item.Certificate.CertificateNo"
                                             data-url="@Url.Action("Delete", "Certificates")"
-                                            class="btn" style="background-color: transparent"
-                                            onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')">
+                                            onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')"
+                                            class="btn" style="background-color: transparent">
                                         <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
                                         <span class="sr-only">Delete</span>
                                     </button>

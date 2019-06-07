@@ -15,7 +15,7 @@
         @ViewData["SectionHeader"]
     </h1>
     <ol class="breadcrumb">
-        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
         <li><a href="/Promotions">Promotions</a></li>
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
@@ -44,7 +44,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-dollar-sign"></i>
                                     </div>
-                                    <input asp-for="Discount" class="form-control" />
+                                    <input asp-for="Discount" class="form-control" placeholder="Discount Value" required />
                                 </div>
                                 <!-- / .input-group -->
                             </div>

@@ -3,8 +3,7 @@
     <!-- Dashboard -->
     <li>
         <a href="@Url.Action("Index", "Home")">
-            <i class="fa fa-link"></i>
-            <span>Dashboard</span>
+            <i class="fa fa-tachometer-alt"></i> <span>Dashboard</span>
         </a>
     </li>
     <!-- / Dashboard -->
@@ -13,7 +12,7 @@
         || ViewBag.Current == "StaffCreate"
         || ViewBag.Current == "StaffEdit"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Staff</span>
+            <i class="fa fa-id-badge"></i> <span>Staff</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -21,13 +20,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "StaffIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Staff")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Staff</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "StaffCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Staff")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-user-plus"></i>
                     <span>Add Member</span>
                 </a>
             </li>
@@ -39,7 +38,7 @@
         || ViewBag.Current == "CertificateCreate"
         || ViewBag.Current == "CertificateEdit"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Certificates</span>
+            <i class="fa fa-ticket-alt"></i> <span>Certificates</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -47,13 +46,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "CertificateIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Certificates")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Certificates</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "CertificateCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Certificates")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-plus-square"></i>
                     <span>Issue Certificate</span>
                 </a>
             </li>
@@ -66,7 +65,7 @@
         || ViewBag.Current == "CustomerEdit"
         || ViewBag.Current == "CustomerDetails"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Customers</span>
+            <i class="fa fa-users"></i> <span>Customers</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -74,13 +73,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "CustomerIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Customers")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Customers</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "CustomerCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Customers")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-user-plus"></i>
                     <span>Register Customer</span>
                 </a>
             </li>
@@ -92,7 +91,7 @@
         || ViewBag.Current == "OrdersEdit"
         || ViewBag.Current == "OrdersDetails"? "active" : "")">
         <a href="@Url.Action("Index", "Orders")">
-            <i class="fa fa-link"></i>
+            <i class="fa fa-shopping-basket"></i>
             <span>Orders</span>
         </a>
     </li>
@@ -103,7 +102,7 @@
         || ViewBag.Current == "ChannelsEdit"
         || ViewBag.Current == "ChannelsDetails"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Channels</span>
+            <i class="fa fa-road"></i> <span>Channels</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -111,13 +110,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "ChannelsIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Channels")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Channels</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "ChannelsCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Channels")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-plus-square"></i>
                     <span>Add Channel</span>
                 </a>
             </li>
@@ -129,7 +128,7 @@
         || ViewBag.Current == "PromoCreate"
         || ViewBag.Current == "PromoEdit"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Promotions</span>
+            <i class="fa fa-piggy-bank"></i> <span>Promotions</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -137,13 +136,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "PromoIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Promotions")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Promotions</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "PromoCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Promotions")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-funnel-dollar"></i>
                     <span>Create Promotion</span>
                 </a>
             </li>
@@ -155,7 +154,7 @@
         || ViewBag.Current == "RolesCreate"
         || ViewBag.Current == "RolesEdit"? "active" : "")">
         <a href="#">
-            <i class="fa fa-link"></i> <span>Roles</span>
+            <i class="fa fa-users-cog"></i> <span>Roles</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -163,13 +162,13 @@
         <ul class="treeview-menu">
             <li class="@(ViewBag.Current == "RolesIndex" ? "active" : "")">
                 <a href="@Url.Action("Index", "Roles")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-tools"></i>
                     <span>Manage Roles</span>
                 </a>
             </li>
             <li class="@(ViewBag.Current == "RolesCreate" ? "active" : "")">
                 <a href="@Url.Action("Create", "Roles")">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-user-cog"></i>
                     <span>Create Role</span>
                 </a>
             </li>

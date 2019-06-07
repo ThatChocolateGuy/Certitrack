@@ -17,7 +17,7 @@
         @ViewData["SectionHeader"]
     </h1>
     <ol class="breadcrumb">
-        <li><a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
         <li><a href="/channels">Channels</a></li>
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
@@ -45,7 +45,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-road"></i>
                                     </div>
-                                    <input asp-for="ChannelName" class="form-control" />
+                                    <input asp-for="ChannelName" class="form-control" placeholder="Location or Method of Distribution" required />
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="ChannelName" class="text-danger help-block with-errors"></span>
