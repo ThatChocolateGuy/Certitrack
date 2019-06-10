@@ -65,7 +65,7 @@ namespace certitrack_certificate_manager.Controllers
                 _context.Add(role);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index))
-                    .WithSuccess("Update Successful", role.Title + " role successfully updated.");
+                    .WithSuccess("Success", role.Title + " role successfully created.");
             }
             return View(role)
                 .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
