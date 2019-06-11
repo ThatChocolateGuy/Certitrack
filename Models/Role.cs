@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace Certitrack.Models
 {
-    public partial class Role
+    public partial class Role : IdentityRole<int>
     {
         public Role()
         {
             StaffLink = new HashSet<StaffLink>();
         }
 
-        public int Id { get; set; }
+        public override int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 

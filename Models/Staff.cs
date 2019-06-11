@@ -1,24 +1,25 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Certitrack.Models
 {
-    public partial class Staff
+    public partial class Staff : IdentityUser<int>
     {
         public Staff()
         {
             CertificateLink = new HashSet<CertificateLink>();
         }
 
-        public int Id { get; set; }
+        public override int Id { get; set; }
         [Required]
         [MinLength(3, ErrorMessage = "The {0} must be at least {1} characters long.")]
         public string Name { get; set; }
         //[Required]
         [EmailAddress]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public override string Email { get; set; }
         //[Required]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "The {0} must be at least {1} characters long.")]

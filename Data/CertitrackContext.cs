@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Certitrack.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Certitrack.Data
 {
-    public partial class CertitrackContext : DbContext
+    public partial class CertitrackContext : IdentityDbContext<Staff, Role, int>
     {
         public CertitrackContext()
         {
@@ -44,6 +45,8 @@ namespace Certitrack.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Certificate>(entity =>
             {
                 entity.ToTable("certificate");
