@@ -13,6 +13,7 @@ using Certitrack.Crypto;
 using Certitrack.Extensions.Alerts;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Certitrack.Controllers
 {
@@ -20,8 +21,14 @@ namespace Certitrack.Controllers
     {
         private readonly CertitrackContext _context;
 
-        public StaffController(CertitrackContext context)
+        private UserManager<Staff> UserManager { get; set; }
+        private SignInManager<Staff> SignInManager { get; set; }
+
+        public StaffController(UserManager<Staff> userManager,
+            SignInManager<Staff> signInManager, CertitrackContext context)
         {
+            UserManager = userManager;
+            SignInManager = signInManager;
             _context = context;
         }
 
@@ -130,14 +137,15 @@ namespace Certitrack.Controllers
         // SUBMIT NEW STAFF TO DB (IF ADMIN)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Staff staff)
+        public async Task<IActionResult> Create(Staff staff)
         {
             ViewData["FormAction"] = "Create";
             var model = GetStaffCreateViewModel();
             model.Staff = staff;
 
             if (!ModelState.IsValid)
-                return View(model).WithWarning("Something's Not Right", "Check the form");
+                return View(model)
+                    .WithWarning("Something's Not Right", "Check the form");
 
             try
             {
@@ -160,31 +168,58 @@ namespace Certitrack.Controllers
                     Value = DBNull.Value,
                     SqlDbType = SqlDbType.Int
                 };
-                
-                // Executes stpAssignStaff Stored Procedure
-                _context.Database.ExecuteSqlCommand(
-                    @"EXEC [dbo].[stpAssignStaff]
-                     @staff_name = @name
-                    ,@staff_email = @email
-                    ,@staff_pw = @pw
-                    ,@role_title = @rt
-                    ,@staff_type = @st
-                    ,@message_out = @messageOut OUTPUT
-                    ,@staff_created = @staffCreatedOut OUTPUT"
-                        , new SqlParameter("@name", staff.Name)
-                        , new SqlParameter("@email", staff.Email)
-                        , new SqlParameter("@pw", hashed_pw)
-                        , new SqlParameter("@rt", staff.StaffLink.Role.Title)
-                        , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
-                        , messageParam
-                        , staffCreatedParam
-                );
 
-                // Redirects to Staff Index w/ Alert TempData
-                if (staffCreatedParam.Value.Equals(1))
-                    return RedirectToAction("Index").WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
-                else //staff exists, etc.
-                    return RedirectToAction("Index").WithDanger("Staff Not Added", messageParam.Value.ToString());
+                var _staff = new Staff()
+                {
+                    UserName = staff.Email,
+                    Password = staff.Password,
+                    Email = staff.Email,
+                    Name = staff.Name
+                };
+                
+                IdentityResult result = await UserManager.CreateAsync(_staff, _staff.Password);
+                if (result.Succeeded)
+                {
+                    // Executes stpAssignStaff Stored Procedure
+                    _context.Database.ExecuteSqlCommand(
+                        @"EXEC [dbo].[stpAssignStaff]
+                         @staff_name = @name
+                        ,@staff_email = @email
+                        ,@staff_pw = @pw
+                        ,@role_title = @rt
+                        ,@staff_type = @st
+                        ,@message_out = @messageOut OUTPUT
+                        ,@staff_created = @staffCreatedOut OUTPUT"
+                            , new SqlParameter("@name", staff.Name)
+                            , new SqlParameter("@email", staff.Email)
+                            , new SqlParameter("@pw", hashed_pw)
+                            , new SqlParameter("@rt", staff.StaffLink.Role.Title)
+                            , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
+                            , messageParam //debugging param
+                            , staffCreatedParam //debugging param
+                    );
+                }
+                else
+                {
+                    var e = result.Errors.Aggregate("User Creation Failed - Identity Exception. Errors were: \n\r\n\r",
+                        (current, error) => current + (" - " + error + "\n\r"));
+                    throw new Exception(e);
+                }
+
+                // Redirects to Staff Index w/ Success Alert
+                if (staffCreatedParam.Value != null)
+                    return RedirectToAction("Index")
+                        .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+                // staff exists, etc. - Redirect to Staff Index w/ Error Alert
+                else if ((string)TempData["OriginController"] != "Account")
+                    return RedirectToAction("Index")
+                        .WithDanger("Staff Not Added", messageParam.Value.ToString());
+                else //staff exists, etc. - Redirect to Account Registration w/ Error Alert
+                {
+                    TempData["OriginController"] = null;
+                    return RedirectToAction("Register", "Account")
+                        .WithDanger("Staff Not Added", messageParam.Value.ToString());
+                }
             }
             catch (Exception) { throw; }
         }
@@ -204,11 +239,9 @@ namespace Certitrack.Controllers
                 _context.SaveChanges();
 
                 return staff.Name + " has successfully been removed from the team";
-                //return RedirectToAction("Index").WithSuccess("User Deleted", staff.Name + " has successfully been removed from the team");
             }
             catch (Exception)
             {
-                //return RedirectToAction("Index").WithDanger("User Not Deleted", "Something went wrong. Try again.");
                 throw;
             }
         }
@@ -217,7 +250,7 @@ namespace Certitrack.Controllers
         /// Gets a StaffCreateViewModel
         /// </summary>
         /// <returns>StaffCreateViewModel</returns>
-        private StaffCreateViewModel GetStaffCreateViewModel()
+        public StaffCreateViewModel GetStaffCreateViewModel()
         {
             var roleTitles =
                 from role in _context.Role.ToList()

@@ -1,0 +1,137 @@
+﻿@model Certitrack.ViewModels.StaffCreateViewModel
+
+@{
+    Layout = null;
+    TempData["OriginController"] = "Account";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Title Page-->
+    <title>Register Staff - CertiTrack</title>
+    <!-- Icons font CSS-->
+    <link href="~/vendor/colorlib-regform-5/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="~/vendor/colorlib-regform-5/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <!-- Vendor CSS-->
+    <link href="~/vendor/colorlib-regform-5/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="~/vendor/colorlib-regform-5/vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+    <!-- Main CSS-->
+    <link href="~/vendor/colorlib-regform-5/css/main.css" rel="stylesheet" media="all">
+</head>
+<body>
+    <!-- Status Message Partial -->
+    <Partial name="_StatusMessages" />
+
+    <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+        <div class="wrapper wrapper--w790">
+            <div class="card card-5">
+                <div class="card-heading">
+                    <h2 class="title">Staff Registration Form</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Staff" asp-action="Create" class="form-group" data-toggle="validator" role="form">
+                        <div class="form-row">
+                            <div class="name">Name</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <input asp-for="Staff.Name" data-minlength="3" class="input--style-5" required placeholder="Your Full Name" />
+                                    <span asp-validation-for="Staff.Name" class="text-danger help-block with-errors"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Name -->
+                        <div class="form-row">
+                            <div class="name">Email</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <input asp-for="Staff.Email" class="input--style-5" placeholder="email@example.com" required />
+                                    <span asp-validation-for="Staff.Email" class="text-danger help-block with-errors"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Email -->
+                        <div class="form-row m-b-55">
+                            <div class="name">Password</div>
+                            <div class="value">
+                                <div class="row row-refine">
+                                    <div class="col-6">
+                                        <div class="input-group-desc">
+                                            <input asp-for="Staff.Password" data-minlength="6" class="input--style-5 validate-input" id="inputPassword" placeholder="Password" required />
+                                            <span asp-validation-for="Staff.Password" class="help-block with-errors"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-group-desc">
+                                            <input type="password" class="input--style-5" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Whoops, these don't match" placeholder="Confirm" required>
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Password Group -->
+                        <div class="form-row">
+                            <div class="name">Role</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <div class="rs-select2 js-select-simple select--no-search">
+                                        <select id="role" asp-for="Staff.StaffLink.Role.Title" asp-items="@Model.RoleTitleList" class="input--style-5">
+                                            <option></option>
+                                        </select>
+                                        <div class="select-dropdown"></div>
+                                    </div>
+                                    <span asp-validation-for="Staff.StaffLink.Role.Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Role Title Drowpdown -->
+                        <div class="form-row">
+                            <div class="name">Staff Type</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <div class="rs-select2 js-select-simple select--no-search">
+                                        <select id="staff-type" asp-for="Staff.StaffLink.StaffType.Type" asp-items="@Model.StaffTypeList" class="form-control">
+                                            <option></option>
+                                        </select>
+                                        <div class="select-dropdown"></div>
+                                    </div>
+                                    <span asp-validation-for="Staff.StaffLink.StaffType.Type" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Staff Type Drowpdown -->
+                        <div>
+                            <button class="btn btn--radius-2 btn--red" type="submit">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jquery JS-->
+    <script src="~/vendor/colorlib-regform-5/vendor/jquery/jquery.min.js"></script>
+    <!-- Vendor JS-->
+    <script src="~/vendor/colorlib-regform-5/vendor/select2/select2.min.js"></script>
+    <script src="~/vendor/colorlib-regform-5/vendor/datepicker/moment.min.js"></script>
+    <script src="~/vendor/colorlib-regform-5/vendor/datepicker/daterangepicker.js"></script>
+    <!-- Main JS-->
+    <script src="~/vendor/colorlib-regform-5/js/global.js"></script>
+    <!-- Custom JS -->
+    <script>
+        $("#role").select2({
+            placeholder: "Select Role",
+            minimumResultsForSearch: Infinity
+        });
+        $("#staff-type").select2({
+            placeholder: "Select Staff Type",
+            minimumResultsForSearch: Infinity
+        });
+    </script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

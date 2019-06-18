@@ -13,6 +13,7 @@ using Certitrack.Data;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Certitrack.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Certitrack
 {
@@ -34,7 +35,11 @@ namespace Certitrack
             services.AddIdentity<Staff, Role>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<CertitrackContext>();
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<CertitrackContext>().AddDefaultTokenProviders();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -83,7 +88,7 @@ namespace Certitrack
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
             app.UseSession();
             app.UseAuthentication();
 
