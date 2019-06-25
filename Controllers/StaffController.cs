@@ -1,20 +1,18 @@
-﻿using System;
+﻿using Certitrack.Crypto;
+using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Certitrack.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Certitrack.Data;
-using Certitrack.Models;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Certitrack.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Crypto;
-using Certitrack.Extensions.Alerts;
-using System.Data.SqlClient;
-using System.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Certitrack.Controllers
 {
@@ -40,7 +38,7 @@ namespace Certitrack.Controllers
             {
                 // Staff list to pass to view
                 List<Staff> staffList = new List<Staff>();
-                
+
                 // Populate staffList
                 foreach (Staff staff in UserManager.Users)
                 {
@@ -70,7 +68,7 @@ namespace Certitrack.Controllers
             var staffLink = _context.StaffLink.Find(id);
 
             var model = GetStaffCreateViewModel();
-            
+
             model.Staff = staff;
             model.Staff.StaffLink = staffLink;
 
@@ -87,17 +85,17 @@ namespace Certitrack.Controllers
                 var staffToUpdate = _context.Staff.Find(id);
                 var staffLinkToUpdate = _context.StaffLink.Find(id);
                 /*
-                 * assign staff name & email
-                 * to entity marked for update
-                 */
+				 * assign staff name & email
+				 * to entity marked for update
+				 */
                 staffToUpdate.Name = staff.Name;
                 staffToUpdate.Email = staff.Email;
 
                 /*
-                 * I've intentionally used both Fluent and standard LINQ
-                 * syntax below to show equivalent methods of db querying
-                 * (options are good, right?)
-                 */
+				 * I've intentionally used both Fluent and standard LINQ
+				 * syntax below to show equivalent methods of db querying
+				 * (options are good, right?)
+				 */
 
                 //assign StaffLink RoleId
                 staffLinkToUpdate.RoleId = _context.Role
@@ -110,7 +108,7 @@ namespace Certitrack.Controllers
                     where sType.Type == staff.StaffLink.StaffType.Type
                     select sType.Id
                 ).FirstOrDefault();
-                
+
                 //update db with changes
                 _context.UpdateRange(staffToUpdate, staffLinkToUpdate);
                 _context.SaveChanges();
@@ -123,7 +121,7 @@ namespace Certitrack.Controllers
                 throw;
             }
         }
-        
+
         // STAFF REGISTRATION (IF ADMIN)
         public IActionResult Create()
         {
@@ -144,98 +142,100 @@ namespace Certitrack.Controllers
             model.Staff = staff;
 
             if (!ModelState.IsValid)
+            {
                 return View(model)
                     .WithWarning("Something's Not Right", "Check the form");
-            try
-            {
-                // Create hashed pw from user input
-                string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
-
-                // Output Parameters for SQL Query
-                var messageParam = new SqlParameter()
-                {
-                    ParameterName = "@messageOut",
-                    Direction = ParameterDirection.Output,
-                    Value = DBNull.Value,
-                    SqlDbType = SqlDbType.VarChar,
-                    Size = 50
-                };
-                var staffCreatedParam = new SqlParameter()
-                {
-                    ParameterName = "@staffCreatedOut",
-                    Direction = ParameterDirection.Output,
-                    Value = DBNull.Value,
-                    SqlDbType = SqlDbType.Int
-                };
-
-                var _staff = new Staff()
-                {
-                    UserName = staff.UserName != null ? staff.UserName : staff.Email,
-                    Email = staff.Email,
-                    Password = hashed_pw,
-                    Name = staff.Name
-                };
-                
-                IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw);
-                if (result.Succeeded)
-                {
-                    var newStaff = await UserManager.FindByEmailAsync(_staff.Email);
-                    var role = await _context.Role
-                        .FirstOrDefaultAsync(r => r.Title == staff.StaffLink.Role.Title);
-                    var staffType = await _context.StaffType
-                        .FirstOrDefaultAsync(st => st.Type == staff.StaffLink.StaffType.Type);
-
-                    newStaff.StaffLink = new StaffLink
-                    {
-                        StaffId = newStaff.Id,
-                        RoleId = role.Id,
-                        StaffTypeId = staffType.Id
-                    };
-
-                    _context.StaffLink.Add(newStaff.StaffLink);
-                    await _context.SaveChangesAsync();
-                    staffCreatedParam.Value = 1; // staff creation success flag
-                }
-                else
-                {
-                    // Executes stpAssignStaff Stored Procedure
-                    _context.Database.ExecuteSqlCommand(
-                        @"EXEC [dbo].[stpAssignStaff]
-                         @staff_name = @name
-                        ,@staff_email = @email
-                        ,@staff_pw = @pw
-                        ,@role_title = @rt
-                        ,@staff_type = @st
-                        ,@message_out = @messageOut OUTPUT
-                        ,@staff_created = @staffCreatedOut OUTPUT"
-                            , new SqlParameter("@name", staff.Name)
-                            , new SqlParameter("@email", staff.Email)
-                            , new SqlParameter("@pw", hashed_pw)
-                            , new SqlParameter("@rt", staff.StaffLink.Role.Title)
-                            , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
-                            , messageParam //debugging param
-                            , staffCreatedParam //debugging param
-                    );
-                }
-
-                // Redirects to Staff Index w/ Success Alert
-                if (staffCreatedParam.Value != null)
-                    return RedirectToAction("Index")
-                        .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
-                // staff exists, etc. - Redirect to Staff Index w/ Error Alert
-                else if ((string)TempData["OriginController"] != "Account")
-                    return RedirectToAction("Index")
-                        .WithDanger("Staff Not Added", messageParam.Value.ToString());
-                else //staff exists, etc. - Redirect to Account Registration w/ Error Alert
-                {
-                    TempData["OriginController"] = null;
-                    return RedirectToAction("Register", "Account")
-                        .WithDanger("Staff Not Added", messageParam.Value.ToString());
-                }
             }
-            catch (Exception) { throw; }
+
+            // Create hashed pw from user input
+            string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
+
+            // Output Parameters for SQL Query
+            var messageParam = new SqlParameter()
+            {
+                ParameterName = "@messageOut",
+                Direction = ParameterDirection.Output,
+                Value = DBNull.Value,
+                SqlDbType = SqlDbType.VarChar,
+                Size = 50
+            };
+            var staffCreatedParam = new SqlParameter()
+            {
+                ParameterName = "@staffCreatedOut",
+                Direction = ParameterDirection.Output,
+                Value = DBNull.Value,
+                SqlDbType = SqlDbType.Int
+            };
+
+            var _staff = new Staff()
+            {
+                UserName = staff.UserName != null ? staff.UserName : staff.Email,
+                Email = staff.Email,
+                Password = hashed_pw,
+                Name = staff.Name
+            };
+
+            IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw);
+            if (result.Succeeded)
+            {
+                var newStaff = await UserManager.FindByEmailAsync(_staff.Email);
+                var role = await _context.Role
+                    .FirstOrDefaultAsync(r => r.Title == staff.StaffLink.Role.Title);
+                var staffType = await _context.StaffType
+                    .FirstOrDefaultAsync(st => st.Type == staff.StaffLink.StaffType.Type);
+                newStaff.StaffLink = new StaffLink
+                {
+                    StaffId = newStaff.Id,
+                    RoleId = role.Id,
+                    StaffTypeId = staffType.Id
+                };
+
+                _context.StaffLink.Add(newStaff.StaffLink);
+                await _context.SaveChangesAsync();
+                staffCreatedParam.Value = 1; // staff creation success flag
+            }
+            else
+            {
+                // Executes stpAssignStaff Stored Procedure
+                _context.Database.ExecuteSqlCommand(
+                    @"EXEC [dbo].[stpAssignStaff]
+						 @staff_name = @name
+						,@staff_email = @email
+						,@staff_pw = @pw
+						,@role_title = @rt
+						,@staff_type = @st
+						,@message_out = @messageOut OUTPUT
+						,@staff_created = @staffCreatedOut OUTPUT"
+                        , new SqlParameter("@name", staff.Name)
+                        , new SqlParameter("@email", staff.Email)
+                        , new SqlParameter("@pw", hashed_pw)
+                        , new SqlParameter("@rt", staff.StaffLink.Role.Title)
+                        , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
+                        , messageParam //debugging param
+                        , staffCreatedParam //debugging param
+                );
+            }
+
+            // Redirects to Staff Index w/ Success Alert
+            if (staffCreatedParam.Value != null)
+            {
+                return RedirectToAction("Index")
+                    .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+            }
+            // staff exists, etc. - Redirect to Staff Index w/ Error Alert
+            else if ((string)TempData["OriginController"] != "Account")
+            {
+                return RedirectToAction("Index")
+                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
+            }
+            else //staff exists, etc. - Redirect to Account Registration w/ Error Alert
+            {
+                TempData["OriginController"] = null;
+                return RedirectToAction("Register", "Account")
+                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
+            }
         }
-        
+
         // DELETE STAFF FROM DB (IF ADMIN)
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -51,7 +51,7 @@ namespace Certitrack.Controllers
                     };
 
                     await staffController.Create(staff);
-                    ViewBag.Message = "Staff: '" + staff.Name + "' was created";
+                    ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
                 }
             }
             catch (Exception e)
@@ -70,18 +70,22 @@ namespace Certitrack.Controllers
         [HttpPost]
         public async Task<IActionResult> Validate(Staff staff)
         {
-            var _staff = await UserManager.FindByEmailAsync(staff.Email);
-            var verify = SecurePasswordHasherHelper.Verify(staff.Password, _staff.Password);
-            //why does this fail?
-            var result = new Microsoft.AspNetCore.Identity.SignInResult();
-            if (verify)
-                result = await SignInManager.PasswordSignInAsync(staff, staff.Password, false, false);
+            var _staff = await UserManager.FindByEmailAsync(staff.Email); // from db
 
             if (_staff != null)
             {
                 if (SecurePasswordHasherHelper.Verify(staff.Password, _staff.Password))
                 {
-                    return Json(new { status = true, message = "Login Successfull!" });
+                    try
+                    {
+                        await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false);
+                        return Json(new { status = true, message = "Login Successfull!" });
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { status = false, message = "Error: " + e.Message });
+                        throw;
+                    }
                 }
                 else
                 {
@@ -90,7 +94,7 @@ namespace Certitrack.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Email!\n" + result.ToString() });
+                return Json(new { status = false, message = "Invalid Email!\n" });
             }
         }
     }
