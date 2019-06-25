@@ -13,7 +13,7 @@ GO
 --	3. Get Staff Type Id
 --	4. Create and/or Get a Staff Link Set
 -- =============================================
-alter PROCEDURE stpAssignStaff
+CREATE PROCEDURE stpAssignStaff
 	-- STAFF PARAMS --
 	@staff_name varchar(45),
 	@staff_email varchar(50),

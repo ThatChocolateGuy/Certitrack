@@ -33,3 +33,8 @@ STAFF VIEWS:
 		LIST STAFF IN TABLE | FOR EACH STAFF:
 			EDIT:GET ACTION REDIRECT (IF ADMIN)
 				MIGHT WANT TO PASS A BOOL FROM CONTROLLER IF USER IS ADMIN
+
+EDIT ACTIONS:
+	Can't edit due to concurrency exceptions
+	Seems tokens don't match?
+	Also fails to pass staff model to index view

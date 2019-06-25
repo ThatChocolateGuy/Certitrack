@@ -29,22 +29,29 @@ namespace Certitrack.Controllers
 
         public async Task<IActionResult> Register()
         {
+            StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
+            
             try
             {
-                ViewBag.Message = "User already registered";
-
                 Staff staff = await (UserManager.FindByEmailAsync("admin@certitrack.com"));
                 if (staff == null)
                 {
+                    var staffLink = new StaffLink
+                    {
+                        Role = await _certitrackContext.Role.FirstOrDefaultAsync(),
+                        StaffType = await _certitrackContext.StaffType.FirstOrDefaultAsync()
+                    };
                     staff = new Staff
                     {
                         UserName = "Admin",
                         Email = "admin@certitrack.com",
-                        Name = "Admin"
+                        Name = "Admin",
+                        Password = "admin123",
+                        StaffLink = staffLink
                     };
 
-                    IdentityResult result = await UserManager.CreateAsync(staff, "admin123");
-                    ViewBag.Message = "Staff '" + staff.Name + "' was created";
+                    await staffController.Create(staff);
+                    ViewBag.Message = "Staff: '" + staff.Name + "' was created";
                 }
             }
             catch (Exception e)
@@ -52,7 +59,6 @@ namespace Certitrack.Controllers
                 ViewBag.Message = e.Message;
             }
 
-            StaffController staffController = new StaffController(UserManager, SignInManager ,_certitrackContext);
             return View(staffController.GetStaffCreateViewModel());
         }
 
@@ -64,10 +70,12 @@ namespace Certitrack.Controllers
         [HttpPost]
         public async Task<IActionResult> Validate(Staff staff)
         {
-            var _staff = _certitrackContext.Staff.Where(s => s.Email == staff.Email).FirstOrDefaultAsync().Result;
+            var _staff = await UserManager.FindByEmailAsync(staff.Email);
             var verify = SecurePasswordHasherHelper.Verify(staff.Password, _staff.Password);
             //why does this fail?
-            var result = await SignInManager.PasswordSignInAsync(staff, staff.Password, false, false);
+            var result = new Microsoft.AspNetCore.Identity.SignInResult();
+            if (verify)
+                result = await SignInManager.PasswordSignInAsync(staff, staff.Password, false, false);
 
             if (_staff != null)
             {

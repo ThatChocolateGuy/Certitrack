@@ -14,6 +14,7 @@ using Certitrack.Extensions.Alerts;
 using System.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Certitrack.Controllers
 {
@@ -33,7 +34,7 @@ namespace Certitrack.Controllers
         }
 
         // DISPLAY STAFF LIST
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -41,24 +42,23 @@ namespace Certitrack.Controllers
                 List<Staff> staffList = new List<Staff>();
                 
                 // Populate staffList
-                foreach (Staff staff in _context.Staff)
+                foreach (Staff staff in UserManager.Users)
                 {
-                    // Get StaffLink record for current staff
-                    staff.StaffLink = _context.StaffLink.Find(staff.Id);
-                    // Get Role from StaffLink
-                    staff.StaffLink.Role = _context.Role.Find(staff.StaffLink.RoleId);
-                    // Get StaffType from StaffLink
-                    staff.StaffLink.StaffType = _context.StaffType.Find(staff.StaffLink.StaffTypeId);
-
+                    var _staff = await UserManager.FindByIdAsync(staff.Id.ToString());
+                    if (_staff.StaffLink == null)
+                    {
+                        _staff.StaffLink = await _context.StaffLink.FindAsync(staff.Id);
+                        _staff.StaffLink.Role = await _context.Role.FindAsync(_staff.StaffLink.RoleId);
+                        _staff.StaffLink.StaffType = await _context.StaffType.FindAsync(_staff.StaffLink.StaffTypeId);
+                    }
                     // Add Current Staff to List for View Render
-                    staffList.Add(staff);
+                    staffList.Add(_staff);
                 }
 
                 return View(staffList);
             }
             catch (Exception)
             {
-                return View();
                 throw;
             }
         }
@@ -146,7 +146,6 @@ namespace Certitrack.Controllers
             if (!ModelState.IsValid)
                 return View(model)
                     .WithWarning("Something's Not Right", "Check the form");
-
             try
             {
                 // Create hashed pw from user input
@@ -171,14 +170,33 @@ namespace Certitrack.Controllers
 
                 var _staff = new Staff()
                 {
-                    UserName = staff.Email,
-                    Password = staff.Password,
+                    UserName = staff.UserName != null ? staff.UserName : staff.Email,
                     Email = staff.Email,
+                    Password = hashed_pw,
                     Name = staff.Name
                 };
                 
-                IdentityResult result = await UserManager.CreateAsync(_staff, _staff.Password);
+                IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw);
                 if (result.Succeeded)
+                {
+                    var newStaff = await UserManager.FindByEmailAsync(_staff.Email);
+                    var role = await _context.Role
+                        .FirstOrDefaultAsync(r => r.Title == staff.StaffLink.Role.Title);
+                    var staffType = await _context.StaffType
+                        .FirstOrDefaultAsync(st => st.Type == staff.StaffLink.StaffType.Type);
+
+                    newStaff.StaffLink = new StaffLink
+                    {
+                        StaffId = newStaff.Id,
+                        RoleId = role.Id,
+                        StaffTypeId = staffType.Id
+                    };
+
+                    _context.StaffLink.Add(newStaff.StaffLink);
+                    await _context.SaveChangesAsync();
+                    staffCreatedParam.Value = 1; // staff creation success flag
+                }
+                else
                 {
                     // Executes stpAssignStaff Stored Procedure
                     _context.Database.ExecuteSqlCommand(
@@ -198,12 +216,6 @@ namespace Certitrack.Controllers
                             , messageParam //debugging param
                             , staffCreatedParam //debugging param
                     );
-                }
-                else
-                {
-                    var e = result.Errors.Aggregate("User Creation Failed - Identity Exception. Errors were: \n\r\n\r",
-                        (current, error) => current + (" - " + error + "\n\r"));
-                    throw new Exception(e);
                 }
 
                 // Redirects to Staff Index w/ Success Alert
