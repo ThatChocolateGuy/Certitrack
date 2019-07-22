@@ -3,6 +3,7 @@ using Certitrack.Data;
 using Certitrack.Extensions.Alerts;
 using Certitrack.Models;
 using Certitrack.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace Certitrack.Controllers
 {
+    [Authorize]
     public class StaffController : Controller
     {
         private readonly CertitrackContext _context;
@@ -169,7 +171,7 @@ namespace Certitrack.Controllers
 
             var _staff = new Staff()
             {
-                UserName = staff.UserName != null ? staff.UserName : staff.Email,
+                UserName = staff.UserName ?? staff.Email,
                 Email = staff.Email,
                 Password = hashed_pw,
                 Name = staff.Name

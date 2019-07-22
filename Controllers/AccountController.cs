@@ -18,12 +18,14 @@ namespace Certitrack.Controllers
 
         private UserManager<Staff> UserManager { get; set; }
         private SignInManager<Staff> SignInManager { get; set; }
+        private RoleManager<Role> RoleManager { get; set; }
 
         public AccountController(UserManager<Staff> userManager,
-            SignInManager<Staff> signInManager, CertitrackContext certitrackContext)
+            SignInManager<Staff> signInManager, RoleManager<Role> roleManager, CertitrackContext certitrackContext)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            RoleManager = roleManager;
             _certitrackContext = certitrackContext;
         }
 
@@ -33,13 +35,37 @@ namespace Certitrack.Controllers
             
             try
             {
-                Staff staff = await (UserManager.FindByEmailAsync("admin@certitrack.com"));
+                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com");
                 if (staff == null)
                 {
+                    //var role = await _certitrackContext.Role.FirstOrDefaultAsync();
+                    var role = await RoleManager.FindByNameAsync("Admin");
+                    var staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync();
+
+                    if (role == null)
+                    {
+                        role = new Role
+                        {
+                            Title = "Admin",
+                            Description = "Can create, edit, delete anyone and anything. Basically, God mode.",
+                            Name = "Admin"
+                        };
+                        await RoleManager.CreateAsync(role);
+                    }
+                    if (staffType == null)
+                    {
+                        staffType = new StaffType
+                        {
+                            Type = "Head Therapist"
+                        };
+                        await _certitrackContext.StaffType.AddAsync(staffType);
+                        await _certitrackContext.SaveChangesAsync();
+                    }
+
                     var staffLink = new StaffLink
                     {
-                        Role = await _certitrackContext.Role.FirstOrDefaultAsync(),
-                        StaffType = await _certitrackContext.StaffType.FirstOrDefaultAsync()
+                        Role = role,
+                        StaffType = staffType
                     };
                     staff = new Staff
                     {

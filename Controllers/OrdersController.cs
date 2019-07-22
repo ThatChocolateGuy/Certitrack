@@ -171,6 +171,23 @@ namespace certitrack_certificate_manager.Controllers
                     .Include(o => o.OrderItems)
                     .Include(o => o.Customer)
                     .FirstOrDefaultAsync(o => o.Id == id);
+
+                var certificates = await _context.OrderItem
+                    .Include(oi => oi.Certificate)
+                    .Where(oi => oi.OrderId == id)
+                    .Select(oi => oi.Certificate)
+                    .ToListAsync();
+                var cLinks = await _context.OrderItem
+                    .Where(oi => oi.OrderId == id)
+                    .Include(oi => oi.Certificate)
+                    .Select(oi => oi.Certificate)
+                    .Include(oi => oi.CertificateLink)
+                    .Select(oi => oi.CertificateLink)
+                    .ToListAsync();
+
+                // must delete cert. links along with certs
+                _context.CertificateLink.RemoveRange(cLinks);
+                _context.Certificate.RemoveRange(certificates);
                 _context.Order.Remove(order);
                 await _context.SaveChangesAsync();
                 return "Order #" + order.Id + " for " + order.Customer.Name + " deleted";

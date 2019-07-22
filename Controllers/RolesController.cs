@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Certitrack.Data;
 using Certitrack.Models;
 using Certitrack.Extensions.Alerts;
+using Microsoft.AspNetCore.Identity;
 
 namespace certitrack_certificate_manager.Controllers
 {
@@ -15,15 +16,21 @@ namespace certitrack_certificate_manager.Controllers
     {
         private readonly CertitrackContext _context;
 
-        public RolesController(CertitrackContext context)
+        private UserManager<Staff> UserManager { get; set; }
+        private RoleManager<Role> RoleManager { get; set; }
+
+        public RolesController(CertitrackContext context, UserManager<Staff> userManager, RoleManager<Role> roleManager)
         {
+            // *laughs maniacally* - you'll soon see why... maybe
             _context = context;
+            UserManager = userManager;
+            RoleManager = roleManager;
         }
 
         // GET: Roles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Role.ToListAsync());
+            return View(await RoleManager.Roles.ToListAsync());
         }
 
         // GET: Roles/Details/5
@@ -62,8 +69,9 @@ namespace certitrack_certificate_manager.Controllers
                     .WithWarning("Role Exists", "A role with the same title exists. Try a different title.");
             if (ModelState.IsValid)
             {
-                _context.Add(role);
-                await _context.SaveChangesAsync();
+                await RoleManager.SetRoleNameAsync(role, role.Title);
+                await RoleManager.CreateAsync(role);
+
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Success", role.Title + " role successfully created.");
             }
@@ -105,9 +113,27 @@ namespace certitrack_certificate_manager.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    _context.Update(role);
-                    await _context.SaveChangesAsync();
+                { 
+                    //_context.Update(role);
+                    //await _context.SaveChangesAsync();
+                    //role.Name = role.Name ?? role.Title;
+                    
+                    try
+                    {
+                        Console.WriteLine("Name: " + role.Name);
+                        Console.WriteLine("Title: " + role.Title);
+                        Console.WriteLine("NormalizedName: " + role.NormalizedName);
+                        Console.WriteLine("Description: " + role.Description);
+                        //var result = await RoleManager.SetRoleNameAsync(role, role.Title);
+                        var result = await RoleManager.UpdateAsync(role);
+
+                        _context.Role.Update(role);
+                        var res = await _context.SaveChangesAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
