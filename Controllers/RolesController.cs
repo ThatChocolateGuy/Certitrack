@@ -113,27 +113,14 @@ namespace certitrack_certificate_manager.Controllers
             if (ModelState.IsValid)
             {
                 try
-                { 
-                    //_context.Update(role);
-                    //await _context.SaveChangesAsync();
-                    //role.Name = role.Name ?? role.Title;
-                    
-                    try
-                    {
-                        Console.WriteLine("Name: " + role.Name);
-                        Console.WriteLine("Title: " + role.Title);
-                        Console.WriteLine("NormalizedName: " + role.NormalizedName);
-                        Console.WriteLine("Description: " + role.Description);
-                        //var result = await RoleManager.SetRoleNameAsync(role, role.Title);
-                        var result = await RoleManager.UpdateAsync(role);
+                {
+                    var _role = await RoleManager.FindByIdAsync(role.Id.ToString());
+                    await RoleManager.SetRoleNameAsync(_role, role.Title);
 
-                        _context.Role.Update(role);
-                        var res = await _context.SaveChangesAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    _role.Title = role.Title;
+                    _role.Description = role.Description;
+
+                    await RoleManager.UpdateAsync(_role);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
