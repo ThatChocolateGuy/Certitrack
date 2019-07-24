@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    string redirectAction;
 }
 
 <!DOCTYPE html>
@@ -93,7 +94,14 @@
                 success: function (result) {
                     console.log(result);
                     if (result.status == true) {
-                        window.location.href = '@Url.Action("Index", "Home")';
+                        @if (User.IsInRole("Admin"))
+                        {
+                            redirectAction = @Url.Action("Index", "Staff");
+                        } else
+                        {
+                            redirectAction = @Url.Action("Index", "Certificates");
+                        }
+                        location.href = "@redirectAction";
                     }
                     else {
                         alert(result.message);

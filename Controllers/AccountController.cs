@@ -77,6 +77,8 @@ namespace Certitrack.Controllers
                     };
 
                     await staffController.Create(staff);
+                    var result = await UserManager.AddToRoleAsync(staff, "Admin");
+                    Console.WriteLine("Ln80 - UserManager.AddToRoleAsync - Result: " + result);
                     ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
                 }
             }

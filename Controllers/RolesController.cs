@@ -9,6 +9,7 @@ using Certitrack.Data;
 using Certitrack.Models;
 using Certitrack.Extensions.Alerts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace certitrack_certificate_manager.Controllers
 {
@@ -52,6 +53,7 @@ namespace certitrack_certificate_manager.Controllers
         }
 
         // GET: Roles/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();

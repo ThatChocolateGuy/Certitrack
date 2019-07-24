@@ -1,37 +1,40 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">NAVIGATION</li>
     <!-- Dashboard -->
-    <li>
-        <a href="@Url.Action("Index", "Home")">
-            <i class="fa fa-tachometer-alt"></i> <span>Dashboard</span>
-        </a>
-    </li>
+    @*<li>
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fa fa-tachometer-alt"></i> <span>Dashboard</span>
+            </a>
+        </li>*@
     <!-- / Dashboard -->
     <!-- Staff Treeview -->
-    <li class="treeview @(ViewBag.Current == "StaffIndex"
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="treeview @(ViewBag.Current == "StaffIndex"
         || ViewBag.Current == "StaffCreate"
-        || ViewBag.Current == "StaffEdit"? "active" : "")">
-        <a href="#">
-            <i class="fa fa-id-badge"></i> <span>Staff</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            <li class="@(ViewBag.Current == "StaffIndex" ? "active" : "")">
-                <a href="@Url.Action("Index", "Staff")">
-                    <i class="fa fa-tools"></i>
-                    <span>Manage Staff</span>
-                </a>
-            </li>
-            <li class="@(ViewBag.Current == "StaffCreate" ? "active" : "")">
-                <a href="@Url.Action("Create", "Staff")">
-                    <i class="fa fa-user-plus"></i>
-                    <span>Add Member</span>
-                </a>
-            </li>
-        </ul>
-    </li>
+        || ViewBag.Current == "StaffEdit" ? "active" : "")">
+            <a href="#">
+                <i class="fa fa-id-badge"></i> <span>Staff</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="@(ViewBag.Current == "StaffIndex" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Staff")">
+                        <i class="fa fa-tools"></i>
+                        <span>Manage Staff</span>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Current == "StaffCreate" ? "active" : "")">
+                    <a href="@Url.Action("Create", "Staff")">
+                        <i class="fa fa-user-plus"></i>
+                        <span>Add Member</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
     <!-- / Staff Treeview -->
     <!-- Certificates Treeview -->
     <li class="treeview @(ViewBag.Current == "CertificateIndex"
@@ -97,82 +100,91 @@
     </li>
     <!-- / Orders Treeview -->
     <!-- Channels Treeview -->
-    <li class="treeview @(ViewBag.Current == "ChannelsIndex"
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="treeview @(ViewBag.Current == "ChannelsIndex"
         || ViewBag.Current == "ChannelsCreate"
         || ViewBag.Current == "ChannelsEdit"
-        || ViewBag.Current == "ChannelsDetails"? "active" : "")">
-        <a href="#">
-            <i class="fa fa-road"></i> <span>Channels</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            <li class="@(ViewBag.Current == "ChannelsIndex" ? "active" : "")">
-                <a href="@Url.Action("Index", "Channels")">
-                    <i class="fa fa-tools"></i>
-                    <span>Manage Channels</span>
-                </a>
-            </li>
-            <li class="@(ViewBag.Current == "ChannelsCreate" ? "active" : "")">
-                <a href="@Url.Action("Create", "Channels")">
-                    <i class="fa fa-plus-square"></i>
-                    <span>Add Channel</span>
-                </a>
-            </li>
-        </ul>
-    </li>
+        || ViewBag.Current == "ChannelsDetails" ? "active" : "")">
+            <a href="#">
+                <i class="fa fa-road"></i> <span>Channels</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="@(ViewBag.Current == "ChannelsIndex" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Channels")">
+                        <i class="fa fa-tools"></i>
+                        <span>Manage Channels</span>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Current == "ChannelsCreate" ? "active" : "")">
+                    <a href="@Url.Action("Create", "Channels")">
+                        <i class="fa fa-plus-square"></i>
+                        <span>Add Channel</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
     <!-- / Channels Treeview -->
     <!-- Promotions Treeview -->
-    <li class="treeview @(ViewBag.Current == "PromoIndex"
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="treeview @(ViewBag.Current == "PromoIndex"
         || ViewBag.Current == "PromoCreate"
         || ViewBag.Current == "PromoEdit"? "active" : "")">
-        <a href="#">
-            <i class="fa fa-piggy-bank"></i> <span>Promotions</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            <li class="@(ViewBag.Current == "PromoIndex" ? "active" : "")">
-                <a href="@Url.Action("Index", "Promotions")">
-                    <i class="fa fa-tools"></i>
-                    <span>Manage Promotions</span>
-                </a>
-            </li>
-            <li class="@(ViewBag.Current == "PromoCreate" ? "active" : "")">
-                <a href="@Url.Action("Create", "Promotions")">
-                    <i class="fa fa-funnel-dollar"></i>
-                    <span>Create Promotion</span>
-                </a>
-            </li>
-        </ul>
-    </li>
+            <a href="#">
+                <i class="fa fa-piggy-bank"></i> <span>Promotions</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="@(ViewBag.Current == "PromoIndex" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Promotions")">
+                        <i class="fa fa-tools"></i>
+                        <span>Manage Promotions</span>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Current == "PromoCreate" ? "active" : "")">
+                    <a href="@Url.Action("Create", "Promotions")">
+                        <i class="fa fa-funnel-dollar"></i>
+                        <span>Create Promotion</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
     <!-- / Promotions Treeview -->
     <!-- Roles Treeview -->
-    <li class="treeview @(ViewBag.Current == "RolesIndex"
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="treeview @(ViewBag.Current == "RolesIndex"
         || ViewBag.Current == "RolesCreate"
         || ViewBag.Current == "RolesEdit"? "active" : "")">
-        <a href="#">
-            <i class="fa fa-users-cog"></i> <span>Roles</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            <li class="@(ViewBag.Current == "RolesIndex" ? "active" : "")">
-                <a href="@Url.Action("Index", "Roles")">
-                    <i class="fa fa-tools"></i>
-                    <span>Manage Roles</span>
-                </a>
-            </li>
-            <li class="@(ViewBag.Current == "RolesCreate" ? "active" : "")">
-                <a href="@Url.Action("Create", "Roles")">
-                    <i class="fa fa-user-cog"></i>
-                    <span>Create Role</span>
-                </a>
-            </li>
-        </ul>
-    </li>
+            <a href="#">
+                <i class="fa fa-users-cog"></i> <span>Roles</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="@(ViewBag.Current == "RolesIndex" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Roles")">
+                        <i class="fa fa-tools"></i>
+                        <span>Manage Roles</span>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Current == "RolesCreate" ? "active" : "")">
+                    <a href="@Url.Action("Create", "Roles")">
+                        <i class="fa fa-user-cog"></i>
+                        <span>Create Role</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
     <!-- / Roles Treeview -->
 </ul>
