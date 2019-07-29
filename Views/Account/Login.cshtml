@@ -1,7 +1,6 @@
 ﻿
 @{
     Layout = null;
-    string redirectAction;
 }
 
 <!DOCTYPE html>
@@ -93,15 +92,13 @@
                 },
                 success: function (result) {
                     console.log(result);
+                    var redirectAction = "";
                     if (result.status == true) {
-                        @if (User.IsInRole("Admin"))
-                        {
-                            redirectAction = @Url.Action("Index", "Staff");
-                        } else
-                        {
-                            redirectAction = @Url.Action("Index", "Certificates");
-                        }
-                        location.href = "@redirectAction";
+                        if (result.staffRole == true)
+                            redirectAction = "@Url.Action("Index", "Staff")";
+                        else
+                            redirectAction = "@Url.Action("Index", "Certificates")";
+                        location.href = redirectAction;
                     }
                     else {
                         alert(result.message);
@@ -112,4 +109,3 @@
     </script>
 </body>
 </html>
-

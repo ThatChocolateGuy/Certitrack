@@ -29,16 +29,21 @@ namespace Certitrack.Controllers
             _certitrackContext = certitrackContext;
         }
 
-        public async Task<IActionResult> Register()
+        public IActionResult Register()
         {
             StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
-            
+            return View(staffController.GetStaffCreateViewModel());
+        }
+
+        public async Task<IActionResult> Login()
+        {
+            StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
+
             try
             {
-                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com");
+                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.come");
                 if (staff == null)
                 {
-                    //var role = await _certitrackContext.Role.FirstOrDefaultAsync();
                     var role = await RoleManager.FindByNameAsync("Admin");
                     var staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync();
 
@@ -78,7 +83,7 @@ namespace Certitrack.Controllers
 
                     await staffController.Create(staff);
                     var result = await UserManager.AddToRoleAsync(staff, "Admin");
-                    Console.WriteLine("Ln80 - UserManager.AddToRoleAsync - Result: " + result);
+                    Console.WriteLine("UserManager.AddToRoleAsync - Result: " + result);
                     ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
                 }
             }
@@ -87,18 +92,13 @@ namespace Certitrack.Controllers
                 ViewBag.Message = e.Message;
             }
 
-            return View(staffController.GetStaffCreateViewModel());
-        }
-
-        public IActionResult Login()
-        {
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Validate(Staff staff)
         {
-            var _staff = await UserManager.FindByEmailAsync(staff.Email); // from db
+            var _staff = await UserManager.FindByEmailAsync(staff.Email);
 
             if (_staff != null)
             {
@@ -107,7 +107,8 @@ namespace Certitrack.Controllers
                     try
                     {
                         await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false);
-                        return Json(new { status = true, message = "Login Successfull!" });
+                        return Json(new { status = true, message = "Login Successfull!",
+                            staffRole = await UserManager.IsInRoleAsync(_staff, "Admin") });
                     }
                     catch (Exception e)
                     {
