@@ -261,16 +261,28 @@ $(function () {
     });
     //Bootsrap alert modal
     if (sessionStorage.getItem("_refresh.location") == "true") {
+        var alertType, alertLabel, icon;
+        var alertResult = sessionStorage.getItem("_alert.result");
+        if (alertResult.includes("success")) {
+            alertType = "alert-success";
+            alertLabel = "Success";
+            icon = "<i class=\"icon fa fa-check\"></i>";
+        } else {
+            alertType = "alert-danger";
+            alertLabel = "Something Went Wrong";
+            icon = "<i class=\"icon fa fa-ban\"></i>";
+        }
+            
         document.getElementById("status-messages").innerHTML =
-            "<div class=\"alert alert-success alert-dismissible\" role=\"alert\" style=\"margin-top: -2px; box-shadow: rgba(0,0,0,.5) 0 1px 3px\">" +
+            "<div class=\"alert " + alertType + " alert-dismissible\" role=\"alert\" style=\"margin-top: -2px; box-shadow: rgba(0,0,0,.5) 0 1px 3px\">" +
             "    <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +
             "        <span aria-hidden=\"true\">&times;</span>" +
             "    </button>" +
             "    <strong>" +
-            "       <i class=\"icon fa fa-check\"></i>" +
-            "       Success" +
+                    icon +
+                    alertLabel +
             "    </strong>" +
-            "    <span class=\"pull-right\">" + sessionStorage.getItem("_alert.result") + "</span>" +
+            "    <span class=\"pull-right\">" + alertResult + "</span>" +
             "</div>";
         sessionStorage.setItem("_refresh.location", false);
     }
@@ -288,7 +300,6 @@ $(function () {
     $("#existing-customer").on("click", function () {
         dropdownButton("Existing");
     });
-    //$(":button, .btn").click(btnGroup(this.activeElement));
     //select list on-change listener (certificate create)
     $("select#customer-toggle-select").change(function () {
         if ($(this).children("option:selected").val()) {
