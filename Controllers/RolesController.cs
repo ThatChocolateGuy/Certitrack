@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace certitrack_certificate_manager.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
         private readonly CertitrackContext _context;
@@ -22,7 +23,6 @@ namespace certitrack_certificate_manager.Controllers
 
         public RolesController(CertitrackContext context, UserManager<Staff> userManager, RoleManager<Role> roleManager)
         {
-            // *laughs maniacally* - you'll soon see why... maybe
             _context = context;
             UserManager = userManager;
             RoleManager = roleManager;
@@ -34,34 +34,13 @@ namespace certitrack_certificate_manager.Controllers
             return View(await RoleManager.Roles.ToListAsync());
         }
 
-        // GET: Roles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var role = await _context.Role
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
-
-            return View(role);
-        }
-
         // GET: Roles/Create
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Roles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description")] Role role)
@@ -81,25 +60,7 @@ namespace certitrack_certificate_manager.Controllers
                 .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
         }
 
-        // GET: Roles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var role = await _context.Role.FindAsync(id);
-            if (role == null)
-            {
-                return NotFound();
-            }
-            return View(role);
-        }
-
         // POST: Roles/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description")] Role role)
@@ -142,24 +103,6 @@ namespace certitrack_certificate_manager.Controllers
                 .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
         }
 
-        // GET: Roles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var role = await _context.Role
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
-
-            return View(role);
-        }
-
         // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -180,7 +123,8 @@ namespace certitrack_certificate_manager.Controllers
                 }
                 else
                 {
-                    return e.ToString();
+                    //return e.ToString();
+                    return "Delete staff associated with this role and try again.";
                     throw;
                 }
             }
