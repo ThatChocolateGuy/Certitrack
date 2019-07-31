@@ -123,7 +123,7 @@ namespace certitrack_certificate_manager.Controllers
                 }
                 else
                 {
-                    //return e.ToString();
+                    Console.WriteLine(e.Message.ToString());
                     return "Delete staff associated with this role and try again.";
                     throw;
                 }
