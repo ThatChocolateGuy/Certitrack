@@ -98,7 +98,7 @@
                                 totalValue = 0;
                                 <tr>
                                     <td>
-                                        @order.Id
+                                        <a href="@Url.Action("Details", "Orders")/@order.Id">@order.Id</a>
                                     </td>
                                     <td>
                                         @order.OrderItems.Count
