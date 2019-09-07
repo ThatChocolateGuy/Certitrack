@@ -10,9 +10,11 @@ using Certitrack.ViewModels;
 using System.Data.SqlClient;
 using Certitrack.Extensions.Alerts;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Certitrack.Controllers
 {
+    [Authorize]
     public class CertificatesController : Controller
     {
         private readonly CertitrackContext _context;

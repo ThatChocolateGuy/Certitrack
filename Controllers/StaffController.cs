@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Certitrack.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class StaffController : Controller
     {
         private readonly CertitrackContext _context;

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Certitrack.Data;
 using Certitrack.Models;
 using Certitrack.Extensions.Alerts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace certitrack_certificate_manager.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PromotionsController : Controller
     {
         private readonly CertitrackContext _context;

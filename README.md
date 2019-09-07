@@ -2,7 +2,8 @@
 ASP.NET Core Certificate Issuing and Tracking System
 
 ## BUGS:
-	
+- no logout feature
+
 ## NEW FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
 - total certificates sold
