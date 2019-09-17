@@ -41,7 +41,7 @@ namespace Certitrack.Controllers
 
             try
             {
-                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.come");
+                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com");
                 if (staff == null)
                 {
                     var role = await RoleManager.FindByNameAsync("Admin");

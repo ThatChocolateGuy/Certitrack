@@ -162,7 +162,7 @@ $(function () {
     //format DataTables
     $("#main-table-staff").DataTable({
         "columnDefs": [{
-            "targets": 6,
+            "targets": 5,
             "orderable": false
         }]
     });
@@ -263,7 +263,7 @@ $(function () {
     if (sessionStorage.getItem("_refresh.location") == "true") {
         var alertType, alertLabel, icon;
         var alertResult = sessionStorage.getItem("_alert.result");
-        if (alertResult.includes("success")) {
+        if (alertResult.includes("success") || alertResult.includes("redeemed")) {
             alertType = "alert-success";
             alertLabel = "Success";
             icon = "<i class=\"icon fa fa-check\"></i>";

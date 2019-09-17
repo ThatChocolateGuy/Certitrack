@@ -60,14 +60,14 @@
                             <!-- / Password Group -->
                         }
                         <!-- Role Title Drowpdown -->
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label asp-for="Staff.StaffLink.Role.Title" class="control-label">Role</label>
                             <select asp-for="Staff.StaffLink.Role.Title" asp-items="@Model.RoleTitleList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.Role.Title" class="text-danger"></span>
                         </div>
                         <!-- / Role Title Drowpdown -->
                         <!-- Staff Type Drowpdown -->
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-6" style="visibility: hidden">
                             <label asp-for="Staff.StaffLink.StaffType.Type" class="control-label">Staff Type</label>
                             <select asp-for="Staff.StaffLink.StaffType.Type" asp-items="@Model.StaffTypeList" class="form-control"></select>
                             <span asp-validation-for="Staff.StaffLink.StaffType.Type" class="text-danger"></span>

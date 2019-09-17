@@ -74,6 +74,22 @@ namespace Certitrack
         {
             if (env.IsDevelopment())
             {
+                //2019-09-10 enable portable db
+                string ContentRootPath = env.ContentRootPath;
+
+                //2019-09-10 enable portable db
+                if (ConnectionString.Contains("%CONTENTROOTPATH%"))
+                {
+                    try
+                    {
+                        ConnectionString = ConnectionString.Replace("%CONTENTROOTPATH%", ContentRootPath);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
 

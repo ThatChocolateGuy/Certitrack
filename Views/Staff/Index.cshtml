@@ -44,9 +44,9 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Created)
                                 </th>
-                                <th>
+                                @*<th>
                                     @Html.DisplayNameFor(model => model.StaffLink.StaffType.Type)
-                                </th>
+                                </th>*@
                                 <th>
                                     Role
                                 </th>
@@ -69,9 +69,9 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Created)
                                     </td>
-                                    <td>
+                                    @*<td>
                                         @Html.DisplayFor(modelItem => item.StaffLink.StaffType.Type)
-                                    </td>
+                                    </td>*@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.StaffLink.Role.Title)
                                     </td>
