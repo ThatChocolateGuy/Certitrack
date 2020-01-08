@@ -60,6 +60,21 @@ namespace certitrack_certificate_manager.Controllers
                 .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
         }
 
+        // GET: Roles/Edit/5
+        public IActionResult Edit(int id)
+        {
+            Role role = null;
+            if (id >= 0)
+            {
+                role = _context.Role.Find(id);
+                if (role == null)
+                {
+                    return NotFound();
+                }                
+            }
+            return View(role);
+        }
+
         // POST: Roles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]

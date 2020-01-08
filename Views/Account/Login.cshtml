@@ -30,6 +30,10 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-b-160 p-t-50">
+                @if (ViewBag.Message != null)
+                {
+                    <p>@ViewBag.Message</p>
+                }
                 <form class="login100-form validate-form" onsubmit="Validation(); return false">
                     <span class="login100-form-title p-b-43">
                         Certitrack Login
@@ -59,10 +63,10 @@
                     </div>
 
                     @*<div class="text-center w-full p-t-23">
-                        <a href="#" class="txt1">
-                            Forgot password?
-                        </a>
-                    </div>*@
+                <a href="#" class="txt1">
+                    Forgot password?
+                </a>
+            </div>*@
                 </form>
             </div>
         </div>
