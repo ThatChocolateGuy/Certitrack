@@ -126,5 +126,12 @@ namespace Certitrack.Controllers
                 return Json(new { status = false, message = "Invalid Email!\n" });
             }
         }
+
+        //Logout feature
+        public async Task<IActionResult> Logout()
+        {
+            await SignInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
