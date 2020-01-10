@@ -134,7 +134,7 @@ namespace Certitrack.Controllers
 
             return View(model);
         }
-        // SUBMIT NEW STAFF TO DB (IF ADMIN)
+        // SUBMIT NEW STAFF TO DB
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Staff staff)
@@ -218,11 +218,20 @@ namespace Certitrack.Controllers
                 );
             }
 
-            // Redirects to Staff Index w/ Success Alert
-            if (staffCreatedParam.Value != null)
+            // Redirects to [controller] Index w/ Success Alert
+            if ((int)staffCreatedParam.Value == 1)
             {
-                return RedirectToAction("Index")
-                    .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+                // Staff Index (Admin)
+                var createdStaff = await UserManager.FindByEmailAsync(staff.Email);
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index")
+                        .WithSuccess("Staff Added", staff.Name + " has been added to the team!");
+                else // Certificates Index (Non-Admin)
+                {
+                    await SignInManager.SignInAsync(createdStaff, false);
+                    return RedirectToAction("Certificates", "Index")
+                        .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+                }
             }
             // staff exists, etc. - Redirect to Staff Index w/ Error Alert
             else if ((string)TempData["OriginController"] != "Account")

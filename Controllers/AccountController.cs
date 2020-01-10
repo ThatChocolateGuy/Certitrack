@@ -107,8 +107,8 @@ namespace Certitrack.Controllers
                     try
                     {
                         await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false);
-                        return Json(new { status = true, message = "Login Successfull!",
-                            staffRole = await UserManager.IsInRoleAsync(_staff, "Admin") });
+                        return Json(new { status = true, message = "Login Successful!",
+                            isAdmin = await UserManager.IsInRoleAsync(_staff, "Admin") });
                     }
                     catch (Exception e)
                     {

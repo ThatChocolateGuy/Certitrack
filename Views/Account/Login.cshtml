@@ -24,9 +24,18 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/css/util.css">
     <link rel="stylesheet" type="text/css" href="~/css/main.css">
+    <link href="~/css/custom.css" rel="stylesheet" type="text/css" />
     <!--===============================================================================================-->
 </head>
 <body>
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <h2>Something ain't right</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content"></div>
+        </div>
+    </div>
+
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-b-160 p-t-50">
@@ -51,7 +60,7 @@
                     </div>
 
                     <div class="container-login100-form-btn">
-                        <button class="login100-form-btn" onclick="Validation()">
+                        <button class="login100-form-btn">
                             Sign in
                         </button>
                     </div>
@@ -63,10 +72,10 @@
                     </div>
 
                     @*<div class="text-center w-full p-t-23">
-                <a href="#" class="txt1">
-                    Forgot password?
-                </a>
-            </div>*@
+                            <a href="#" class="txt1">
+                                Forgot password?
+                            </a>
+                        </div>*@
                 </form>
             </div>
         </div>
@@ -91,21 +100,21 @@
                     email: $('#email').val(),
                     password: $('#password').val()
                 },
-                    error: function (result) {
-                        alert("There is a Problem, Try Again!\n" + result.message);
+                error: function (result) {
+                    alert("There is a Problem, Try Again!\n" + result.message);
                 },
                 success: function (result) {
-                    console.log(result);
                     var redirectAction = "";
                     if (result.status == true) {
-                        if (result.staffRole == true)
+                        if (result.isAdmin == true)
                             redirectAction = "@Url.Action("Index", "Staff")";
                         else
                             redirectAction = "@Url.Action("Index", "Certificates")";
                         location.href = redirectAction;
                     }
                     else {
-                        alert(result.message);
+                        location.href = "#popup1";
+                        document.getElementsByClassName("content")[0].textContent = "Looks like an " + result.message + " Try again.";
                     }
                 }
             });
