@@ -282,9 +282,8 @@ namespace Certitrack.Controllers
                 };
 
             // Create new StaffCreateViewModel with set list props
-            var model = new StaffCreateViewModel(
+            return new StaffCreateViewModel(
                 roleTitleList: roleTitles, staffTypeList: staffTypes);
-            return model;
         }
     }
 }
