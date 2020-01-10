@@ -139,7 +139,6 @@ namespace Certitrack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Staff staff)
         {
-            ViewData["FormAction"] = "Create";
             var model = GetStaffCreateViewModel();
             model.Staff = staff;
 
@@ -177,45 +176,18 @@ namespace Certitrack.Controllers
                 Name = staff.Name
             };
 
+            // attempt registration of new user with UserManager
             IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw);
             if (result.Succeeded)
             {
-                var newStaff = await UserManager.FindByEmailAsync(_staff.Email);
-                var role = await _context.Role
-                    .FirstOrDefaultAsync(r => r.Title == staff.StaffLink.Role.Title);
-                var staffType = await _context.StaffType
-                    .FirstOrDefaultAsync(st => st.Type == staff.StaffLink.StaffType.Type);
-                newStaff.StaffLink = new StaffLink
-                {
-                    StaffId = newStaff.Id,
-                    RoleId = role.Id,
-                    StaffTypeId = staffType.Id
-                };
-
-                _context.StaffLink.Add(newStaff.StaffLink);
-                await _context.SaveChangesAsync();
-                staffCreatedParam.Value = 1; // staff creation success flag
+                // link role and staffType to newly created user
+                await createStaffLink(staff, _staff);
+                staffCreatedParam.Value = 1; // set staff creation success flag
             }
             else
             {
-                // Executes stpAssignStaff Stored Procedure
-                _context.Database.ExecuteSqlCommand(
-                    @"EXEC [dbo].[stpAssignStaff]
-						 @staff_name = @name
-						,@staff_email = @email
-						,@staff_pw = @pw
-						,@role_title = @rt
-						,@staff_type = @st
-						,@message_out = @messageOut OUTPUT
-						,@staff_created = @staffCreatedOut OUTPUT"
-                        , new SqlParameter("@name", staff.Name)
-                        , new SqlParameter("@email", staff.Email)
-                        , new SqlParameter("@pw", hashed_pw)
-                        , new SqlParameter("@rt", staff.StaffLink.Role.Title)
-                        , new SqlParameter("@st", staff.StaffLink.StaffType.Type)
-                        , messageParam //debugging param
-                        , staffCreatedParam //debugging param
-                );
+                // Executes stpAssignStaff Stored Procedure as fallback linking method
+                ExecStpAssignStaff(staff, hashed_pw, messageParam, staffCreatedParam);
             }
 
             // Redirects to [controller] Index w/ Success Alert
@@ -246,7 +218,7 @@ namespace Certitrack.Controllers
                     .WithDanger("Staff Not Added", messageParam.Value.ToString());
             }
         }
-
+        
         // DELETE STAFF FROM DB (IF ADMIN)
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -254,8 +226,8 @@ namespace Certitrack.Controllers
         {
             try
             {
-                var staff = _context.Staff.Where(s => s.Id == id).Single();
-                var staffLink = _context.StaffLink.Where(sl => sl.StaffId == id).Single();
+                Staff staff = _context.Staff.Where(s => s.Id == id).Single();
+                StaffLink staffLink = _context.StaffLink.Where(sl => sl.StaffId == id).Single();
 
                 //deletes selected staff & associated staffLink record
                 _context.RemoveRange(staff, staffLink);
@@ -293,6 +265,58 @@ namespace Certitrack.Controllers
             // Create new StaffCreateViewModel with set list props
             return new StaffCreateViewModel(
                 roleTitleList: roleTitles, staffTypeList: staffTypes);
+        }
+
+        /// <summary>
+        /// Creates staffLink for new staff from user selected values
+        /// </summary>
+        /// <param name="staff_userInput"></param>
+        /// <param name="_newStaff"></param>
+        /// <returns></returns>
+        private async Task createStaffLink(Staff staff_userInput, Staff _newStaff)
+        {
+            Staff newStaff = await UserManager.FindByEmailAsync(_newStaff.Email);
+            var role = await _context.Role
+                .FirstOrDefaultAsync(r => r.Title == staff_userInput.StaffLink.Role.Title);
+            var staffType = await _context.StaffType
+                .FirstOrDefaultAsync(st => st.Type == staff_userInput.StaffLink.StaffType.Type);
+            newStaff.StaffLink = new StaffLink
+            {
+                StaffId = newStaff.Id,
+                RoleId = role.Id,
+                StaffTypeId = staffType.Id
+            };
+
+            _context.StaffLink.Add(newStaff.StaffLink);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Executes stpAssignStaff Stored Procedure
+        /// </summary>
+        /// <param name="staff_userInput"></param>
+        /// <param name="hashed_pw"></param>
+        /// <param name="messageParam"></param>
+        /// <param name="staffCreatedParam"></param>
+        private void ExecStpAssignStaff(Staff staff_userInput, string hashed_pw, SqlParameter messageParam, SqlParameter staffCreatedParam)
+        {
+            _ = _context.Database.ExecuteSqlCommand(
+                    @"EXEC [dbo].[stpAssignStaff]
+						 @staff_name = @name
+						,@staff_email = @email
+						,@staff_pw = @pw
+						,@role_title = @rt
+						,@staff_type = @st
+						,@message_out = @messageOut OUTPUT
+						,@staff_created = @staffCreatedOut OUTPUT"
+                        , new SqlParameter("@name", staff_userInput.Name)
+                        , new SqlParameter("@email", staff_userInput.Email)
+                        , new SqlParameter("@pw", hashed_pw)
+                        , new SqlParameter("@rt", staff_userInput.StaffLink.Role.Title)
+                        , new SqlParameter("@st", staff_userInput.StaffLink.StaffType.Type)
+                        , messageParam //debugging param
+                        , staffCreatedParam //debugging param
+                );
         }
     }
 }

@@ -127,7 +127,6 @@ namespace Certitrack.Controllers
             }
         }
 
-        //Logout feature
         public async Task<IActionResult> Logout()
         {
             await SignInManager.SignOutAsync();
