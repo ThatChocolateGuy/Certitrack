@@ -28,9 +28,7 @@ namespace Certitrack.Extensions.Alerts
             return Alert(result, "alert-danger", title, body);
         }
 
-        private static IActionResult Alert(IActionResult result, string type, string title, string body)
-        {
-            return new AlertDecoratorResult(result, type, title, body);
-        }
+        private static IActionResult Alert(IActionResult result, string type, string title, string body) => 
+            new AlertDecoratorResult(result, type, title, body);
     }
 }
