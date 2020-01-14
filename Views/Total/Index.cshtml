@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Certitrack.Models.CertificateLink>
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-body pad table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sold</th>
+                            <th>Total Price (Price - Discount)</th>
+                            <th>Pending</th>
+                            <th>Redeemed</th>
+                            <th>Distribution Channel</th>
+                            <th>Promos</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Html.ViewData.Model.Count()</td>
+                            <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</td>
+                            <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed == null).Count()</td>
+                            <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Count()</td>
+                            <td>@Html.ViewData.Model.Where(t => t.Channel != null).Count()</td>
+                            <td>@Html.ViewData.Model.Where(t => t.Promotion != null).Count()</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
