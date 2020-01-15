@@ -1,5 +1,5 @@
 # Certitrack
-ASP.NET Core a Gift Certificate Management System
+ASP.NET Core Gift Certificate Management System
 
 ## BUGS:
 
