@@ -174,6 +174,8 @@ namespace certitrack_certificate_manager.Controllers
             return View(customer);
         }
 
+
+
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -204,14 +206,25 @@ namespace certitrack_certificate_manager.Controllers
                     }
                 }
 
-                _context.CertificateLink.RemoveRange(certificateLinks);
-                _context.Certificate.RemoveRange(certificates);
-                _context.OrderItem.RemoveRange(orderItems);
-                _context.Order.RemoveRange(orders);
-                _context.Customer.Remove(customer);
-                await _context.SaveChangesAsync();
+                if (orders.Count() == 0)
+                {
+                    _context.Customer.Remove(customer);
+                    await _context.SaveChangesAsync();
 
-                return customer.Name + " deleted";
+                    return customer.Name + " deleted";
+                }
+                else
+                {
+
+                    _context.CertificateLink.RemoveRange(certificateLinks);
+                    _context.Certificate.RemoveRange(certificates);
+                    _context.OrderItem.RemoveRange(orderItems);
+                    _context.Order.RemoveRange(orders);
+                    _context.Customer.Remove(customer);
+                    await _context.SaveChangesAsync();
+
+                    return customer.Name + " deleted";
+                }
             }
             catch (Exception e)
             {
@@ -219,6 +232,7 @@ namespace certitrack_certificate_manager.Controllers
                 throw;
             }
         }
+
 
         private bool CustomerExists(int id)
         {
