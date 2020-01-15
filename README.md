@@ -9,6 +9,6 @@ ASP.NET Core Gift Certificate Management System
 - redeemed certificate totals
 - dashboard to show aggregates
 -- filter by time periods
-- # of certificates from a distribution channel
-- # of certificates under promo category
+- total certificates from a distribution channel
+- total certificates under promo category
 - printing/sending certificate(s) to client
