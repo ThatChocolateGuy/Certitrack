@@ -1,6 +1,10 @@
 # Certitrack
 ASP.NET Core Gift Certificate Management System
 
+## DEMO:
+#### Admin: admin@certitrack.com
+#### Password: admin123
+
 ## BUGS:
 
 ## NEW FEATURES TO ADD:	
