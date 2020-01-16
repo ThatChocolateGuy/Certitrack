@@ -4,7 +4,7 @@
     ViewData["FormAction"] = "Edit";
     ViewData["SectionHeader"] = "Edit Certificate Details";
     ViewData["SectionBreadCrumb"] = "Edit Certificate";
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     ViewData["SubmitButtonText"] = "Update";
     ViewData["FormAction"] = "Edit";
     ViewBag.Current = "CertificateEdit";
@@ -20,6 +20,7 @@
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
 </section>
+
 
 <!-- Main content -->
 <section class="content">
@@ -186,9 +187,9 @@
                                 TempData["_ReturnRoute.Update.Id"] = _ReturnRouteId;
 
                                 <a asp-controller="@_ReturnRouteController"
-                                    asp-action="@_ReturnRouteAction"
-                                    asp-route-id="@_ReturnRouteId"
-                                    class="btn btn-danger col-sm pull-right" style="max-width: 100%">
+                                   asp-action="@_ReturnRouteAction"
+                                   asp-route-id="@_ReturnRouteId"
+                                   class="btn btn-danger col-sm pull-right" style="max-width: 100%">
                                     <i class="fa fa-arrow-circle-left"></i>
                                     <span>Back to @TempData["_ReturnRoute.ViewLabel"]</span>
                                 </a>
