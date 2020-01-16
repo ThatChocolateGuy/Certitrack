@@ -1,7 +1,7 @@
 # Certitrack
 ASP.NET Core Gift Certificate Management System
 
-## DEMO:
+## DEMO: <a href="https://certitrack.azurewebsites.net/" target="_blank">Deployed with Azure Pipelines</a>
 #### Admin: admin@certitrack.com
 #### Password: admin123
 
