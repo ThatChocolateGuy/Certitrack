@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Certitrack.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Certitrack.Models;
-using Certitrack.Crypto;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Certitrack.ViewModels
 {
@@ -13,7 +9,7 @@ namespace Certitrack.ViewModels
     {
         public StaffCreateViewModel(
             IEnumerable<SelectListItem> roleTitleList,
-            IEnumerable<SelectListItem> staffTypeList )
+            IEnumerable<SelectListItem> staffTypeList)
         {
             RoleTitleList = roleTitleList;
             StaffTypeList = staffTypeList;

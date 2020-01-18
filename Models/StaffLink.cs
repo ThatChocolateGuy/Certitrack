@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Certitrack.Models
+﻿namespace Certitrack.Models
 {
     public partial class StaffLink
     {

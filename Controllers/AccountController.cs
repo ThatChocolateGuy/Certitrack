@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Certitrack.Crypto;
+using Certitrack.Data;
 using Certitrack.Models;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Certitrack.Crypto;
-using Certitrack.Data;
-using Microsoft.AspNetCore.Identity;
+using System;
+using System.Threading.Tasks;
 
 namespace Certitrack.Controllers
 {
@@ -29,11 +26,11 @@ namespace Certitrack.Controllers
             _certitrackContext = certitrackContext;
         }
 
-        public IActionResult Register()
-        {
-            StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
-            return View(staffController.GetStaffCreateViewModel());
-        }
+        //public IActionResult Register()
+        //{
+        //    StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
+        //    return View(staffController.GetStaffCreateViewModel());
+        //}
 
         public async Task<IActionResult> Login()
         {
@@ -44,8 +41,8 @@ namespace Certitrack.Controllers
                 Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com");
                 if (staff == null)
                 {
-                    var role = await RoleManager.FindByNameAsync("Admin");
-                    var staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync();
+                    Role role = await RoleManager.FindByNameAsync("Admin");
+                    StaffType staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync();
 
                     if (role == null)
                     {
@@ -67,7 +64,7 @@ namespace Certitrack.Controllers
                         await _certitrackContext.SaveChangesAsync();
                     }
 
-                    var staffLink = new StaffLink
+                    StaffLink staffLink = new StaffLink
                     {
                         Role = role,
                         StaffType = staffType
@@ -82,7 +79,7 @@ namespace Certitrack.Controllers
                     };
 
                     await staffController.Create(staff);
-                    var result = await UserManager.AddToRoleAsync(staff, "Admin");
+                    IdentityResult result = await UserManager.AddToRoleAsync(staff, "Admin");
                     Console.WriteLine("UserManager.AddToRoleAsync - Result: " + result);
                     ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
                 }
@@ -98,7 +95,7 @@ namespace Certitrack.Controllers
         [HttpPost]
         public async Task<IActionResult> Validate(Staff staff)
         {
-            var _staff = await UserManager.FindByEmailAsync(staff.Email);
+            Staff _staff = await UserManager.FindByEmailAsync(staff.Email);
 
             if (_staff != null)
             {
@@ -107,8 +104,12 @@ namespace Certitrack.Controllers
                     try
                     {
                         await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false);
-                        return Json(new { status = true, message = "Login Successful!",
-                            isAdmin = await UserManager.IsInRoleAsync(_staff, "Admin") });
+                        return Json(new
+                        {
+                            status = true,
+                            message = "Login Successful!",
+                            isAdmin = await UserManager.IsInRoleAsync(_staff, "Admin")
+                        });
                     }
                     catch (Exception e)
                     {
