@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Certitrack.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.ViewModels;
-using Certitrack.Extensions.Alerts;
-using Microsoft.AspNetCore.Authorization;
 
-namespace certitrack_certificate_manager.Controllers
+namespace Certitrack.Controllers
 {
     [Authorize]
     public class CustomersController : Controller
@@ -26,7 +25,7 @@ namespace certitrack_certificate_manager.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            var customers =
+            IEnumerable<Customer> customers =
                 from customer in await _context.Customer.ToListAsync()
                 select new Customer
                 {
@@ -49,27 +48,27 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer
+            Customer customer = await _context.Customer
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            var orders = await
+            List<Order> orders = await
                 (from order in _context.Order
-                where order.CustomerId == customer.Id
-                select new Order
-                {
-                    CustomerId = customer.Id,
-                    Id = order.Id,
-                    OrderItems = _context.OrderItem
-                        .Where(oi => oi.OrderId == order.Id).ToList(),
-                }).ToListAsync();
+                 where order.CustomerId == customer.Id
+                 select new Order
+                 {
+                     CustomerId = customer.Id,
+                     Id = order.Id,
+                     OrderItems = _context.OrderItem
+                         .Where(oi => oi.OrderId == order.Id).ToList(),
+                 }).ToListAsync();
 
-            foreach (var order in orders)
+            foreach (Order order in orders)
             {
-                foreach (var orderItem in order.OrderItems)
+                foreach (OrderItem orderItem in order.OrderItems)
                 {
                     orderItem.Certificate =
                         await _context.Certificate.FindAsync(orderItem.CertificateId);
@@ -85,7 +84,7 @@ namespace certitrack_certificate_manager.Controllers
                 }
             }
 
-            var model = new CustomerViewModel
+            CustomerViewModel model = new CustomerViewModel
             {
                 Customer = customer,
                 Orders = orders
@@ -126,7 +125,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer.FindAsync(id);
+            Customer customer = await _context.Customer.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
@@ -147,8 +146,10 @@ namespace certitrack_certificate_manager.Controllers
             }
 
             if (!CustomerExists(id))
+            {
                 return RedirectToAction(nameof(Edit))
                     .WithDanger("Update Not Successful", "Customer Id: " + id + " doesn't exist");
+            }
 
             if (ModelState.IsValid)
             {
@@ -174,57 +175,47 @@ namespace certitrack_certificate_manager.Controllers
             return View(customer);
         }
 
-
-
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<string> DeleteConfirmed(int id)
         {
             if (!CustomerExists(id))
+            {
                 return "Customer Id: " + id + " doesn't exist";
+            }
+
             try
             {
-                var customer = await _context.Customer.FindAsync(id);
-                var orders = await _context.Order
+                Customer customer = await _context.Customer.FindAsync(id);
+                List<Order> orders = await _context.Order
                     .Where(o => o.CustomerId == id).ToListAsync();
                 List<OrderItem> orderItems = null;
                 List<Certificate> certificates = new List<Certificate>();
                 List<CertificateLink> certificateLinks = new List<CertificateLink>();
 
-                foreach (var order in orders)
+                foreach (Order order in orders)
                 {
                     orderItems = await _context.OrderItem
                         .Where(oi => oi.OrderId == order.Id).ToListAsync();
-                    foreach (var orderItem in orderItems)
+                    foreach (OrderItem orderItem in orderItems)
                     {
-                        var certificate = await _context.Certificate
+                        Certificate certificate = await _context.Certificate
                             .Where(c => c.Id == orderItem.CertificateId).FirstOrDefaultAsync();
-                        var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                        CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
                         certificates.Add(certificate);
                         certificateLinks.Add(certificateLink);
                     }
                 }
 
-                if (orders.Count() == 0)
-                {
-                    _context.Customer.Remove(customer);
-                    await _context.SaveChangesAsync();
+                _context.CertificateLink.RemoveRange(certificateLinks);
+                _context.Certificate.RemoveRange(certificates);
+                _context.OrderItem.RemoveRange(orderItems);
+                _context.Order.RemoveRange(orders);
+                _context.Customer.Remove(customer);
+                await _context.SaveChangesAsync();
 
-                    return customer.Name + " deleted";
-                }
-                else
-                {
-
-                    _context.CertificateLink.RemoveRange(certificateLinks);
-                    _context.Certificate.RemoveRange(certificates);
-                    _context.OrderItem.RemoveRange(orderItems);
-                    _context.Order.RemoveRange(orders);
-                    _context.Customer.Remove(customer);
-                    await _context.SaveChangesAsync();
-
-                    return customer.Name + " deleted";
-                }
+                return customer.Name + " deleted";
             }
             catch (Exception e)
             {
@@ -232,7 +223,6 @@ namespace certitrack_certificate_manager.Controllers
                 throw;
             }
         }
-
 
         private bool CustomerExists(int id)
         {

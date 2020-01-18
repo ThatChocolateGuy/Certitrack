@@ -20,7 +20,7 @@ namespace Certitrack.Controllers
     [Authorize(Roles = "Admin")]
     public class StaffController : Controller
     {
-        public CertitrackContext Context { get; }
+        private readonly CertitrackContext _context;
 
         private UserManager<Staff> UserManager { get; set; }
         private SignInManager<Staff> SignInManager { get; set; }
@@ -30,35 +30,38 @@ namespace Certitrack.Controllers
         {
             UserManager = userManager;
             SignInManager = signInManager;
-            Context = context;
+            _context = context;
         }
 
         // DISPLAY STAFF LIST
         public async Task<IActionResult> Index()
         {
-            // Staff list to pass to view
-            List<Staff> staffList = new List<Staff>();
-
             try
             {
+                // Staff list to pass to view
+                List<Staff> staffList = new List<Staff>();
+
                 // Populate staffList
                 await PopulateStaffList(staffList);
+
+                return View(staffList);
             }
             catch (Exception)
             {
                 throw;
             }
-
-            return View(staffList);
         }
 
         // DISPLAY OPEN FIELDS TO EDIT (IF ADMIN)
         public IActionResult Edit(int? id)
         {
+            Staff staff = _context.Staff.Find(id);
+            StaffLink staffLink = _context.StaffLink.Find(id);
+
             StaffCreateViewModel model = GetStaffCreateViewModel();
 
-            model.Staff = Context.Staff.Find(id);
-            model.Staff.StaffLink = Context.StaffLink.Find(id);
+            model.Staff = staff;
+            model.Staff.StaffLink = staffLink;
 
             return View(model);
         }
@@ -67,37 +70,37 @@ namespace Certitrack.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Staff staff)
         {
-            try //save staff changes to db
+            try // save staff to db
             {
-                //entities to update
-                Staff staffToUpdate = Context.Staff.Find(id);
-                StaffLink staffLinkToUpdate = Context.StaffLink.Find(id);
-                
-				//assign staff name & email to entities marked for update
+                // entities to update
+                Staff staffToUpdate = _context.Staff.Find(id);
+                StaffLink staffLinkToUpdate = _context.StaffLink.Find(id);
+
+                // assign staff name & email to entities marked for update
                 staffToUpdate.Name = staff.Name;
                 staffToUpdate.Email = staff.Email;
 
                 /*
 				 * I've intentionally used both Fluent and standard LINQ
-				 * syntax below to show equivalent methods of db querying
+				 * syntax below to show equivalent db querying techniques
 				 * (options are good, right?)
 				 */
 
-                //assign StaffLink RoleId
-                staffLinkToUpdate.RoleId = Context.Role
+                // assign StaffLink RoleId
+                staffLinkToUpdate.RoleId = _context.Role
                     .Where(r => r.Title == staff.StaffLink.Role.Title)
                     .Select(rId => rId.Id)
                     .Single();
-                //assign StaffLink StaffTypeId
-                staffLinkToUpdate.StaffTypeId = (
-                    from sType in Context.StaffType
-                    where sType.Type == staff.StaffLink.StaffType.Type
-                    select sType.Id
-                ).FirstOrDefault();
 
-                //update db with changes
-                Context.UpdateRange(staffToUpdate, staffLinkToUpdate);
-                Context.SaveChanges();
+                // assign StaffLink StaffTypeId
+                staffLinkToUpdate.StaffTypeId = (
+                    from sType in _context.StaffType
+                    where sType.Type == staff.StaffLink.StaffType.Type
+                    select sType.Id).FirstOrDefault();
+
+                // update db with changes
+                _context.UpdateRange(staffToUpdate, staffLinkToUpdate);
+                _context.SaveChanges();
 
                 return RedirectToAction("Index")
                     .WithSuccess("Successful Update", staff.Name + " has been updated");
@@ -113,23 +116,21 @@ namespace Certitrack.Controllers
         // STAFF REGISTRATION (IF ADMIN)
         public IActionResult Create()
         {
-            //sets action for form submission
+            // sets action for create view form submission
             ViewData["FormAction"] = "Create";
-            return View(GetStaffCreateViewModel());
+
+            StaffCreateViewModel model = GetStaffCreateViewModel();
+
+            return View(model);
         }
+
         // SUBMIT NEW STAFF TO DB
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name", "Email", "Password", "Stafflink")] Staff staff_userInput)
+        public async Task<IActionResult> Create(Staff staff)
         {
-            ViewData["FormAction"] = "Create";
-            if (staff_userInput is null)
-            {
-                throw new ArgumentNullException(nameof(staff_userInput));
-            }
-
             StaffCreateViewModel model = GetStaffCreateViewModel();
-            model.Staff = staff_userInput;
+            model.Staff = staff;
 
             if (!ModelState.IsValid)
             {
@@ -138,11 +139,11 @@ namespace Certitrack.Controllers
             }
 
             // Create hashed pw from user input
-            string hashed_pw = SecurePasswordHasherHelper.Hash(staff_userInput.Password);
+            string hashed_pw = SecurePasswordHasherHelper.Hash(staff.Password);
 
-            // Output parameters for db queries
-            CreateSqlOutputParams(
-                staff_userInput,
+            // prepare output parameters for SQL query
+            CreateOutputParams(
+                staff,
                 hashed_pw,
                 out SqlParameter messageParam,
                 out SqlParameter staffCreatedParam,
@@ -153,57 +154,17 @@ namespace Certitrack.Controllers
             if (result.Succeeded)
             {
                 // link role and staffType to newly created user
-                try
-                {
-                    await CreateStaffLink(staff_userInput, _staff);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-
+                await createStaffLink(staff, _staff);
                 staffCreatedParam.Value = 1; // set staff creation success flag
             }
             else
             {
-                // Executes stpAssignStaff Stored Procedure as fallback linking method
-                ExecStpAssignStaff(staff_userInput, hashed_pw, messageParam, staffCreatedParam);
+                // executes stpAssignStaff Stored Procedure as fallback linking method
+                ExecStpAssignStaff(staff, hashed_pw, messageParam, staffCreatedParam);
             }
 
-            // Redirects to [controller] Index w/ Success Alert
-            if ((int)staffCreatedParam.Value == 1)
-            {
-                // Staff Index (if Admin)
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index")
-                        .WithSuccess("Staff Added", staff_userInput.Name + " has been added to the team!");
-                else // Certificates Index (if Non-Admin)
-                {
-                    try
-                    {
-                        await SignInManager.SignInAsync(await UserManager.FindByEmailAsync(staff_userInput.Email), false);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-
-                    return RedirectToAction("Certificates", "Index")
-                        .WithSuccess("Staff Added", "Welcome to the team, " + staff_userInput.Name + "!");
-                }
-            }
-            // staff exists, etc. - Redirect to Staff Index w/ Error Alert
-            else if ((string)TempData["OriginController"] != "Account")
-            {
-                return RedirectToAction("Index")
-                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
-            }
-            else // staff exists, etc. - Redirect to Account Registration w/ Error Alert
-            {
-                TempData["OriginController"] = null;
-                return RedirectToAction("Register", "Account")
-                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
-            }
+            // determine redirect action
+            return await ReturnRedirectCreate(staff, messageParam, staffCreatedParam);
         }
 
         // DELETE STAFF FROM DB (IF ADMIN)
@@ -213,14 +174,14 @@ namespace Certitrack.Controllers
         {
             try
             {
-                Staff staff = Context.Staff.Where(s => s.Id == id).Single();
-                StaffLink staffLink = Context.StaffLink.Where(sl => sl.StaffId == id).Single();
+                Staff staff = _context.Staff.Where(s => s.Id == id).Single();
+                StaffLink staffLink = _context.StaffLink.Where(sl => sl.StaffId == id).Single();
 
                 // deletes selected staff & associated staffLink record
-                Context.RemoveRange(staff, staffLink);
-                Context.SaveChanges();
+                _context.RemoveRange(staff, staffLink);
+                _context.SaveChanges();
 
-                return staff.Name + " has been removed from the team";
+                return staff.Name + " has successfully been removed from the team";
             }
             catch (Exception)
             {
@@ -234,15 +195,15 @@ namespace Certitrack.Controllers
         /// <returns>StaffCreateViewModel</returns>
         public StaffCreateViewModel GetStaffCreateViewModel()
         {
-            var roleTitles =
-                from role in Context.Role.ToList()
+            IEnumerable<SelectListItem> roleTitles =
+                from role in _context.Role.ToList()
                 select new SelectListItem
                 {
                     Text = role.Title,
                     Value = role.Title
                 };
-            var staffTypes =
-                from sType in Context.StaffType.ToList()
+            IEnumerable<SelectListItem> staffTypes =
+                from sType in _context.StaffType.ToList()
                 select new SelectListItem
                 {
                     Text = sType.Type,
@@ -260,12 +221,12 @@ namespace Certitrack.Controllers
         /// <param name="staff_userInput"></param>
         /// <param name="_newStaff"></param>
         /// <returns></returns>
-        private async Task CreateStaffLink(Staff staff_userInput, Staff _newStaff)
+        private async Task createStaffLink(Staff staff_userInput, Staff _newStaff)
         {
             Staff newStaff = await UserManager.FindByEmailAsync(_newStaff.Email);
-            var role = await Context.Role
+            Role role = await _context.Role
                 .FirstOrDefaultAsync(r => r.Title == staff_userInput.StaffLink.Role.Title);
-            var staffType = await Context.StaffType
+            StaffType staffType = await _context.StaffType
                 .FirstOrDefaultAsync(st => st.Type == staff_userInput.StaffLink.StaffType.Type);
             newStaff.StaffLink = new StaffLink
             {
@@ -274,8 +235,8 @@ namespace Certitrack.Controllers
                 StaffTypeId = staffType.Id
             };
 
-            Context.StaffLink.Add(newStaff.StaffLink);
-            await Context.SaveChangesAsync();
+            _context.StaffLink.Add(newStaff.StaffLink);
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -287,7 +248,7 @@ namespace Certitrack.Controllers
         /// <param name="staffCreatedParam"></param>
         private void ExecStpAssignStaff(Staff staff_userInput, string hashed_pw, SqlParameter messageParam, SqlParameter staffCreatedParam)
         {
-            _ = Context.Database.ExecuteSqlCommand(
+            _ = _context.Database.ExecuteSqlCommand(
                     @"EXEC [dbo].[stpAssignStaff]
 						 @staff_name = @name
 						,@staff_email = @email
@@ -307,14 +268,75 @@ namespace Certitrack.Controllers
         }
 
         /// <summary>
-        /// Generate Output Parameters for use with SQL Query
+        /// Returns redirect action for create method
         /// </summary>
-        /// <param name="staff_userInput"></param>
+        /// <param name="staff"></param>
+        /// <param name="messageParam"></param>
+        /// <param name="staffCreatedParam"></param>
+        /// <returns>Task<IActionResult></returns>
+        private async Task<IActionResult> ReturnRedirectCreate(Staff staff, SqlParameter messageParam, SqlParameter staffCreatedParam)
+        {
+            // Redirects to [controller] Index w/ Success Alert
+            if ((int)staffCreatedParam.Value == 1)
+            {
+                // Staff Index (Admin)
+                Staff createdStaff = await UserManager.FindByEmailAsync(staff.Email);
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index")
+                        .WithSuccess("Staff Added", staff.Name + " has been added to the team!");
+                }
+                else // Certificates Index (Non-Admin)
+                {
+                    await SignInManager.SignInAsync(createdStaff, false);
+                    return RedirectToAction("Certificates", "Index")
+                        .WithSuccess("Staff Added", "Welcome to the team, " + staff.Name + "!");
+                }
+            }
+            // staff exists, etc. - Redirect to Staff Index w/ Error Alert
+            else if ((string)TempData["OriginController"] != "Account")
+            {
+                return RedirectToAction("Index")
+                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
+            }
+            else //staff exists, etc. - Redirect to Account Registration w/ Error Alert
+            {
+                TempData["OriginController"] = null;
+                return RedirectToAction("Register", "Account")
+                    .WithDanger("Staff Not Added", messageParam.Value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Populates StaffList to pass to view
+        /// </summary>
+        /// <param name="staffList"></param>
+        /// <returns></returns>
+        private async Task PopulateStaffList(List<Staff> staffList)
+        {
+            foreach (Staff staff in UserManager.Users)
+            {
+                Staff _staff = await UserManager.FindByIdAsync(staff.Id.ToString());
+                if (_staff.StaffLink == null)
+                {
+                    _staff.StaffLink = await _context.StaffLink.FindAsync(staff.Id);
+                    _staff.StaffLink.Role = await _context.Role.FindAsync(_staff.StaffLink.RoleId);
+                    _staff.StaffLink.StaffType = await _context.StaffType.FindAsync(_staff.StaffLink.StaffTypeId);
+                }
+                // Add Current Staff to List for View Render
+                staffList.Add(_staff);
+            }
+        }
+
+        /// <summary>
+        /// Prepare output parameters for later use with SQL query
+        /// </summary>
+        /// <param name="staff"></param>
         /// <param name="hashed_pw"></param>
         /// <param name="messageParam"></param>
         /// <param name="staffCreatedParam"></param>
         /// <param name="_staff"></param>
-        private static void CreateSqlOutputParams(Staff staff_userInput, string hashed_pw, out SqlParameter messageParam, out SqlParameter staffCreatedParam, out Staff _staff)
+        private static void CreateOutputParams(Staff staff, string hashed_pw, out SqlParameter messageParam, out SqlParameter staffCreatedParam, out Staff _staff)
         {
             messageParam = new SqlParameter()
             {
@@ -333,32 +355,11 @@ namespace Certitrack.Controllers
             };
             _staff = new Staff()
             {
-                UserName = staff_userInput.UserName ?? staff_userInput.Email,
-                Email = staff_userInput.Email,
+                UserName = staff.UserName ?? staff.Email,
+                Email = staff.Email,
                 Password = hashed_pw,
-                Name = staff_userInput.Name
+                Name = staff.Name
             };
-        }
-
-        /// <summary>
-        /// Populate staffList with staffLink data to be pushed to view
-        /// </summary>
-        /// <param name="staffList"></param>
-        /// <returns></returns>
-        private async Task PopulateStaffList(List<Staff> staffList)
-        {
-            foreach (Staff staff in UserManager.Users)
-            {
-                Staff _staff = await UserManager.FindByIdAsync(staff.Id.ToString());
-                if (_staff.StaffLink == null)
-                {
-                    _staff.StaffLink = await Context.StaffLink.FindAsync(staff.Id);
-                    _staff.StaffLink.Role = await Context.Role.FindAsync(_staff.StaffLink.RoleId);
-                    _staff.StaffLink.StaffType = await Context.StaffType.FindAsync(_staff.StaffLink.StaffTypeId);
-                }
-                // Add Current Staff to List for View Render
-                staffList.Add(_staff);
-            }
         }
     }
 }

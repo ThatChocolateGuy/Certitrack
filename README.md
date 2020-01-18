@@ -1,18 +1,17 @@
 # Certitrack
-ASP.NET Core Gift Certificate Management System
-
-### DEMO: <a href="https://certitrack-demo.azurewebsites.net/" target="_blank">Deployed with Azure Pipelines</a>
-#### Admin => U: admin@certitrack.com  P: admin123
-#### Non-Admin => U: nonadmin@certitrack.com  P: nonadmin
+ASP.NET Core Certificate Issuing and Tracking System
 
 ## BUGS:
+- staff registration not hitting correct method on form submit (account/registration page)
 
 ## NEW FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
-- total revenues (with and without promo)
-- redeemed certificate totals
-- dashboard to show aggregates
--- filter by time periods
-- total certificates from a distribution channel
-- total certificates under promo category
+- total certificates sold
+- how many certificates redeemed so far
+- how many certificates pending (shows expiry date)
+- total collected amount
+- certificate redemption value (total)
+- filter by time (inc. weeks, months, days, etc.)
+- how many certificates from a distribution channel
+- how many certificates fall under promo category
 - printing/sending certificate(s) to client

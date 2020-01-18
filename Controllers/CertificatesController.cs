@@ -1,16 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Certitrack.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.ViewModels;
-using System.Data.SqlClient;
-using Certitrack.Extensions.Alerts;
+using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Certitrack.Controllers
 {
@@ -29,7 +29,7 @@ namespace Certitrack.Controllers
         {
             try
             {
-                var certificateDetails =
+                IEnumerable<CertificateLink> certificateDetails =
                         from link in await _context.CertificateLink.ToListAsync()
                         select new CertificateLink
                         {
@@ -56,7 +56,7 @@ namespace Certitrack.Controllers
                 return NotFound();
             }
 
-            var certificate = await _context.Certificate
+            Certificate certificate = await _context.Certificate
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (certificate == null)
             {
@@ -75,10 +75,10 @@ namespace Certitrack.Controllers
                 return null;
             }
 
-            var customer = await _context.Customer
+            Customer customer = await _context.Customer
                 .FirstOrDefaultAsync(c => c.Name == customerName);
 
-            var customerDetails = new List<string>
+            List<string> customerDetails = new List<string>
             {
                 customer.Email,
                 customer.Phone
@@ -90,28 +90,28 @@ namespace Certitrack.Controllers
         // GET: Certificates/Create
         public async Task<IActionResult> Create()
         {
-            var staffNames =
+            IEnumerable<SelectListItem> staffNames =
                 from staff in await _context.Staff.ToListAsync()
                 select new SelectListItem
                 {
                     Text = staff.Name,
                     Value = staff.Name
                 };
-            var channels =
+            IEnumerable<SelectListItem> channels =
                 from channel in await _context.Channel.ToListAsync()
                 select new SelectListItem
                 {
                     Text = channel.ChannelName,
                     Value = channel.ChannelName
                 };
-            var promos =
+            IEnumerable<SelectListItem> promos =
                 from promo in await _context.Promotion.ToListAsync()
                 select new SelectListItem
                 {
                     Text = promo.Discount.ToString(),
                     Value = promo.Discount.ToString()
                 };
-            var customerNames =
+            IEnumerable<SelectListItem> customerNames =
                 from customer in await _context.Customer.ToListAsync()
                 select new SelectListItem
                 {
@@ -119,7 +119,7 @@ namespace Certitrack.Controllers
                     Value = customer.Name.ToString()
                 };
 
-            var model = new CertificateCreateViewModel(
+            CertificateCreateViewModel model = new CertificateCreateViewModel(
                 staffList: staffNames,
                 channelList: channels,
                 promoList: promos,
@@ -141,7 +141,7 @@ namespace Certitrack.Controllers
             {
                 try
                 {
-                    var result = _context.Database.ExecuteSqlCommand(@"
+                    int result = _context.Database.ExecuteSqlCommand(@"
                     EXEC stpAssignCertificate
                          @customer_name = @customerName
                         ,@customer_email = @customerEmail
@@ -178,33 +178,33 @@ namespace Certitrack.Controllers
 
             try
             {
-                var certificateLink = await _context.CertificateLink.FindAsync(id);
-                var orderId = _context.OrderItem
+                CertificateLink certificateLink = await _context.CertificateLink.FindAsync(id);
+                int orderId = _context.OrderItem
                     .Where(oi => oi.CertificateId == id).Single().OrderId;
-                var order = await _context.Order.FindAsync(orderId);
+                Order order = await _context.Order.FindAsync(orderId);
 
-                var staffList =
+                IEnumerable<SelectListItem> staffList =
                     from staff in await _context.Staff.ToListAsync()
                     select new SelectListItem
                     {
                         Text = staff.Name,
                         Value = staff.Name
                     };
-                var promoList =
+                IEnumerable<SelectListItem> promoList =
                     from discount in await _context.Promotion.ToListAsync()
                     select new SelectListItem
                     {
                         Text = discount.Discount.ToString(),
                         Value = discount.Discount.ToString()
                     };
-                var channelList =
+                IEnumerable<SelectListItem> channelList =
                     from channel in await _context.Channel.ToListAsync()
                     select new SelectListItem
                     {
                         Text = channel.ChannelName,
                         Value = channel.ChannelName
                     };
-                var customerList =
+                IEnumerable<SelectListItem> customerList =
                     from customer in await _context.Customer.ToListAsync()
                     select new SelectListItem
                     {
@@ -212,7 +212,7 @@ namespace Certitrack.Controllers
                         Value = customer.Name
                     };
 
-                var model = new CertificateEditViewModel()
+                CertificateEditViewModel model = new CertificateEditViewModel()
                 {
                     Certificate = _context.Certificate.Find(certificateLink.CertificateId),
                     Channel = _context.Channel.Find(certificateLink.ChannelId),
@@ -251,26 +251,28 @@ namespace Certitrack.Controllers
             }
 
             if (!CertificateExists(id))
+            {
                 return RedirectToAction(nameof(Edit))
                     .WithDanger("Update Not Successful", "Certificate Id: " + id + " doesn't exist");
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var certificate = await _context.Certificate.FindAsync(id);
-                    var certificateLink = await _context.CertificateLink.FindAsync(id);
-                    
-                    var channel = await _context.Channel
+                    Certificate certificate = await _context.Certificate.FindAsync(id);
+                    CertificateLink certificateLink = await _context.CertificateLink.FindAsync(id);
+
+                    Channel channel = await _context.Channel
                         .Where(ch => ch.Id == certificateLink.ChannelId)
                         .FirstOrDefaultAsync();
-                    var customer = await _context.Customer
+                    Customer customer = await _context.Customer
                         .Where(c => c.Id == certificateLink.CustomerId)
                         .FirstOrDefaultAsync();
-                    var promotion = await _context.Promotion
+                    Promotion promotion = await _context.Promotion
                         .Where(p => p.Id == certificateLink.PromotionId)
                         .FirstOrDefaultAsync();
-                    var staff = await _context.Staff
+                    Staff staff = await _context.Staff
                         .Where(s => s.Id == certificateLink.StaffId)
                         .FirstOrDefaultAsync();
 
@@ -307,7 +309,7 @@ namespace Certitrack.Controllers
                 if (TempData["_ReturnRoute.Update.Controller"] != null)
                 {
                     string message = null;
-                    var _ReturnRouteController = TempData["_ReturnRoute.Update.Controller"];
+                    object _ReturnRouteController = TempData["_ReturnRoute.Update.Controller"];
                     TempData["_ReturnRoute.Update.Controller"] = null;
 
                     if ((string)_ReturnRouteController == "Certificates" ||
@@ -320,7 +322,7 @@ namespace Certitrack.Controllers
                     return Redirect("/" + _ReturnRouteController +
                             "/" + TempData["_ReturnRoute.Update.Action"] + "/" + TempData["_ReturnRoute.Update.Id"])
                                 .WithSuccess("Update Successful", message);
-                }                
+                }
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Update Successful",
                         "Certificate #" +
@@ -339,11 +341,13 @@ namespace Certitrack.Controllers
             try
             {
                 if (!CertificateExists(id))
+                {
                     return "Certificate Id: " + id + " doesn't exist";
+                }
 
-                var certificate = await _context.Certificate.FindAsync(id);
-                var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
-                var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+                Certificate certificate = await _context.Certificate.FindAsync(id);
+                CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                Customer customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
 
                 _context.CertificateLink.Remove(certificateLink);
                 _context.Certificate.Remove(certificate);
@@ -366,16 +370,18 @@ namespace Certitrack.Controllers
             try
             {
                 if (!CertificateExists(id))
+                {
                     return "Certificate Id: " + id + " doesn't exist";
+                }
 
-                var certificate = await _context.Certificate.FindAsync(id);
-                var certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
-                var customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
+                Certificate certificate = await _context.Certificate.FindAsync(id);
+                CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                Customer customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
 
                 certificate.DateRedeemed = DateTime.Today;
                 _context.Certificate.Update(certificate);
                 await _context.SaveChangesAsync();
-                
+
                 return "Certificate #" + certificate.CertificateNo + " redeemed for " + customer.Name;
             }
             catch (Exception)
