@@ -8,7 +8,7 @@
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Compile Remove="wwwroot\bower_components %28old%29\**" />
     <Compile Remove="wwwroot\bower_components - Copy\**" />
     <Compile Remove="wwwroot\bower_components\fullcalendar\**" />
@@ -22,7 +22,7 @@
     <None Remove="wwwroot\bower_components - Copy\**" />
     <None Remove="wwwroot\bower_components\fullcalendar\**" />
     <TypeScriptCompile Remove="wwwroot\bower_components\fullcalendar\**" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <Content Include="wwwroot\bower_components\bootstrap-colorpicker\.bower.json" />
