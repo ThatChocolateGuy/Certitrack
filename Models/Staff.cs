@@ -23,7 +23,7 @@ namespace Certitrack.Models
         //[Required]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "The {0} must be at least {1} characters long.")]
-        public string Password { get ; set; }
+        public string Password { get; set; }
         public DateTime Created { get; set; }
 
         public StaffLink StaffLink { get; set; }

@@ -4,9 +4,11 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Certitrack</RootNamespace>
     <UserSecretsId>079515d2-1b25-43ae-be6f-6d7b242711f9</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Compile Remove="wwwroot\bower_components %28old%29\**" />
     <Compile Remove="wwwroot\bower_components - Copy\**" />
     <Compile Remove="wwwroot\bower_components\fullcalendar\**" />
@@ -20,7 +22,7 @@
     <None Remove="wwwroot\bower_components - Copy\**" />
     <None Remove="wwwroot\bower_components\fullcalendar\**" />
     <TypeScriptCompile Remove="wwwroot\bower_components\fullcalendar\**" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <Content Include="wwwroot\bower_components\bootstrap-colorpicker\.bower.json" />
@@ -6647,6 +6649,12 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\bower_components\moment\moment.d.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controllers\StaffController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="http://json.schemastore.org/appsettings" /></VisualStudio></ProjectExtensions>

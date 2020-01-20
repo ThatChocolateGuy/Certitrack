@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Certitrack.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Certitrack.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Certitrack.ViewModels
 {

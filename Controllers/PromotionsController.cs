@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.Extensions.Alerts;
-using Microsoft.AspNetCore.Authorization;
 
-namespace certitrack_certificate_manager.Controllers
+namespace Certitrack.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class PromotionsController : Controller
@@ -36,7 +34,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var promotion = await _context.Promotion
+            Promotion promotion = await _context.Promotion
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (promotion == null)
             {
@@ -60,8 +58,11 @@ namespace certitrack_certificate_manager.Controllers
         public async Task<IActionResult> Create([Bind("Id,Discount")] Promotion promotion)
         {
             if (DiscountExists(promotion.Discount))
+            {
                 return View(promotion)
                     .WithWarning("Promo Exists", "An equivalent promotion exists. Try a different value.");
+            }
+
             if (ModelState.IsValid)
             {
                 if (promotion.Discount > 0)
@@ -70,8 +71,11 @@ namespace certitrack_certificate_manager.Controllers
                     await _context.SaveChangesAsync();
                 }
                 else
+                {
                     return View(promotion)
                         .WithWarning("Invalid Promo", "Promo must be a value greater than zero.");
+                }
+
                 return RedirectToAction(nameof(Index))
                     .WithSuccess("Success", "$" + promotion.Discount + " promotion successfully created."); ;
             }
@@ -87,7 +91,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var promotion = await _context.Promotion.FindAsync(id);
+            Promotion promotion = await _context.Promotion.FindAsync(id);
             if (promotion == null)
             {
                 return NotFound();
@@ -107,8 +111,11 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
             if (DiscountExists(promotion.Discount))
+            {
                 return View(promotion)
                     .WithWarning("Promo Exists", "An equivalent promotion exists. Try a different value.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -119,8 +126,10 @@ namespace certitrack_certificate_manager.Controllers
                         await _context.SaveChangesAsync();
                     }
                     else
+                    {
                         return View(promotion)
                             .WithWarning("Invalid Promo", "Promo must be a value greater than zero.");
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -134,7 +143,7 @@ namespace certitrack_certificate_manager.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index))
-                    .WithSuccess("Update Successful","Promotion successfully changed to $" + promotion.Discount);
+                    .WithSuccess("Update Successful", "Promotion successfully changed to $" + promotion.Discount);
             }
             return View(promotion)
                 .WithWarning("Uh-Oh!", "Something went wrong. Try again.");
@@ -148,7 +157,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var promotion = await _context.Promotion
+            Promotion promotion = await _context.Promotion
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (promotion == null)
             {
@@ -165,7 +174,7 @@ namespace certitrack_certificate_manager.Controllers
         {
             try
             {
-                var promotion = await _context.Promotion.FindAsync(id);
+                Promotion promotion = await _context.Promotion.FindAsync(id);
                 _context.Promotion.Remove(promotion);
                 await _context.SaveChangesAsync();
                 return "The $" + promotion.Discount + " promotion was deleted successfully";

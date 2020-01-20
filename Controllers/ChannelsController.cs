@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.Extensions.Alerts;
-using Microsoft.AspNetCore.Authorization;
 
-namespace certitrack_certificate_manager.Controllers
+namespace Certitrack.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ChannelsController : Controller
@@ -36,7 +34,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var channel = await _context.Channel
+            Channel channel = await _context.Channel
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (channel == null)
             {
@@ -62,8 +60,11 @@ namespace certitrack_certificate_manager.Controllers
             if (ModelState.IsValid)
             {
                 if (ChannelExists(channel.ChannelName))
+                {
                     return View(channel)
                         .WithWarning("Channel Exists", "Channel already exists. Try a different name.");
+                }
+
                 _context.Add(channel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index))
@@ -80,7 +81,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var channel = await _context.Channel.FindAsync(id);
+            Channel channel = await _context.Channel.FindAsync(id);
             if (channel == null)
             {
                 return NotFound();
@@ -103,8 +104,11 @@ namespace certitrack_certificate_manager.Controllers
             if (ModelState.IsValid)
             {
                 if (ChannelExists(channel.ChannelName))
+                {
                     return View(channel)
                         .WithWarning("Channel Exists", "Channel already exists. Try a different name.");
+                }
+
                 try
                 {
                     _context.Update(channel);
@@ -136,7 +140,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var channel = await _context.Channel
+            Channel channel = await _context.Channel
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (channel == null)
             {
@@ -153,7 +157,7 @@ namespace certitrack_certificate_manager.Controllers
         {
             try
             {
-                var channel = await _context.Channel.FindAsync(id);
+                Channel channel = await _context.Channel.FindAsync(id);
                 _context.Channel.Remove(channel);
                 await _context.SaveChangesAsync();
                 return channel.ChannelName + " channel deleted successfully";

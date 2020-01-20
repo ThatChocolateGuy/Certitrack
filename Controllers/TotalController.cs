@@ -1,16 +1,12 @@
-﻿using System;
+﻿using Certitrack.Data;
+using Certitrack.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.ViewModels;
-using System.Data.SqlClient;
-using Certitrack.Extensions.Alerts;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Certitrack.Controllers
 {
@@ -27,7 +23,7 @@ namespace Certitrack.Controllers
         {
             try
             {
-                var certificateDetails =
+                IEnumerable<CertificateLink> certificateDetails =
                         from link in await _context.CertificateLink.ToListAsync()
                         select new CertificateLink
                         {
