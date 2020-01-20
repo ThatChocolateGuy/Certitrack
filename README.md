@@ -7,6 +7,7 @@ ASP.NET Core Gift Certificate Management System
 <sub>Note: Refresh page if app doesn't load correctly the first time.</sub>
 
 ## BUGS:
+- Please create an issue or pull request for this README if you find any
 
 ## NEW FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
