@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace Certitrack.Extensions.Alerts
 {
@@ -27,9 +24,9 @@ namespace Certitrack.Extensions.Alerts
         {
             //NOTE: Be sure you add a using statement for Microsoft.Extensions.DependencyInjection, otherwise
             //      this overload of GetService won't be available!
-            var factory = context.HttpContext.RequestServices.GetService<ITempDataDictionaryFactory>();
+            ITempDataDictionaryFactory factory = context.HttpContext.RequestServices.GetService<ITempDataDictionaryFactory>();
 
-            var tempData = factory.GetTempData(context.HttpContext);
+            ITempDataDictionary tempData = factory.GetTempData(context.HttpContext);
 
             tempData["_alert.type"] = Type;
             tempData["_alert.title"] = Title;

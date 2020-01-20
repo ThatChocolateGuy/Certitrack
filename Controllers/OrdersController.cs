@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.Extensions.Alerts;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace certitrack_certificate_manager.Controllers
+namespace Certitrack.Controllers
 {
     [Authorize]
     public class OrdersController : Controller
@@ -25,7 +24,7 @@ namespace certitrack_certificate_manager.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var certitrackContext = _context.Order
+            Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Order, Customer> certitrackContext = _context.Order
                 .Include(o => o.OrderItems)
                 .Include(o => o.Customer);
             return View(await certitrackContext.ToListAsync());
@@ -39,13 +38,13 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            Order order = await _context.Order
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == id);
             order.OrderItems = await _context.OrderItem
                 .Include(oi => oi.Certificate).ThenInclude(cl => cl.CertificateLink)
                 .Where(oi => oi.OrderId == order.Id).ToListAsync();
-            foreach (var orderItem in order.OrderItems)
+            foreach (OrderItem orderItem in order.OrderItems)
             {
                 orderItem.Certificate.CertificateLink = await _context.CertificateLink
                     .Include(cl => cl.Staff)
@@ -53,7 +52,7 @@ namespace certitrack_certificate_manager.Controllers
                     .Include(cl => cl.Channel)
                     .FirstOrDefaultAsync(cl => cl.CertificateId == orderItem.CertificateId);
             }
-            
+
             if (order == null)
             {
                 return NotFound();
@@ -94,7 +93,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            Order order = await _context.Order
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == id);
             if (order == null)
@@ -151,7 +150,7 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            Order order = await _context.Order
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
@@ -169,17 +168,17 @@ namespace certitrack_certificate_manager.Controllers
         {
             try
             {
-                var order = await _context.Order
+                Order order = await _context.Order
                     .Include(o => o.OrderItems)
                     .Include(o => o.Customer)
                     .FirstOrDefaultAsync(o => o.Id == id);
 
-                var certificates = await _context.OrderItem
+                System.Collections.Generic.List<Certificate> certificates = await _context.OrderItem
                     .Include(oi => oi.Certificate)
                     .Where(oi => oi.OrderId == id)
                     .Select(oi => oi.Certificate)
                     .ToListAsync();
-                var cLinks = await _context.OrderItem
+                System.Collections.Generic.List<CertificateLink> cLinks = await _context.OrderItem
                     .Where(oi => oi.OrderId == id)
                     .Include(oi => oi.Certificate)
                     .Select(oi => oi.Certificate)

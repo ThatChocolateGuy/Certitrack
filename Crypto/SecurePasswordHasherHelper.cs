@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Certitrack.Crypto
 {
@@ -31,16 +28,16 @@ namespace Certitrack.Crypto
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[_SaltSize]);
 
             //create hash
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(_HashSize);
+            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
+            byte[] hash = pbkdf2.GetBytes(_HashSize);
 
             //combine salt and hash
-            var hashBytes = new byte[_SaltSize + _HashSize];
+            byte[] hashBytes = new byte[_SaltSize + _HashSize];
             Array.Copy(salt, 0, hashBytes, 0, _SaltSize);
             Array.Copy(hash, 0, hashBytes, _SaltSize, _HashSize);
 
             //convert to base64
-            var base64Hash = Convert.ToBase64String(hashBytes);
+            string base64Hash = Convert.ToBase64String(hashBytes);
 
             //format hash with extra information
             return string.Format("$MYHASH$V1${0}${1}", iterations, base64Hash);
@@ -80,23 +77,23 @@ namespace Certitrack.Crypto
             }
 
             //extract iteration and Base64 string
-            var splittedHashString = hashedPassword.Replace("$MYHASH$V1$", "").Split('$');
-            var iterations = int.Parse(splittedHashString[0]);
-            var base64Hash = splittedHashString[1];
+            string[] splittedHashString = hashedPassword.Replace("$MYHASH$V1$", "").Split('$');
+            int iterations = int.Parse(splittedHashString[0]);
+            string base64Hash = splittedHashString[1];
 
             //get hashbytes
-            var hashBytes = Convert.FromBase64String(base64Hash);
+            byte[] hashBytes = Convert.FromBase64String(base64Hash);
 
             //get salt
-            var salt = new byte[_SaltSize];
+            byte[] salt = new byte[_SaltSize];
             Array.Copy(hashBytes, 0, salt, 0, _SaltSize);
 
             //create hash with given salt
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
+            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
             byte[] hash = pbkdf2.GetBytes(_HashSize);
 
             //get result
-            for (var i = 0; i < _HashSize; i++)
+            for (int i = 0; i < _HashSize; i++)
             {
                 if (hashBytes[i + _SaltSize] != hash[i])
                 {

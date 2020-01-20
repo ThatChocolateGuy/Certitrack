@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Certitrack.Data;
+using Certitrack.Extensions.Alerts;
+using Certitrack.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Certitrack.Data;
-using Certitrack.Models;
-using Certitrack.Extensions.Alerts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
-namespace certitrack_certificate_manager.Controllers
+namespace Certitrack.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller
@@ -46,8 +44,11 @@ namespace certitrack_certificate_manager.Controllers
         public async Task<IActionResult> Create([Bind("Id,Title,Description")] Role role)
         {
             if (RoleExists(role.Title))
+            {
                 return View(role)
                     .WithWarning("Role Exists", "A role with the same title exists. Try a different title.");
+            }
+
             if (ModelState.IsValid)
             {
                 await RoleManager.SetRoleNameAsync(role, role.Title);
@@ -70,7 +71,7 @@ namespace certitrack_certificate_manager.Controllers
                 if (role == null)
                 {
                     return NotFound();
-                }                
+                }
             }
             return View(role);
         }
@@ -85,14 +86,16 @@ namespace certitrack_certificate_manager.Controllers
                 return NotFound();
             }
             if (RoleExists(role.Title) && RoleDescriptionExists(role.Description))
+            {
                 return View(role)
                     .WithWarning("Role Exists", "A role with the same title & description exists. Try a different title.");
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var _role = await RoleManager.FindByIdAsync(role.Id.ToString());
+                    Role _role = await RoleManager.FindByIdAsync(role.Id.ToString());
                     await RoleManager.SetRoleNameAsync(_role, role.Title);
 
                     _role.Title = role.Title;
@@ -125,7 +128,7 @@ namespace certitrack_certificate_manager.Controllers
         {
             try
             {
-                var role = await _context.Role.FindAsync(id);
+                Role role = await _context.Role.FindAsync(id);
                 _context.Role.Remove(role);
                 await _context.SaveChangesAsync();
                 return "The " + role.Title + " role was deleted successfully";
