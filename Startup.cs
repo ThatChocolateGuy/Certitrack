@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Certitrack.Models;
 using Microsoft.AspNetCore.Identity;
+using jsreport.Binary;
+using jsreport.Local;
+using jsreport.AspNetCore;
 
 namespace Certitrack
 {
@@ -31,6 +34,10 @@ namespace Certitrack
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddJsReport(new LocalReporting()
+               .UseBinary(JsReportBinary.GetBinary())
+               .AsUtility()
+               .Create());
 
             services.AddIdentity<Staff, Role>(options =>
             {

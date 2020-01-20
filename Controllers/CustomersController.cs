@@ -10,6 +10,8 @@ using Certitrack.Models;
 using Certitrack.ViewModels;
 using Certitrack.Extensions.Alerts;
 using Microsoft.AspNetCore.Authorization;
+using jsreport.AspNetCore;
+using jsreport.Types;
 
 namespace certitrack_certificate_manager.Controllers
 {
@@ -58,14 +60,14 @@ namespace certitrack_certificate_manager.Controllers
 
             var orders = await
                 (from order in _context.Order
-                where order.CustomerId == customer.Id
-                select new Order
-                {
-                    CustomerId = customer.Id,
-                    Id = order.Id,
-                    OrderItems = _context.OrderItem
-                        .Where(oi => oi.OrderId == order.Id).ToList(),
-                }).ToListAsync();
+                 where order.CustomerId == customer.Id
+                 select new Order
+                 {
+                     CustomerId = customer.Id,
+                     Id = order.Id,
+                     OrderItems = _context.OrderItem
+                         .Where(oi => oi.OrderId == order.Id).ToList(),
+                 }).ToListAsync();
 
             foreach (var order in orders)
             {
@@ -237,6 +239,73 @@ namespace certitrack_certificate_manager.Controllers
         private bool CustomerExists(int id)
         {
             return _context.Customer.Any(e => e.Id == id);
+        }
+
+
+        // Print: Customers/Details
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Print(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customer
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var orders = await
+                (from order in _context.Order
+                 where order.CustomerId == customer.Id
+                 select new Order
+                 {
+                     CustomerId = customer.Id,
+                     Id = order.Id,
+                     OrderItems = _context.OrderItem
+                         .Where(oi => oi.OrderId == order.Id).ToList(),
+                 }).ToListAsync();
+
+            foreach (var order in orders)
+            {
+                foreach (var orderItem in order.OrderItems)
+                {
+                    orderItem.Certificate =
+                        await _context.Certificate.FindAsync(orderItem.CertificateId);
+                    orderItem.Certificate.CertificateLink =
+                        await _context.CertificateLink.FindAsync(orderItem.CertificateId);
+
+                    orderItem.Certificate.CertificateLink.Staff =
+                        await _context.Staff.FindAsync(orderItem.Certificate.CertificateLink.StaffId);
+                    orderItem.Certificate.CertificateLink.Promotion =
+                        await _context.Promotion.FindAsync(orderItem.Certificate.CertificateLink.PromotionId);
+                    orderItem.Certificate.CertificateLink.Channel =
+                        await _context.Channel.FindAsync(orderItem.Certificate.CertificateLink.ChannelId);
+                }
+            }
+
+            var model = new CustomerViewModel
+            {
+                Customer = customer,
+                Orders = orders
+            };
+
+           /* if (customer.Orders.Count() <= 0)
+            {
+                return RedirectToAction(nameof(Index)).WithWarning("Warning Cant Print", "Please place an order!");
+            }
+            else
+            {*/
+                //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+                var contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
+                HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
+                    .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
+           // }
+            return View(model);
         }
     }
 }
