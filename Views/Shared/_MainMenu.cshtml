@@ -188,9 +188,7 @@
     }
     <!-- / Roles Treeview -->
     <!-- Total Treeview : will become Dashboard -->
-    @*<li class="@(ViewBag.Current == "OrdersIndex"
-        || ViewBag.Current == "OrdersEdit"
-        || ViewBag.Current == "OrdersDetails"? "active" : "")">
+    @*<li class="@(ViewBag.Current == "TotalIndex"? "active" : "")">
         <a href="@Url.Action("Index", "Total")">
             <i class="fa fa-dollar-sign"></i>
             <span>Total</span>
