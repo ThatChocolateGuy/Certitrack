@@ -348,11 +348,23 @@ namespace Certitrack.Controllers
                 Certificate certificate = await _context.Certificate.FindAsync(id);
                 CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
                 Customer customer = await _context.Customer.FindAsync(certificateLink.CustomerId);
-
+                //Added orderitem and order to select the id and delete the order when orderitem reaches 0.
+                OrderItem orderItem = await _context.OrderItem.FindAsync(certificate.Id);
+                Order order = await _context.Order.FindAsync(orderItem.OrderId);
+                //this item is going to grab the ammount of certs in a specific order.
+                var item = await _context.OrderItem.Where(i => i.CertificateId == id).Select(i => i.Order.OrderItems.Count()).FirstAsync();
+                if ((item - 1) == 0)
+                {
+                    _context.CertificateLink.Remove(certificateLink);
+                    _context.Certificate.Remove(certificate);
+                    _context.OrderItem.Remove(orderItem);
+                    _context.Order.Remove(order);
+                    await _context.SaveChangesAsync();
+                    return "Certificate #" + certificate.CertificateNo + " And Order Id: " + order.Id + " deleted for " + customer.Name;
+                }
                 _context.CertificateLink.Remove(certificateLink);
                 _context.Certificate.Remove(certificate);
                 await _context.SaveChangesAsync();
-
                 return "Certificate #" + certificate.CertificateNo + " deleted for " + customer.Name;
             }
             catch (Exception)

@@ -10,7 +10,6 @@
 
     decimal totalValue = 0;
     int numOfOrders = Html.ViewData.Model.Orders.Count();
-   
     DateTime dateTime = DateTime.Today;
 }
 
@@ -68,91 +67,108 @@
             </table>
         </div>
         @*PersonInfo--END*@
+        @*OrderDetails--START*@
         @if (numOfOrders > 0)
         {
-             int total = Html.ViewData.Model.Customer.CertificateLink.Select(c => c.Certificate.Price).First();
-    int sum = numOfOrders * total;
+            int prices = Html.ViewData.Model.Customer.CertificateLink.Select(c => c.Certificate.Price).First();
+            int certs = Html.ViewData.Model.Customer.CertificateLink.Select(c => c.Certificate).Count();
+            int certNum = Html.ViewData.Model.Customer.Orders.Select(o => o.OrderItems).Count();
+            int sum = certs * prices;
+            int leftCerts = @Html.ViewData.Model.Customer.CertificateLink.Where(c => c.Certificate.DateRedeemed == null).Count();
 
-        @*OrderDetails--START*@
-        <div style="padding-top: 10px; padding-bottom: 10px;">
-            <div>
-                <h3>ORDER DETAILS</h3>
-                <h5 class="text-right"># of Orders (@numOfOrders)</h5>
-            </div>
-            <table class="table">
-                <tr>
-                    <th>Order Id</th>
-                    <th>Date Issued</th>
-                    <th>Price</th>
-                </tr>
 
-                @foreach (var order in Model.Orders)
-                {
-                    totalValue = 0;
+            <div style="padding-top: 10px; padding-bottom: 10px;">
+                <div>
+                    <h3>ORDER DETAILS</h3>
+                    <h5 class="text-right"># of Orders (@numOfOrders)</h5>
+                </div>
+                <table class="table">
                     <tr>
-
-                        <td>@Html.DisplayFor(modelItem => order.Id)</td>
-                        <td>
-                            @foreach (var orderItem in order.OrderItems)
-                            {
-                                dateTime = orderItem.Certificate.DateIssued;
-                                dateTime = orderItem.Certificate.DateIssued;
-                            }
-                            @dateTime.ToString("yyyy-MM-dd")
-                        </td>
-                        <td>
-                            @foreach (var orderItem in order.OrderItems)
-                            {
-                                totalValue += orderItem.Certificate.Price;
-                            }
-                            $@totalValue
-                        </td>
+                        <th>Order Id</th>
+                        <th>Date Issued</th>
+                        <th>Certs in order</th>
+                        <th>Price</th>
                     </tr>
-                }
-                <tr>
-                    <th>Total</th>
-                    <th></th>
-                    <td>$@sum</td>
-                </tr>
-            </table>
 
-        </div>
-        @*OrderDetails--END*@
-        @*CertificateDetails--START*@
-        <div>
-            <div>
-                <h3>CERTIFICATE DETAILS</h3>
-            </div>
-            <table class="table">
-                <tr>
-                    <th>Cert#</th>
-                    <th>Issued By</th>
-                    <th>Date Issued</th>
-                    <th>Expire Date</th>
-                    <th>Price</th>
-                    <th>Promo</th>
-                    <th>Dist Channel</th>
-                    <th>Date Remeeded</th>
-                </tr>
-                @foreach (var order in Model.Orders)
-                {
-                    foreach (var orderItem in order.OrderItems)
+                    @foreach (var order in Model.Orders)
                     {
+                        totalValue = 0;
                         <tr>
-                            <td>@Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)</td>
-                            <td>@Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)</td>
-                            <td>@Html.DisplayFor(dateIssued => orderItem.Certificate.DateIssued)</td>
-                            <td>@Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)</td>
-                            <td>@Html.DisplayFor(price => orderItem.Certificate.Price)</td>
-                            <td>@Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)</td>
-                            <td>@Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)</td>
-                            <td>@Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)</td>
+
+                            <td>@Html.DisplayFor(modelItem => order.Id)</td>
+                            <td>
+                                @foreach (var orderItem in order.OrderItems)
+                                {
+                                    dateTime = orderItem.Certificate.DateIssued;
+                                }
+                                @dateTime.ToString("yyyy-MM-dd")
+                            </td>
+                            <td>
+                                @foreach (var orderItem in order.OrderItems)
+                                {
+                                    certNum = order.OrderItems.Count();
+                                }
+                                @certNum
+                            </td>
+                            <td>
+                                @foreach (var orderItem in order.OrderItems)
+                                {
+                                    totalValue += orderItem.Certificate.Price;
+                                }
+                                $@totalValue
+                            </td>
                         </tr>
                     }
-                }
-            </table>
-        </div>
-        @*CertificateDetails--END*@
+                    <tr>
+                        <th>Total</th>
+                        <th></th>
+                        <th></th>
+                        <td>$@sum</td>
+                    </tr>
+                </table>
+
+            </div>
+            @*OrderDetails--END*@
+            @*CertificateDetails--START*@
+            <div>
+                <div>
+                    <h3>CERTIFICATE DETAILS</h3>
+                    <h5 class="text-right">Certificates left to redeem (@leftCerts)</h5>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Cert#</th>
+                        <th>Issued By</th>
+                        <th>Date Issued</th>
+                        <th>Expire Date</th>
+                        <th>Price</th>
+                        <th>Promo</th>
+                        <th>Dist Channel</th>
+                        <th>Date Remeeded</th>
+                    </tr>
+                    @foreach (var order in Model.Orders)
+                    {
+                        foreach (var orderItem in order.OrderItems)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)</td>
+                                <td>@Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)</td>
+                                <td>@Html.DisplayFor(dateIssued => orderItem.Certificate.DateIssued)</td>
+                                <td>@Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)</td>
+                                <td>@Html.DisplayFor(price => orderItem.Certificate.Price)</td>
+                                <td>@Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)</td>
+                                <td>@Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)</td>
+                                <td>@Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+            @*CertificateDetails--END*@
+        }
+        else
+        {
+            <h3 class="text-center" style="padding-top: 20px;">*** No Orders ***</h3>
         }
     </section>
 
