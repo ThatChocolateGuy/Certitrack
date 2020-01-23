@@ -1,0 +1,169 @@
+﻿@model Certitrack.ViewModels.CustomerViewModel
+
+@{
+    Layout = null;
+
+    TempData["_ReturnRoute.Controller"] = "Customers";
+    TempData["_ReturnRoute.Action"] = "Details";
+    TempData["_ReturnRoute.Id"] = Model.Customer.Id;
+    TempData["_ReturnRoute.ViewLabel"] = "Customer";
+
+    decimal totalValue = 0;
+    int numOfOrders = Html.ViewData.Model.Orders.Count();
+   
+    DateTime dateTime = DateTime.Today;
+}
+
+<!-- / .content-header -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CertiTrack - @ViewData["Title"]</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3 -->
+    <link rel="stylesheet" href="~/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="~/css/custom.css?v=1">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Main content -->
+    <section class="container-fluid">
+        @Html.AntiForgeryToken()
+
+        @*Header--START*@
+        <div style="padding-bottom:30px;">
+            <div class="header">
+                <div class="logo">
+                    <h1><span class="logo-lg"><b>Certi</b>Track</span></h1>
+                </div>
+            </div>
+
+            <div class="text-right">
+                <h4>Date Issued: @DateTime.Today.ToString("dd/MM/yyyy")</h4>
+            </div>
+        </div>
+        @*Header--END*@
+        @*PersonInfo--START*@
+        <div>
+            <div>
+                <h3>PERSONAL INFORMATION</h3>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Full Name</th>
+                    <td class="text-right">@Html.DisplayFor(model => model.Customer.Name)</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td class="text-right">@Html.DisplayFor(model => model.Customer.Email)</td>
+
+                </tr>
+                <tr>
+                    <th>Phone Number</th>
+                    <td class="text-right">@Html.DisplayFor(model => model.Customer.Phone)</td>
+                </tr>
+            </table>
+        </div>
+        @*PersonInfo--END*@
+        @if (numOfOrders > 0)
+        {
+             int total = Html.ViewData.Model.Customer.CertificateLink.Select(c => c.Certificate.Price).First();
+    int sum = numOfOrders * total;
+
+        @*OrderDetails--START*@
+        <div style="padding-top: 10px; padding-bottom: 10px;">
+            <div>
+                <h3>ORDER DETAILS</h3>
+                <h5 class="text-right"># of Orders (@numOfOrders)</h5>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Order Id</th>
+                    <th>Date Issued</th>
+                    <th>Price</th>
+                </tr>
+
+                @foreach (var order in Model.Orders)
+                {
+                    totalValue = 0;
+                    <tr>
+
+                        <td>@Html.DisplayFor(modelItem => order.Id)</td>
+                        <td>
+                            @foreach (var orderItem in order.OrderItems)
+                            {
+                                dateTime = orderItem.Certificate.DateIssued;
+                                dateTime = orderItem.Certificate.DateIssued;
+                            }
+                            @dateTime.ToString("yyyy-MM-dd")
+                        </td>
+                        <td>
+                            @foreach (var orderItem in order.OrderItems)
+                            {
+                                totalValue += orderItem.Certificate.Price;
+                            }
+                            $@totalValue
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th>Total</th>
+                    <th></th>
+                    <td>$@sum</td>
+                </tr>
+            </table>
+
+        </div>
+        @*OrderDetails--END*@
+        @*CertificateDetails--START*@
+        <div>
+            <div>
+                <h3>CERTIFICATE DETAILS</h3>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Cert#</th>
+                    <th>Issued By</th>
+                    <th>Date Issued</th>
+                    <th>Expire Date</th>
+                    <th>Price</th>
+                    <th>Promo</th>
+                    <th>Dist Channel</th>
+                    <th>Date Remeeded</th>
+                </tr>
+                @foreach (var order in Model.Orders)
+                {
+                    foreach (var orderItem in order.OrderItems)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)</td>
+                            <td>@Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)</td>
+                            <td>@Html.DisplayFor(dateIssued => orderItem.Certificate.DateIssued)</td>
+                            <td>@Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)</td>
+                            <td>@Html.DisplayFor(price => orderItem.Certificate.Price)</td>
+                            <td>@Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)</td>
+                            <td>@Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)</td>
+                            <td>@Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+        @*CertificateDetails--END*@
+        }
+    </section>
+
+    <!-- REQUIRED JS SCRIPTS -->
+    <!-- jQuery 3 -->
+    <script src="~/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Popper.js 1.12.9 -->
+    <script src="~/bower_components/bootstrap/dist/js/popper.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Custom Page Script -->
+    <script type="text/javascript" src="~/js/custom.js?v1"></script>
+</body>
+</html>
