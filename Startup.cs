@@ -10,7 +10,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+<<<<<<< HEAD
+using Certitrack.Models;
+using Microsoft.AspNetCore.Identity;
+using jsreport.Binary;
+using jsreport.Local;
+using jsreport.AspNetCore;
+=======
 using System;
+>>>>>>> 9513f1240782cf3ba0369da769f7c2a2ea2a167b
 
 namespace Certitrack
 {
@@ -28,6 +36,10 @@ namespace Certitrack
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddJsReport(new LocalReporting()
+               .UseBinary(JsReportBinary.GetBinary())
+               .AsUtility()
+               .Create());
 
             services.AddIdentity<Staff, Role>(options =>
             {

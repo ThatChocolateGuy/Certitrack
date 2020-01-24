@@ -3,12 +3,17 @@ using Certitrack.Extensions.Alerts;
 using Certitrack.Models;
 using Certitrack.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+<<<<<<< HEAD
+using jsreport.AspNetCore;
+using jsreport.Types;
+=======
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+>>>>>>> 9513f1240782cf3ba0369da769f7c2a2ea2a167b
 
 namespace Certitrack.Controllers
 {
@@ -66,7 +71,11 @@ namespace Certitrack.Controllers
                          .Where(oi => oi.OrderId == order.Id).ToList(),
                  }).ToListAsync();
 
+<<<<<<< HEAD
+            foreach (var order in orders)
+=======
             foreach (Order order in orders)
+>>>>>>> 9513f1240782cf3ba0369da769f7c2a2ea2a167b
             {
                 foreach (OrderItem orderItem in order.OrderItems)
                 {
@@ -227,6 +236,73 @@ namespace Certitrack.Controllers
         private bool CustomerExists(int id)
         {
             return _context.Customer.Any(e => e.Id == id);
+        }
+
+
+        // Print: Customers/Details
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Print(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customer
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var orders = await
+                (from order in _context.Order
+                 where order.CustomerId == customer.Id
+                 select new Order
+                 {
+                     CustomerId = customer.Id,
+                     Id = order.Id,
+                     OrderItems = _context.OrderItem
+                         .Where(oi => oi.OrderId == order.Id).ToList(),
+                 }).ToListAsync();
+
+            foreach (var order in orders)
+            {
+                foreach (var orderItem in order.OrderItems)
+                {
+                    orderItem.Certificate =
+                        await _context.Certificate.FindAsync(orderItem.CertificateId);
+                    orderItem.Certificate.CertificateLink =
+                        await _context.CertificateLink.FindAsync(orderItem.CertificateId);
+
+                    orderItem.Certificate.CertificateLink.Staff =
+                        await _context.Staff.FindAsync(orderItem.Certificate.CertificateLink.StaffId);
+                    orderItem.Certificate.CertificateLink.Promotion =
+                        await _context.Promotion.FindAsync(orderItem.Certificate.CertificateLink.PromotionId);
+                    orderItem.Certificate.CertificateLink.Channel =
+                        await _context.Channel.FindAsync(orderItem.Certificate.CertificateLink.ChannelId);
+                }
+            }
+
+            var model = new CustomerViewModel
+            {
+                Customer = customer,
+                Orders = orders
+            };
+
+           /* if (customer.Orders.Count() <= 0)
+            {
+                return RedirectToAction(nameof(Index)).WithWarning("Warning Cant Print", "Please place an order!");
+            }
+            else
+            {*/
+                //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+                var contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
+                HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
+                    .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
+           // }
+            return View(model);
         }
     }
 }
