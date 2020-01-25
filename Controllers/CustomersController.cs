@@ -3,17 +3,14 @@ using Certitrack.Extensions.Alerts;
 using Certitrack.Models;
 using Certitrack.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-<<<<<<< HEAD
 using jsreport.AspNetCore;
 using jsreport.Types;
-=======
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
->>>>>>> 9513f1240782cf3ba0369da769f7c2a2ea2a167b
 
 namespace Certitrack.Controllers
 {
@@ -71,11 +68,8 @@ namespace Certitrack.Controllers
                          .Where(oi => oi.OrderId == order.Id).ToList(),
                  }).ToListAsync();
 
-<<<<<<< HEAD
-            foreach (var order in orders)
-=======
+
             foreach (Order order in orders)
->>>>>>> 9513f1240782cf3ba0369da769f7c2a2ea2a167b
             {
                 foreach (OrderItem orderItem in order.OrderItems)
                 {
