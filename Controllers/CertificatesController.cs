@@ -352,7 +352,7 @@ namespace Certitrack.Controllers
                 OrderItem orderItem = await _context.OrderItem.FindAsync(certificate.Id);
                 Order order = await _context.Order.FindAsync(orderItem.OrderId);
                 //this item is going to grab the ammount of certs in a specific order.
-                var item = await _context.OrderItem.Where(i => i.CertificateId == id).Select(i => i.Order.OrderItems.Count()).FirstAsync();
+                int item = await _context.OrderItem.Where(i => i.CertificateId == id).Select(i => i.Order.OrderItems.Count()).FirstAsync();
                 if ((item - 1) == 0)
                 {
                     _context.CertificateLink.Remove(certificateLink);

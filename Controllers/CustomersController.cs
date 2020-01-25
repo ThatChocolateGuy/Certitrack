@@ -2,9 +2,9 @@
 using Certitrack.Extensions.Alerts;
 using Certitrack.Models;
 using Certitrack.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using jsreport.AspNetCore;
 using jsreport.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -243,14 +243,14 @@ namespace Certitrack.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customer
+            Customer customer = await _context.Customer
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            var orders = await
+            List<Order> orders = await
                 (from order in _context.Order
                  where order.CustomerId == customer.Id
                  select new Order
@@ -261,9 +261,9 @@ namespace Certitrack.Controllers
                          .Where(oi => oi.OrderId == order.Id).ToList(),
                  }).ToListAsync();
 
-            foreach (var order in orders)
+            foreach (Order order in orders)
             {
-                foreach (var orderItem in order.OrderItems)
+                foreach (OrderItem orderItem in order.OrderItems)
                 {
                     orderItem.Certificate =
                         await _context.Certificate.FindAsync(orderItem.CertificateId);
@@ -279,23 +279,23 @@ namespace Certitrack.Controllers
                 }
             }
 
-            var model = new CustomerViewModel
+            CustomerViewModel model = new CustomerViewModel
             {
                 Customer = customer,
                 Orders = orders
             };
 
-           /* if (customer.Orders.Count() <= 0)
-            {
-                return RedirectToAction(nameof(Index)).WithWarning("Warning Cant Print", "Please place an order!");
-            }
-            else
-            {*/
-                //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
-                var contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
-                HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
-                    .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
-           // }
+            /* if (customer.Orders.Count() <= 0)
+             {
+                 return RedirectToAction(nameof(Index)).WithWarning("Warning Cant Print", "Please place an order!");
+             }
+             else
+             {*/
+            //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+            string contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
+                .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
+            // }
             return View(model);
         }
     }
