@@ -6711,11 +6711,11 @@
     <TypeScriptCompile Include="wwwroot\bower_components\moment\moment.d.ts" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Compile Update="Controllers\StaffController.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="http://json.schemastore.org/appsettings" /></VisualStudio></ProjectExtensions>
 
