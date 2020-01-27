@@ -54,7 +54,7 @@ namespace Certitrack
 
             services.AddDbContext<CertitrackContext>(options =>
             {
-                options.UseSqlServer(ConnectionString);
+                options.UseSqlServer(ConnectionString, o => o.EnableRetryOnFailure());
             });
 
             services.AddAntiforgery(options =>
