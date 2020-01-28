@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ApplicationDefinition Include="appsettings.json" />
+    <Content Include="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
