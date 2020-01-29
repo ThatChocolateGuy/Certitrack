@@ -233,7 +233,7 @@ namespace Certitrack.Controllers
         }
 
 
-        // Print: Customers/Details
+        // GET: Customers/Print
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> Print(int? id)
         {
