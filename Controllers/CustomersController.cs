@@ -292,7 +292,8 @@ namespace Certitrack.Controllers
              else
              {*/
             //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
-            string contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
+            //string contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
+            string contentDisposition = "inline";
             HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
                 .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
             // }

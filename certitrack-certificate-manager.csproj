@@ -6,6 +6,9 @@
     <UserSecretsId>079515d2-1b25-43ae-be6f-6d7b242711f9</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <ApplicationIcon />
+    <StartupObject></StartupObject>
+    <Win32Resource />
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,10 +25,6 @@
     <None Remove="wwwroot\bower_components - Copy\**" />
     <None Remove="wwwroot\bower_components\fullcalendar\**" />
     <TypeScriptCompile Remove="wwwroot\bower_components\fullcalendar\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
