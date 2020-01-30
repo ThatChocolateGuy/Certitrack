@@ -19,9 +19,12 @@ namespace Certitrack.Controllers
     {
         private readonly CertitrackContext _context;
 
-        public CustomersController(CertitrackContext context)
+        public IJsReportMVCService JsReportMVCService { get; }
+
+        public CustomersController(CertitrackContext context, IJsReportMVCService jsReportMVCService)
         {
             _context = context;
+            JsReportMVCService = jsReportMVCService;
         }
 
         // GET: Customers
@@ -293,11 +296,26 @@ namespace Certitrack.Controllers
              {*/
             //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
             //string contentDisposition = "attachment; filename=\"CustomerReport.pdf\"";
-            string contentDisposition = "inline";
-            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
-                .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
+            //string contentDisposition = "inline";
+            //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf)
+            //    .OnAfterRender((r) => HttpContext.Response.Headers["Content-Disposition"] = contentDisposition);
             // }
-            return View(model);
+
+            //var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "Print", model);
+
+            HttpContext.JsReportFeature()
+                .Recipe(Recipe.ChromePdf)
+                .Configure((r) => r.Template.Chrome = new Chrome
+                {
+                    //HeaderTemplate = header,
+                    DisplayHeaderFooter = true,
+                    MarginTop = "1.5cm",
+                    MarginLeft = "1cm",
+                    MarginBottom = "1.5cm",
+                    MarginRight = "1cm"
+                });
+
+            return View("Print", model);
         }
     }
 }
