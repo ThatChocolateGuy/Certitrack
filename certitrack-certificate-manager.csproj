@@ -31,9 +31,6 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="jsreport\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -6692,7 +6689,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="2.1.1" />
-    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.1" />

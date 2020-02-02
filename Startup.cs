@@ -28,7 +28,7 @@ namespace Certitrack
         public IConfiguration Configuration { get; }
         public static string ConnectionString { get; set; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
             services.AddJsReport(new LocalReporting()

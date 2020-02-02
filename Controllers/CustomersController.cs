@@ -31,7 +31,7 @@ namespace Certitrack.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<Customer> customers =
-                from customer in await _context.Customer.ToListAsync()
+                from customer in await _context.Customer.ToListAsync().ConfigureAwait(false)
                 select new Customer
                 {
                     Id = customer.Id,
@@ -54,7 +54,7 @@ namespace Certitrack.Controllers
             }
 
             Customer customer = await _context.Customer
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
             if (customer == null)
             {
                 return NotFound();
@@ -193,9 +193,9 @@ namespace Certitrack.Controllers
 
             try
             {
-                Customer customer = await _context.Customer.FindAsync(id);
+                Customer customer = await _context.Customer.FindAsync(id).ConfigureAwait(false);
                 List<Order> orders = await _context.Order
-                    .Where(o => o.CustomerId == id).ToListAsync();
+                    .Where(o => o.CustomerId == id).ToListAsync().ConfigureAwait(false);
                 List<OrderItem> orderItems = null;
                 List<Certificate> certificates = new List<Certificate>();
                 List<CertificateLink> certificateLinks = new List<CertificateLink>();
@@ -203,12 +203,12 @@ namespace Certitrack.Controllers
                 foreach (Order order in orders)
                 {
                     orderItems = await _context.OrderItem
-                        .Where(oi => oi.OrderId == order.Id).ToListAsync();
+                        .Where(oi => oi.OrderId == order.Id).ToListAsync().ConfigureAwait(false);
                     foreach (OrderItem orderItem in orderItems)
                     {
                         Certificate certificate = await _context.Certificate
-                            .Where(c => c.Id == orderItem.CertificateId).FirstOrDefaultAsync();
-                        CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id);
+                            .Where(c => c.Id == orderItem.CertificateId).FirstOrDefaultAsync().ConfigureAwait(false);
+                        CertificateLink certificateLink = await _context.CertificateLink.FindAsync(certificate.Id).ConfigureAwait(false);
                         certificates.Add(certificate);
                         certificateLinks.Add(certificateLink);
                     }
@@ -219,7 +219,7 @@ namespace Certitrack.Controllers
                 _context.OrderItem.RemoveRange(orderItems);
                 _context.Order.RemoveRange(orders);
                 _context.Customer.Remove(customer);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 return customer.Name + " deleted";
             }
@@ -247,7 +247,7 @@ namespace Certitrack.Controllers
             }
 
             Customer customer = await _context.Customer
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
             if (customer == null)
             {
                 return NotFound();
@@ -262,23 +262,23 @@ namespace Certitrack.Controllers
                      Id = order.Id,
                      OrderItems = _context.OrderItem
                          .Where(oi => oi.OrderId == order.Id).ToList(),
-                 }).ToListAsync();
+                 }).ToListAsync().ConfigureAwait(false);
 
             foreach (Order order in orders)
             {
                 foreach (OrderItem orderItem in order.OrderItems)
                 {
                     orderItem.Certificate =
-                        await _context.Certificate.FindAsync(orderItem.CertificateId);
+                        await _context.Certificate.FindAsync(orderItem.CertificateId).ConfigureAwait(false);
                     orderItem.Certificate.CertificateLink =
-                        await _context.CertificateLink.FindAsync(orderItem.CertificateId);
+                        await _context.CertificateLink.FindAsync(orderItem.CertificateId).ConfigureAwait(false);
 
                     orderItem.Certificate.CertificateLink.Staff =
-                        await _context.Staff.FindAsync(orderItem.Certificate.CertificateLink.StaffId);
+                        await _context.Staff.FindAsync(orderItem.Certificate.CertificateLink.StaffId).ConfigureAwait(false);
                     orderItem.Certificate.CertificateLink.Promotion =
-                        await _context.Promotion.FindAsync(orderItem.Certificate.CertificateLink.PromotionId);
+                        await _context.Promotion.FindAsync(orderItem.Certificate.CertificateLink.PromotionId).ConfigureAwait(false);
                     orderItem.Certificate.CertificateLink.Channel =
-                        await _context.Channel.FindAsync(orderItem.Certificate.CertificateLink.ChannelId);
+                        await _context.Channel.FindAsync(orderItem.Certificate.CertificateLink.ChannelId).ConfigureAwait(false);
                 }
             }
 

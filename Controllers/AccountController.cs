@@ -34,68 +34,74 @@ namespace Certitrack.Controllers
 
         public async Task<IActionResult> Login()
         {
-            StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
-
-            try
+            using (StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext))
             {
-                Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com");
-                if (staff == null)
+                try
                 {
-                    Role role = await RoleManager.FindByNameAsync("Admin");
-                    StaffType staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync();
-
-                    if (role == null)
+                    Staff staff = await UserManager.FindByEmailAsync("admin@certitrack.com").ConfigureAwait(false);
+                    if (staff == null)
                     {
-                        role = new Role
+                        Role role = await RoleManager.FindByNameAsync("Admin").ConfigureAwait(false);
+                        StaffType staffType = await _certitrackContext.StaffType.FirstOrDefaultAsync().ConfigureAwait(false);
+
+                        if (role == null)
                         {
-                            Title = "Admin",
-                            Description = "Can create, edit, delete anyone and anything. Basically, God mode.",
-                            Name = "Admin"
-                        };
-                        await RoleManager.CreateAsync(role);
-                    }
-                    if (staffType == null)
-                    {
-                        staffType = new StaffType
+                            role = new Role
+                            {
+                                Title = "Admin",
+                                Description = "Can create, edit, delete anyone and anything. Basically, God mode.",
+                                Name = "Admin"
+                            };
+                            await RoleManager.CreateAsync(role).ConfigureAwait(false);
+                        }
+                        if (staffType == null)
                         {
-                            Type = "Head Therapist"
+                            staffType = new StaffType
+                            {
+                                Type = "Head Therapist"
+                            };
+                            await _certitrackContext.StaffType.AddAsync(staffType).ConfigureAwait(false);
+                            await _certitrackContext.SaveChangesAsync().ConfigureAwait(false);
+                        }
+
+                        StaffLink staffLink = new StaffLink
+                        {
+                            Role = role,
+                            StaffType = staffType
                         };
-                        await _certitrackContext.StaffType.AddAsync(staffType);
-                        await _certitrackContext.SaveChangesAsync();
+                        staff = new Staff
+                        {
+                            UserName = "Admin",
+                            Email = "admin@certitrack.com",
+                            Name = "Admin",
+                            Password = "admin123",
+                            StaffLink = staffLink
+                        };
+
+                        await staffController.Create(staff).ConfigureAwait(false);
+                        IdentityResult result = await UserManager.AddToRoleAsync(staff, "Admin").ConfigureAwait(false);
+                        // output result to console - debugging
+                        Console.WriteLine("UserManager.AddToRoleAsync - Result: " + result);
+                        ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
                     }
-
-                    StaffLink staffLink = new StaffLink
-                    {
-                        Role = role,
-                        StaffType = staffType
-                    };
-                    staff = new Staff
-                    {
-                        UserName = "Admin",
-                        Email = "admin@certitrack.com",
-                        Name = "Admin",
-                        Password = "admin123",
-                        StaffLink = staffLink
-                    };
-
-                    await staffController.Create(staff);
-                    IdentityResult result = await UserManager.AddToRoleAsync(staff, "Admin");
-                    Console.WriteLine("UserManager.AddToRoleAsync - Result: " + result);
-                    ViewBag.Message = "DB Seed Successful - Staff: '" + staff.Name + "' was created";
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
+                    ViewBag.Message = e.Message;
                 }
             }
-            catch (Exception e)
-            {
-                ViewBag.Message = e.Message;
-            }
-
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Validate(Staff staff)
         {
-            Staff _staff = await UserManager.FindByEmailAsync(staff.Email);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            Staff _staff = await UserManager.FindByEmailAsync(staff.Email).ConfigureAwait(false);
 
             if (_staff != null)
             {
@@ -103,12 +109,12 @@ namespace Certitrack.Controllers
                 {
                     try
                     {
-                        await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false);
+                        await SignInManager.PasswordSignInAsync(_staff, _staff.Password, false, false).ConfigureAwait(false);
                         return Json(new
                         {
                             status = true,
                             message = "Login Successful!",
-                            isAdmin = await UserManager.IsInRoleAsync(_staff, "Admin")
+                            isAdmin = await UserManager.IsInRoleAsync(_staff, "Admin").ConfigureAwait(false)
                         });
                     }
                     catch (Exception e)
@@ -130,7 +136,7 @@ namespace Certitrack.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await SignInManager.SignOutAsync();
+            await SignInManager.SignOutAsync().ConfigureAwait(false);
             return RedirectToAction("Login", "Account");
         }
     }
