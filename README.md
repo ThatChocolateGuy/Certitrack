@@ -1,7 +1,7 @@
 # Certitrack [![Build status](https://dev.azure.com/NemoCodes/certitrack/_apis/build/status/certitrack-demo%20-%20CI)](https://dev.azure.com/NemoCodes/certitrack/_build/latest?definitionId=4) ![.NET Core](https://github.com/ThatChocolateGuy/Certitrack/workflows/.NET%20Core/badge.svg)
 ASP.NET Core Gift Certificate Management System
 
-## DEMO: <a href="https://certitrack-demo.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
+## DEMO: <a href="https://certitrack-gcms-demo.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
 #### U: ```admin@certitrack.com```  P: ```admin123```
 #### U: ```nonadmin@certitrack.com```  P: ```nonadmin```
 <sub>Note: Refresh page if app doesn't load correctly the first time.</sub>
