@@ -33,6 +33,12 @@ namespace Certitrack
             services.AddOptions();
             services.AddJsReport(new LocalReporting()
                .UseBinary(JsReportBinary.GetBinary())
+               .Configure((cfg) => {
+                   // explicitly set port, because azure web app sets environment variable PORT
+                   // which is used also by jsreport
+                   cfg.HttpPort = 1000;
+                   return cfg;
+               })
                .AsUtility()
                .Create());
 
