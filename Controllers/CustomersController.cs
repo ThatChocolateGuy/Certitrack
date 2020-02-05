@@ -315,7 +315,7 @@ namespace Certitrack.Controllers
                     MarginRight = "1cm"
                 });
 
-            return View("Print", model);
+            return View(model);
         }
     }
 }

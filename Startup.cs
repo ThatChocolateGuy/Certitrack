@@ -2,6 +2,7 @@
 using Certitrack.Models;
 using jsreport.AspNetCore;
 using jsreport.Binary;
+using jsreport.Binary.Linux;
 using jsreport.Local;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,7 @@ namespace Certitrack
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+
             services.AddJsReport(new LocalReporting()
                .UseBinary(JsReportBinary.GetBinary())
                .Configure((cfg) => {
@@ -38,9 +40,7 @@ namespace Certitrack
                    // which is used also by jsreport
                    cfg.HttpPort = 1000;
                    return cfg;
-               })
-               .AsUtility()
-               .Create());
+               }).AsUtility().Create());
 
             services.AddIdentity<Staff, Role>(options =>
             {
