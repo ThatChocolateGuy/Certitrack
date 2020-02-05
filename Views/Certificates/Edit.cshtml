@@ -54,7 +54,8 @@
                                 <label asp-for="Customer.Name" class="control-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                                    <select asp-for="Customer.Name" asp-items="@Model.CustomerList" class="form-control select2" required></select>
+                                    @*<select asp-for="Customer.Name" asp-items="@Model.CustomerList" class="form-control select2" required></select>*@
+                                    <input type="text" required asp-for="Customer.Name" class="form-control"/>
                                 </div>
                                 <!-- / .input-group -->
                                 <span asp-validation-for="Customer.Name" class="text-danger help-block with-errors"></span>
