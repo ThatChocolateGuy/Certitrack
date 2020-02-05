@@ -10,13 +10,11 @@
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Sold</th>
-                        <th>Total Price (Price - Discount)</th>
-                        <th>Total Price (Price + Discount)</th>
-                        <th>Pending</th>
-                        <th>Redeemed</th>
-                        <th>Distribution Channel</th>
-                        <th>Promos</th>
+                        <th># of Certs Sold</th>
+                        <th>Total Price</th>
+                        @*<th>Total Price w/ promo</th>*@
+                        <th># of Certs Pending</th>
+                        <th># of Certs Redeemed</th>
                         <th>Redeemed Cert Total</th>
                     </tr>
                 </thead>
@@ -24,15 +22,54 @@
                     <tr>
                         <td>@Html.ViewData.Model.Count()</td>
                         <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</td>
-                        <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price + t.Promotion.Discount).Sum()</td>
+                        @*  <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price).Sum()</td>*@
                         <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed == null).Count()</td>
                         <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Count()</td>
-                        <td>@Html.ViewData.Model.Where(t => t.Channel != null).Count()</td>
-                        <td>@Html.ViewData.Model.Where(t => t.Promotion != null).Count()</td>
                         <td>$@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</td>
                     </tr>
                 </tbody>
             </table>
+
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        @foreach (var certlink in Model.Select(m => m.Channel).Distinct())
+                        {
+                            <th># of Certs in (@certlink.ChannelName)</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (var test in Model.Select(m => m.Channel).Distinct())
+                        {
+                            <td>@test.CertificateLink.Count()</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        @foreach (var certlink in Model.Select(m => m.Promotion).Distinct())
+                        {
+                            <th># of Certs including ($@certlink.Discount) Promo</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (var test in Model.Select(m => m.Promotion).Distinct())
+                        {
+                            <td>@test.CertificateLink.Count()</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+            </div>
         </div>
     </div>
 </div>
+

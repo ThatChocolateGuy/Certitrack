@@ -284,6 +284,9 @@ namespace Certitrack.Controllers
                         .Where(ch => ch.ChannelName == certificateEditViewModel.Channel.ChannelName)
                         .Select(ch => ch.Id)
                         .FirstOrDefaultAsync();
+
+                    //i believe this customerid is giving me an error on the customer name change.
+                    //so i hardcoded the querry
                     certificateLink.CustomerId = await _context.Customer
                         .Where(c => c.Name == certificateEditViewModel.Customer.Name)
                         .Select(c => c.Id)
@@ -297,6 +300,21 @@ namespace Certitrack.Controllers
                         .Select(s => s.Id)
                         .FirstOrDefaultAsync();
 
+                    //if name is not is not equal to the model name
+                    if (customer.Name != certificateEditViewModel.Customer.Name)
+                    {
+                        //there is an error so i used try and catch to redirect to index
+                        try
+                        {
+                            //using fromsql func to create customer update querry for name only
+                            _context.Customer.FromSql($"UPDATE dbo.customer SET dbo.customer.name = {certificateEditViewModel.Customer.Name} WHERE id = {customer.Id}").FirstOrDefault();
+                        }
+                        catch (Exception)
+                        {
+                            //there is an id error but it still updates customer so i used the exception like a success message
+                            return RedirectToAction(nameof(Index)).WithSuccess("Cert#" + certificate.CertificateNo, " Successfully Updated! ");
+                        }
+                    }
                     _context.UpdateRange(certificate, certificateLink);
                     await _context.SaveChangesAsync();
                 }
