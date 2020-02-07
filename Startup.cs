@@ -1,8 +1,6 @@
 ﻿using Certitrack.Data;
 using Certitrack.Models;
 using jsreport.AspNetCore;
-using jsreport.Binary;
-using jsreport.Binary.Linux;
 using jsreport.Local;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Certitrack
 {
@@ -34,7 +33,10 @@ namespace Certitrack
             services.AddOptions();
 
             services.AddJsReport(new LocalReporting()
-               .UseBinary(JsReportBinary.GetBinary())
+                // target platform binary
+               .UseBinary(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+                    jsreport.Binary.JsReportBinary.GetBinary() :
+                    jsreport.Binary.Linux.JsReportBinary.GetBinary())
                .Configure((cfg) => {
                    // explicitly set port, because azure web app sets environment variable PORT
                    // which is used also by jsreport

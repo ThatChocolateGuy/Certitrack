@@ -1,10 +1,13 @@
 ﻿@model IEnumerable<Certitrack.Models.Customer>
+@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Current = "CustomerIndex";
     TempData["_ReturnRoute.Controller"] = null;
+
+    HttpContext httpContext;
 }
 
 <section class="content-header">
@@ -51,43 +54,46 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <td>
-                                    <a asp-action="Details" asp-route-id="@item.Id">
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </a>
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Phone)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Orders.Count)
-                                </td>
-                                <!-- Buttons -->
-                                <td class="text-center">
-                                    <a asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank">
-                                        <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print"></i>
-                                        <span class="sr-only">Print</span>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
-                                        <i class="fas fa-user-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
-                                        <span class="sr-only">Edit</span>
-                                    </a>
-                                    <button id="delete-@item.Id"
-                                            data-staff-id="@item.Id"
-                                            data-message="@item.Name"
-                                            data-url="@Url.Action("Delete", "Customers")"
-                                            onclick="deleteUser('@item.Name')"
-                                            class="btn" style="background-color: transparent">
-                                        <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
-                                        <span class="sr-only">Delete</span>
-                                    </button>
-                                </td>
-                                <!-- / Buttons -->
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id">
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Phone)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Orders.Count)
+                                    </td>
+                                    <!-- Buttons -->
+                                    <td class="text-center">
+                                        @if (AppMode.isDebug)
+                                        {
+                                            <a asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank">
+                                                <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print"></i>
+                                                <span class="sr-only">Print</span>
+                                            </a>
+                                        }
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
+                                            <i class="fas fa-user-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                            <span class="sr-only">Edit</span>
+                                        </a>
+                                        <button id="delete-@item.Id"
+                                                data-staff-id="@item.Id"
+                                                data-message="@item.Name"
+                                                data-url="@Url.Action("Delete", "Customers")"
+                                                onclick="deleteUser('@item.Name')"
+                                                class="btn" style="background-color: transparent">
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                            <span class="sr-only">Delete</span>
+                                        </button>
+                                    </td>
+                                    <!-- / Buttons -->
+                                </tr>
                             }
                         </tbody>
                     </table>

@@ -41,7 +41,7 @@ namespace Certitrack.Controllers
                     Orders = _context.Order
                         .Where(o => o.CustomerId == customer.Id).ToList()
                 };
-
+            
             return View(customers);
         }
 
