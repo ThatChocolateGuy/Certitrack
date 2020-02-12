@@ -13,8 +13,8 @@ This server-rendered app uses the Bootstrap-based AdminLTE frontend framework, a
 Certitrack is currently being reworked into separate backend (.NET Core Web API) and frontend (Vue.js) services to provide an even smoother UX.
 
 ## DEMO: <a href="https://certitrack-gcms-demo.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
-#### U: ```admin@certitrack.com```  P: ```admin123```
-#### U: ```nonadmin@certitrack.com```  P: ```nonadmin```
+#### U: `admin@certitrack.com`  P: `admin123`
+#### U: `nonadmin@certitrack.com`  P: `nonadmin`
 <sub>
 	Note: Please be patient as app may take some time to cold boot.
 	Certitrack is hosted on a serverless Azure instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!.
@@ -23,7 +23,7 @@ Certitrack is currently being reworked into separate backend (.NET Core Web API)
 ## INSTALLATION:
 1. Clone the repo
 2. Launch the .csproj with VS or VSCode
-3. Run with IIS or Docker '''(ctrl + F5 or F5 to debug)'''
+3. Run with IIS or Docker `(ctrl + F5 or F5 to debug)`
 4. Explore the app with the above login credentials
 <sub>
 	Note: Due to limitations within the jsreport nuget packages, PDF reports will not generate on an IIS-based Azure App Service.
@@ -36,5 +36,6 @@ Certitrack is currently being reworked into separate backend (.NET Core Web API)
 
 ## NEW FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
-- dashboard to show aggregates
--- filter by time periods
+- interactive dashboard to show aggregates
+  - filter by time periods
+- rework frontend in Vue.js
