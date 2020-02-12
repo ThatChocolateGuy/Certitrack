@@ -14,7 +14,7 @@ Certitrack is currently being reworked into separate backend (.NET Core Web API)
 #### U: ```admin@certitrack.com```  P: ```admin123```
 #### U: ```nonadmin@certitrack.com```  P: ```nonadmin```
 <sub>
-	Note: Note: Please be patient as app may take some time to cold boot.
+	Note: Please be patient as app may take some time to cold boot.
 	Certitrack is hosted on a serverless Azure instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!.
 </sub>
 
