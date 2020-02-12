@@ -4,8 +4,10 @@ ASP.NET Core Gift Certificate Management System
 ## Overview
 Certitrack is a fairly simple, yet relationally complex Gift Certificate Management System (GCMS).
 Issue, track, edit, delete, and redeem certificates. Generate PDF reports. Easily manage staff, clients and much more. Suitable for any organization or team.
-Built with Microsoft’s .NET Core stack, Certitrack leverages the power of a robust and secure relational SQL database.
+
+Built with Microsoftâ€™s .NET Core stack, Certitrack leverages the power of a robust and secure relational SQL database.
 This server-rendered app uses the Bootstrap-based AdminLTE frontend framework, along with AJAX requests where possible, yielding a fast and highly responsive user experience (UX).
+
 Certitrack is currently being reworked into separate backend (.NET Core Web API) and frontend (Vue.js) services to provide an even smoother UX.
 
 ## DEMO: <a href="https://certitrack-gcms-demo.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
@@ -13,7 +15,7 @@ Certitrack is currently being reworked into separate backend (.NET Core Web API)
 #### U: ```nonadmin@certitrack.com```  P: ```nonadmin```
 <sub>
 	Note: Note: Please be patient as app may take some time to cold boot.
-	Certitrack is hosted on a serverless Azure instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!.
+	Certitrack is hosted on a serverless Azure instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ainâ€™t cheap!.
 </sub>
 
 ## INSTALLATION:
