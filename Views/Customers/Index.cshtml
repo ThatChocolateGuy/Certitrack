@@ -1,13 +1,10 @@
 ﻿@model IEnumerable<Certitrack.Models.Customer>
-@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Current = "CustomerIndex";
     TempData["_ReturnRoute.Controller"] = null;
-
-    HttpContext httpContext;
 }
 
 <section class="content-header">
@@ -71,13 +68,10 @@
                                     </td>
                                     <!-- Buttons -->
                                     <td class="text-center">
-                                        @if (AppMode.isDebug)
-                                        {
-                                            <a asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank">
-                                                <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print"></i>
-                                                <span class="sr-only">Print</span>
-                                            </a>
-                                        }
+                                        <a asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank">
+                                            <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print"></i>
+                                            <span class="sr-only">Print</span>
+                                        </a>
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
                                             <i class="fas fa-user-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
                                             <span class="sr-only">Edit</span>
