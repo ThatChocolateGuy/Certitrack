@@ -107,9 +107,9 @@
                     var redirectAction = "";
                     if (result.status == true) {
                         if (result.isAdmin == true)
-                            redirectAction = "@Url.Action("Index", "Staff")";
+                            redirectAction = "@Url.Action("Index", "Total")";
                         else
-                            redirectAction = "@Url.Action("Index", "Certificates")";
+                            redirectAction = "@Url.Action("Index", "Total")";
                         location.href = redirectAction;
                     }
                     else {

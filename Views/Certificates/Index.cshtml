@@ -114,7 +114,14 @@
                                 <!-- / Staff -->
                                 <!-- Redeemed -->
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Certificate.DateRedeemed)
+                                    @if (item.Certificate.DateRedeemed == null)
+                                    {
+                                        <span class="label label-warning">Pending</span>
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Certificate.DateRedeemed)
+                                    }
                                 </td>
                                 <!-- / Redeemed -->
                                 <!-- Buttons -->

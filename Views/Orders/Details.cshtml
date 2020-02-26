@@ -118,7 +118,14 @@
                                         @Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)
+                                        @if (orderItem.Certificate.DateRedeemed == null)
+                                        {
+                                            <span class="label label-warning">Pending</span>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(modelItem => orderItem.Certificate.DateRedeemed)
+                                        }
                                     </td>
                                     <!-- Buttons -->
                                     <td class="text-center">

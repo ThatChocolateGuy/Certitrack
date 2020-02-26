@@ -1,12 +1,13 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">NAVIGATION</li>
-    <!-- Dashboard -->
-    @*<li>
-            <a href="@Url.Action("Index", "Home")">
-                <i class="fa fa-tachometer-alt"></i> <span>Dashboard</span>
-            </a>
-        </li>*@
-    <!-- / Dashboard -->
+    <!-- Total Treeview : Dashboard -->
+    <li class="@(ViewBag.Current == "TotalIndex"? "active" : "")">
+        <a href="@Url.Action("Index", "Total")">
+            <i class="fa fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <!-- / Total Treeview -->
     <!-- Staff Treeview -->
     @if (User.IsInRole("Admin"))
     {
@@ -187,12 +188,4 @@
         </li>
     }
     <!-- / Roles Treeview -->
-    <!-- Total Treeview : will become Dashboard -->
-    @*<li class="@(ViewBag.Current == "TotalIndex"? "active" : "")">
-        <a href="@Url.Action("Index", "Total")">
-            <i class="fa fa-dollar-sign"></i>
-            <span>Total</span>
-        </a>
-    </li>*@
-    <!-- / Total Treeview -->
 </ul>

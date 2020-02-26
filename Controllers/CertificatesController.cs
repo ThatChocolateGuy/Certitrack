@@ -109,7 +109,7 @@ namespace Certitrack.Controllers
                 select new SelectListItem
                 {
                     Text = promo.Discount.ToString("C2"),
-                    Value = promo.Discount.ToString("C")
+                    Value = promo.Discount.ToString("D")
                 };
             IEnumerable<SelectListItem> customerNames =
                 from customer in await _context.Customer.ToListAsync()

@@ -10,17 +10,17 @@ Issue, track, edit, delete, and redeem certificates. Generate PDF reports. Easil
 Built with Microsoft’s .NET Core stack, Certitrack leverages the power of a robust and secure relational SQL database.
 This server-rendered app uses the Bootstrap-based AdminLTE frontend framework, along with AJAX requests where possible, yielding a fast and highly responsive user experience (UX).
 
-Certitrack is currently being reworked into separate backend (.NET Core Web API) and frontend (Vue.js) services to provide an even smoother UX.
+Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 
-## DEMO: <a href="https://certitrack-gcms-demo.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
+## DEMO: <a href="https://certitrack.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
 #### U: `admin@certitrack.com`  P: `admin123`
 #### U: `nonadmin@certitrack.com`  P: `nonadmin`
 <sub>
 	Note: Please be patient as app may take some time to cold boot.
-	Certitrack is hosted on a serverless Azure instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!.
+	Certitrack's database is hosted on an Azure server instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!
 </sub>
 
-## INSTALLATION:
+## USAGE:
 1. Clone the repo
 2. Launch the .csproj with VS or VSCode
 3. Run with IIS or Docker `(ctrl + F5 or F5 to debug)`
@@ -34,7 +34,7 @@ Certitrack is currently being reworked into separate backend (.NET Core Web API)
 ## BUGS:
 - Please create an issue or pull request for this README if you find any
 
-## NEW FEATURES TO ADD:	
+## FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
 - interactive dashboard to show aggregates
   - filter by time periods
