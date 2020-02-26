@@ -12,7 +12,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Total")"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
         </li>
         <li class="active">Channels
     </ol>
@@ -42,7 +42,9 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(modelItem => channel.ChannelName)
+                                        <span class="label id">
+                                            @Html.DisplayFor(modelItem => channel.ChannelName)
+                                        </span>
                                     </td>
                                     <!-- buttons -->
                                     <td class="text-center">

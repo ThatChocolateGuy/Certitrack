@@ -13,7 +13,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Total")"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
         </li>
         <li class="active">Certificates
     </ol>
@@ -77,90 +77,97 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <!-- Certificate -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Certificate.CertificateNo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Certificate.DateIssued)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Certificate.ExpiryDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Certificate.Price)
-                                </td>
-                                <!-- / Certificate -->
-                                <!-- Channel -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Channel.ChannelName)
-                                </td>
-                                <!-- / Channel -->
-                                <!-- Customer -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Customer.Name)
-                                </td>
-                                <!-- / Customer -->
-                                <!-- Promo -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Promotion.Discount)
-                                </td>
-                                <!-- / Promo -->
-                                <!-- Staff -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Staff.Name)
-                                </td>
-                                <!-- / Staff -->
-                                <!-- Redeemed -->
-                                <td>
-                                    @if (item.Certificate.DateRedeemed == null)
-                                    {
-                                        <span class="label label-warning">Pending</span>
-                                    }
-                                    else
-                                    {
-                                        @Html.DisplayFor(modelItem => item.Certificate.DateRedeemed)
-                                    }
-                                </td>
-                                <!-- / Redeemed -->
-                                <!-- Buttons -->
-                                <td class="text-center">
-                                    @if (item.Certificate.DateRedeemed == null)
-                                    {
-                                        <button id="redeem-@item.Certificate.Id"
+                                <tr>
+                                    <!-- Certificate -->
+                                    <td>
+                                        <span class="label id">@Html.DisplayFor(modelItem => item.Certificate.CertificateNo)</span>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Certificate.DateIssued)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Certificate.ExpiryDate)
+                                    </td>
+                                    <td>
+                                        <span class="label label-primary">$@Model.Select(modelItem => item.Certificate.Price).FirstOrDefault()</span>
+                                    </td>
+                                    <!-- / Certificate -->
+                                    <!-- Channel -->
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Channel.ChannelName)
+                                    </td>
+                                    <!-- / Channel -->
+                                    <!-- Customer -->
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Customer.Name)
+                                    </td>
+                                    <!-- / Customer -->
+                                    <!-- Promo -->
+                                    <td>
+                                        @if (item.Promotion.Discount.Equals(0))
+                                        {
+                                            <span class="label label-info">No Promo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-danger">$@Model.Select(modelItem => item.Promotion.Discount).FirstOrDefault()</span>
+                                        }
+                                    </td>
+                                    <!-- / Promo -->
+                                    <!-- Staff -->
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Staff.Name)
+                                    </td>
+                                    <!-- / Staff -->
+                                    <!-- Redeemed -->
+                                    <td>
+                                        @if (item.Certificate.DateRedeemed == null)
+                                        {
+                                            <span class="label label-warning">Pending</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-success">@Html.DisplayFor(modelItem => item.Certificate.DateRedeemed)</span>
+                                        }
+                                    </td>
+                                    <!-- / Redeemed -->
+                                    <!-- Buttons -->
+                                    <td class="text-center">
+                                        @if (item.Certificate.DateRedeemed == null)
+                                        {
+                                            <button id="redeem-@item.Certificate.Id"
+                                                    data-cert-id="@item.Certificate.Id"
+                                                    data-message="@item.Certificate.CertificateNo"
+                                                    data-url="@Url.Action("Redeem", "Certificates")"
+                                                    onclick="redeem('@item.Certificate.CertificateNo')"
+                                                    class="btn" style="background-color: transparent">
+                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
+                                                <span class="sr-only">Redeem</span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn" style="background-color: transparent" disabled="disabled">
+                                                <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
+                                                <span class="sr-only">Redeemed</span>
+                                            </button>
+                                        }
+                                        <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
+                                            <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
+                                            <span class="sr-only">Edit</span>
+                                        </a>
+                                        <button id="delete-@item.Certificate.Id"
                                                 data-cert-id="@item.Certificate.Id"
                                                 data-message="@item.Certificate.CertificateNo"
-                                                data-url="@Url.Action("Redeem", "Certificates")"
-                                                onclick="redeem('@item.Certificate.CertificateNo')"
+                                                data-url="@Url.Action("Delete", "Certificates")"
+                                                onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')"
                                                 class="btn" style="background-color: transparent">
-                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeem"></i>
-                                            <span class="sr-only">Redeem</span>
+                                            <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
+                                            <span class="sr-only">Delete</span>
                                         </button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn" style="background-color: transparent" disabled="disabled">
-                                            <i class="fas fa-ticket-alt text-green" data-toggle="tooltip" data-placement="left" title="Redeemed"></i>
-                                            <span class="sr-only">Redeemed</span>
-                                        </button>
-                                    }
-                                    <a asp-action="Edit" asp-route-id="@item.Certificate.Id" class="btn">
-                                        <i class="fas fa-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
-                                        <span class="sr-only">Edit</span>
-                                    </a>
-                                    <button id="delete-@item.Certificate.Id"
-                                            data-cert-id="@item.Certificate.Id"
-                                            data-message="@item.Certificate.CertificateNo"
-                                            data-url="@Url.Action("Delete", "Certificates")"
-                                            onclick="deleteUser('Certificate: #@item.Certificate.CertificateNo')"
-                                            class="btn" style="background-color: transparent">
-                                        <i class="fas fa-trash text-red" data-toggle="tooltip" data-placement="left" title="Delete"></i>
-                                        <span class="sr-only">Delete</span>
-                                    </button>
-                                </td>
-                                <!-- / Buttons -->
-                            </tr>
+                                    </td>
+                                    <!-- / Buttons -->
+                                </tr>
                             }
                         </tbody>
                     </table>

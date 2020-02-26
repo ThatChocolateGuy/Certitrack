@@ -1,4 +1,17 @@
-﻿.dropdown-menu {
+﻿span.label {
+    font-size: 0.9em;
+}
+
+    span.label.id {
+        background-color: rgba(0,0,0,0.7);
+        color: azure;
+    }
+
+    span.label a {
+        color: azure;
+    }
+
+.dropdown-menu {
     background-color: #222d32;
     min-width: 10px;
 }
