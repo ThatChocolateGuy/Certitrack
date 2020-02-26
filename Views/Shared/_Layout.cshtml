@@ -20,14 +20,14 @@
     <link rel="stylesheet" href="~/vendor/Ionicons/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/dist/css/AdminLTE.css">
-    <link rel="stylesheet" href="~/dist/css/skins/skin-blue.css">
+    <link rel="stylesheet" href="~/dist/css/skins/skin-green.min.css">
     <!-- Custom styling -->
     <link rel="stylesheet" href="~/css/custom.css">
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
@@ -186,5 +186,80 @@
     <script src="~/vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <!-- Custom Page Script -->
     <script type="text/javascript" src="~/js/custom.js"></script>
+    @if (ViewBag.ChartJsCDN != null)
+    {
+        <!-- Chart.js CDN -->
+        <script src="@ViewBag.ChartJsCDN"></script>
+        <!-- Chart.js Custom Script -->
+        <script>
+            var certsByPromoData = [@ViewBag.CertsByPromoArray];
+            var certsByChannelData = [@ViewBag.CertsByChannelArray];
+            var certsByPromoLabels = [@ViewBag.CertsByPromoLabels];
+            var certsByChannelLabels = [@ViewBag.CertsByChannelLabels];
+            var borderColours = [];
+
+            var dynamicColors = function (i, total) {
+                var multiplier = 1.05;
+                var r = i - 165 * multiplier / total;
+                var g = i + 55 * multiplier / total;
+                var b = i - 253 * multiplier / total;
+                borderColours.push("rgba(" + r + "," + g + "," + b + ",8" + ")");
+                return "rgba(" + r + "," + g + "," + b + ",0.3" + ")";
+            };
+
+            var processData = function (_labels, _datasetsLabel, _data) {
+                var colours = [];
+
+                for (var i in _data) {
+                    colours.push(dynamicColors(i, _data.length));
+                }
+
+                return chartData = {
+                    labels: _labels,
+                    datasets: [{
+                        label: _datasetsLabel,
+                        backgroundColor: colours,
+                        borderColor: borderColours,
+                        hoverBackgroundColor: 'rgba(200, 200, 200, .2)',
+                        hoverBorderColor: borderColours,
+                        data: _data
+                    }]
+                };
+            }
+
+            var chartOptions = function (_title) {
+                return options = {
+                    title: {
+                        display: true,
+                        text: _title
+                    },
+                    layout: {
+                        padding: {
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 25
+                        }
+                    }
+                }
+            }
+
+            var ctx = document.getElementById("certsByPromo");
+            var title = ["Cerificates by Promo","(number of certificates under each promo)"];
+            var certsByPromoChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: processData(certsByPromoLabels, title, certsByPromoData),
+                options: chartOptions(title)
+            })
+
+            ctx = document.getElementById("certsByChannel");
+            title = ["Cerificates by Channel","(number of certificates acquired via each channel)"]
+            var certsByChannelChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: processData(certsByChannelLabels, title, certsByChannelData),
+                options: chartOptions(title)
+            })
+        </script>
+    }
 </body>
 </html>

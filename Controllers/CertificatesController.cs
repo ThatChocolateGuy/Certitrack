@@ -108,8 +108,8 @@ namespace Certitrack.Controllers
                 from promo in await _context.Promotion.ToListAsync()
                 select new SelectListItem
                 {
-                    Text = promo.Discount.ToString(),
-                    Value = promo.Discount.ToString()
+                    Text = promo.Discount.ToString("C2"),
+                    Value = promo.Discount.ToString("D")
                 };
             IEnumerable<SelectListItem> customerNames =
                 from customer in await _context.Customer.ToListAsync()
@@ -161,7 +161,7 @@ namespace Certitrack.Controllers
                             , new SqlParameter("@qty", certificateCreateViewModel.CertQty)
                     );
                 }
-                catch (Exception) { throw; }
+                catch (ArgumentNullException) { throw; }
 
                 return RedirectToAction(nameof(Index)).WithSuccess("Success!", "Certificate(s) issued for " + certificateCreateViewModel.CustomerName);
             }

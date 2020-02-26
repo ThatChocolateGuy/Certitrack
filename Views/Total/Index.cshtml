@@ -2,74 +2,143 @@
 @{
     ViewData["Title"] = "Index";
     ViewBag.Current = "TotalIndex";
+    ViewBag.ChartJsCDN = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js";
 }
-
 <div class="content">
-    <div class="box box-primary">
-        <div class="box-body pad table-responsive">
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th># of Certs Sold</th>
-                        <th>Total Price</th>
-                        @*<th>Total Price w/ promo</th>*@
-                        <th># of Certs Pending</th>
-                        <th># of Certs Redeemed</th>
-                        <th>Redeemed Cert Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@Html.ViewData.Model.Count()</td>
-                        <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</td>
-                        @*  <td>$@Html.ViewData.Model.Select(t => t.Certificate.Price).Sum()</td>*@
-                        <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed == null).Count()</td>
-                        <td>@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Count()</td>
-                        <td>$@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- INFO BOXES -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-green">
+                <span class="info-box-icon"><i class="fa fa-ticket-alt"></i></span>
 
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        @foreach (var certlink in Model.Select(m => m.Channel).Distinct())
-                        {
-                            <th># of Certs in (@certlink.ChannelName)</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        @foreach (var test in Model.Select(m => m.Channel).Distinct())
-                        {
-                            <td>@test.CertificateLink.Count()</td>
-                        }
-                    </tr>
-                </tbody>
-            </table>
+                <div class="info-box-content">
+                    <span class="info-box-text">Certificates Redeemed</span>
+                    <span class="info-box-number">
+                        @Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Count()
+                        <small>of</small> @ViewBag.Certs
+                    </span>
 
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        @foreach (var certlink in Model.Select(m => m.Promotion).Distinct())
-                        {
-                            <th># of Certs including ($@certlink.Discount) Promo</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        @foreach (var test in Model.Select(m => m.Promotion).Distinct())
-                        {
-                            <td>@test.CertificateLink.Count()</td>
-                        }
-                    </tr>
-                </tbody>
-            </table>
-            <div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: @ViewBag.CertsProgress%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <em>
+                            <strong>@ViewBag.CertsProgress </strong><i class="fas fa-percent" style="font-size: 0.8em"></i>
+                            <i class="fas fa-chevron-circle-right" style="font-size: 0.8em; margin: auto 5px auto 5px"></i>
+                            <span>@ViewBag.CertsRemainder left to redeem</span>
+                        </em>
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
         </div>
-    </div>
-</div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="fa fa-piggy-bank"></i></span>
 
+                <div class="info-box-content">
+                    <span class="info-box-text">Promotions</span>
+                    <span class="info-box-number">@ViewBag.Promos</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-shopping-basket"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Orders</span>
+                    <span class="info-box-number">@ViewBag.Orders</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-users"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Customers</span>
+                    <span class="info-box-number">@ViewBag.Customer</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <!-- CERTIFICATES DISTRIBUTION -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Certificates Distribution</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row" style="max-width: 900px; margin: 0 auto">
+                        <div class="chart-container col-md-6">
+                            <!-- Chart Canvas -->
+                            <canvas id="certsByPromo" height="100" width="100" style="max-width: 450px; margin: 0 auto"></canvas>
+                        </div>
+                        <div class="chart-container col-md-6">
+                            <!-- Chart Canvas -->
+                            <canvas id="certsByChannel" height="100" width="100" style="max-width: 450px; margin: 0 auto"></canvas>
+                        </div>
+                        <!-- /.chart-responsive -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- ./box-body -->
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-4 col-xs-12">
+                        <div class="description-block border-right">
+                            @*<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>*@
+                            <h5 class="description-header text-green">$@Html.ViewData.Model.Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</h5>
+                            <span class="description-text">TOTAL REVENUE</span>
+                        </div>
+                        <!-- /.description-block -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 col-xs-6">
+                        <div class="description-block border-right">
+                            @*<span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>*@
+                            <h5 class="description-header text-yellow">$@Html.ViewData.Model.Select(t => t.Certificate.Price).Sum()</h5>
+                            <span class="description-text">TOTAL CERTIFICATES VALUE</span>
+                        </div>
+                        <!-- /.description-block -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 col-xs-6">
+                        <div class="description-block border-right">
+                            @*<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>*@
+                            <h5 class="description-header text-aqua">$@Html.ViewData.Model.Where(t => t.Certificate.DateRedeemed != null).Select(t => t.Certificate.Price - t.Promotion.Discount).Sum()</h5>
+                            <span class="description-text">REDEEMED CERTIFICATES REVENUE</span>
+                        </div>
+                        <!-- /.description-block -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
