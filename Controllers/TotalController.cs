@@ -24,7 +24,7 @@ namespace Certitrack.Controllers
             try
             {
                 IEnumerable<CertificateLink> certificateDetails =
-                        from link in await _context.CertificateLink.ToListAsync()
+                        from link in await _context.CertificateLink.ToListAsync().ConfigureAwait(false)
                         select new CertificateLink
                         {
                             Certificate = _context.Certificate.Find(link.CertificateId),
@@ -44,8 +44,12 @@ namespace Certitrack.Controllers
                 ViewBag.Promos = _context.Promotion.Distinct().Count() - 1; // account for default $0 promo
 
                 ViewBag.Certs = _context.Certificate.Distinct().Count();
-                ViewBag.CertsProgress = decimal.Divide(certificateDetails.Select(m => m.Certificate).Where(c => c.DateRedeemed.HasValue).Count(), certificateDetails.Count()) * 100;
-                ViewBag.CertsRemainder = certificateDetails.Count() - certificateDetails.Select(m => m.Certificate).Where(c => c.DateRedeemed.HasValue).Count();
+                ViewBag.CertsProgress = (decimal.Divide(
+                    certificateDetails.Select(m => m.Certificate).Where(c => c.DateRedeemed.HasValue).Count(),
+                    certificateDetails.Count()
+                    ) * 100).ToString("0.00", null);
+                ViewBag.CertsRemainder = certificateDetails.Count() - certificateDetails
+                    .Select(m => m.Certificate).Where(c => c.DateRedeemed.HasValue).Count();
 
                 // Certificates by Promotion data
                 IEnumerable<Promotion> promos = certificateDetails.Select(m => m.Promotion).Distinct();
@@ -57,7 +61,9 @@ namespace Certitrack.Controllers
                             m => m.Certificate).Where(
                             c => c.CertificateLink.Promotion.Discount == promo.Discount).Count()));
                 ViewBag.CertsByPromoArray = string.Join(",", certsByPromoArray);
-                ViewBag.CertsByPromoLabels = string.Concat(certsByPromoLabels.Select(i => string.Format("`${0} discount`,", i)));
+                ViewBag.CertsByPromoLabels = string.Concat(
+                    certsByPromoLabels.Select(i => string.Format(
+                        null, i != 0 ? "`${0} discount`," : "`No Promo`,", i)));
 
                 // Certificates by Channel data
                 IEnumerable<Channel> channels = certificateDetails.Select(m => m.Channel).Distinct();
@@ -69,7 +75,8 @@ namespace Certitrack.Controllers
                             m => m.Certificate).Where(
                             c => c.CertificateLink.Channel.ChannelName == channel.ChannelName).Count()));
                 ViewBag.CertsByChannelArray = string.Join(",", certsByChannelArray);
-                ViewBag.CertsByChannelLabels = string.Concat(certsByChannelLabels.Select(i => string.Format("`{0}`,", i)));
+                ViewBag.CertsByChannelLabels = string.Concat(
+                    certsByChannelLabels.Select(i => string.Format(null, "`{0}`,", i)));
 
                 return View(certificateDetails);
             }
