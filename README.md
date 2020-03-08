@@ -22,7 +22,7 @@ Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 
 ## USAGE:
 1. Clone the repo
-2. Launch the .csproj with VS or VSCode
+2. Launch the `.csproj` with VS or VSCode
 3. Run with IIS or Docker `(ctrl + F5 or F5 to debug)`
 4. Explore the app with the above login credentials
 <sub>
@@ -32,7 +32,7 @@ Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 </sub>
 
 ## BUGS:
-- Please create an issue or pull request for this README if you find any
+- Please create an issue or pull request if you find any
 
 ## FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
