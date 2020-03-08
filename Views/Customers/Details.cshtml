@@ -23,13 +23,12 @@
         @ViewData["SectionHeader"]
     </h1>
     <ol class="breadcrumb">
-        <li><a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="@Url.Action("Index", "Total")"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
         <li><a href="/Customers">Customers</a></li>
         <li class="active">@ViewData["SectionBreadCrumb"]</li>
     </ol>
 </section>
 <!-- / .content-header -->
-
 <!-- Main content -->
 <section class="content">
     @Html.AntiForgeryToken()
@@ -98,7 +97,9 @@
                                 totalValue = 0;
                                 <tr>
                                     <td>
-                                        <a href="@Url.Action("Details", "Orders")/@order.Id">@order.Id</a>
+                                        <span class="label id">
+                                            <a href="@Url.Action("Details", "Orders")/@order.Id">@order.Id</a>
+                                        </span>
                                     </td>
                                     <td>
                                         @order.OrderItems.Count
@@ -108,7 +109,7 @@
                                         {
                                             totalValue += orderItem.Certificate.Price;
                                         }
-                                        $@totalValue
+                                        <span class="label label-success">$@totalValue</span>
                                     </td>
                                     <td>
                                         @foreach (var orderItem in order.OrderItems)
@@ -164,10 +165,14 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(orderId => orderItem.OrderId)
+                                            <span class="label id">
+                                                @Html.DisplayFor(orderId => orderItem.OrderId)
+                                            </span>
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)
+                                            <span class="label id">
+                                                @Html.DisplayFor(certificateNo => orderItem.Certificate.CertificateNo)
+                                            </span>
                                         </td>
                                         <td>
                                             @Html.DisplayFor(staffName => orderItem.Certificate.CertificateLink.Staff.Name)
@@ -179,16 +184,36 @@
                                             @Html.DisplayFor(expiryDate => orderItem.Certificate.ExpiryDate)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(price => orderItem.Certificate.Price)
+                                            <span class="label label-primary">
+                                                $@orderItem.Certificate.Price
+                                            </span>
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(promo => orderItem.Certificate.CertificateLink.Promotion.Discount)
+                                            @if (orderItem.Certificate.CertificateLink.Promotion.Discount.Equals(0))
+                                            {
+                                                <span class="label label-info">No Promo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-danger">
+                                                    $@orderItem.Certificate.CertificateLink.Promotion.Discount
+                                                </span>
+                                            }
                                         </td>
                                         <td>
                                             @Html.DisplayFor(channel => orderItem.Certificate.CertificateLink.Channel.ChannelName)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)
+                                            @if (orderItem.Certificate.DateRedeemed.HasValue)
+                                            {
+                                                <span class="label label-success">
+                                                    @Html.DisplayFor(dateRedeemed => orderItem.Certificate.DateRedeemed)
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-warning">Pending</span>
+                                            }
                                         </td>
                                         <!-- Buttons -->
                                         <td class="text-center">

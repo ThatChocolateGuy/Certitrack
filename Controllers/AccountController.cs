@@ -26,14 +26,13 @@ namespace Certitrack.Controllers
             _certitrackContext = certitrackContext;
         }
 
-        //public IActionResult Register()
-        //{
-        //    StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext);
-        //    return View(staffController.GetStaffCreateViewModel());
-        //}
-
         public async Task<IActionResult> Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Total");
+            }
+
             using (StaffController staffController = new StaffController(UserManager, SignInManager, _certitrackContext))
             {
                 try

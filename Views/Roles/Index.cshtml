@@ -12,7 +12,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Total")"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
         </li>
         <li class="active">Roles
     </ol>
@@ -45,7 +45,9 @@
                             {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => role.Title)
+                                    <span class="label id">
+                                        @Html.DisplayFor(modelItem => role.Title)
+                                    </span>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => role.Description)

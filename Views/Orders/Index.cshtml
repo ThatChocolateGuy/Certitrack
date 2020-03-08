@@ -12,7 +12,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a href="/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Total")"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
         </li>
         <li class="active">Orders
     </ol>
@@ -35,7 +35,7 @@
                                     @Html.DisplayNameFor(model => model.Id)
                                 </th>
                                 <th>
-                                    Qty
+                                    Certificate Quantity
                                 </th>
                                 <th>
                                     Customer
@@ -50,7 +50,9 @@
                                     <td>
                                         <a asp-action="Details" asp-route-id="@order.Id">
                                             <span data-toggle="tooltip" data-placement="right" title="Details">
-                                                @Html.DisplayFor(modelItem => order.Id)
+                                                <span class="label id">
+                                                    @Html.DisplayFor(modelItem => order.Id)
+                                                </span>
                                             </span>
                                         </a>
                                     </td>

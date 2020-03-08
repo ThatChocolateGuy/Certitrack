@@ -36,6 +36,4 @@ Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 
 ## FEATURES TO ADD:	
 - edit customer name freely for redeemed certificate
-- interactive dashboard to show aggregates
-  - filter by time periods
 - rework frontend in Vue.js
