@@ -1,0 +1,19 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: SqlDacpacDeploymentOnMachineGroup@0
+  inputs:
+    TaskType: 'dacpac'
+    DacpacFile: '**/*.dacpac'
+    TargetMethod: 'server'
+    ServerName: 'certitrack-srv.database.windows.net, 1433'
+    DatabaseName: 'certitrack-db'
+    AuthScheme: 'sqlServerAuthentication'
+    SqlUsername: 'nemo'
+    SqlPassword: '[/Nemx25]'
