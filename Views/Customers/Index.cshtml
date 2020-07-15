@@ -70,10 +70,11 @@
                                     </td>
                                     <!-- Buttons -->
                                     <td class="text-center">
-                                        <a asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank">
-                                            <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print"></i>
-                                            <span class="sr-only">Print</span>
-                                        </a>
+                                        @* change following element to anchor to enable print *@
+                                        <span asp-action="Print" asp-route-id="@item.Id" class="btn" target="_blank" disabled>
+                                            <i class="fas fa-print text-success" data-toggle="tooltip" data-placement="left" title="Print (coming soon)"></i>
+                                            <span class="sr-only">Print (coming soon)</span>
+                                        </span>
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
                                             <i class="fas fa-user-edit text-primary" data-toggle="tooltip" data-placement="left" title="Edit"></i>
                                             <span class="sr-only">Edit</span>
