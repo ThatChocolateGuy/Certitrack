@@ -27,6 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json" />
     <EmbeddedResource Include="Data\certitrack.mdf" />
   </ItemGroup>
 
