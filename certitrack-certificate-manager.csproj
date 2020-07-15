@@ -31,7 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.json" />
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Data\certitrack.mdf" />
   </ItemGroup>
 
