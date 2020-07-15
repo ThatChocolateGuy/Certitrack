@@ -12,13 +12,9 @@ This server-rendered app uses the Bootstrap-based AdminLTE frontend framework, a
 
 Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 
-## DEMO: <a href="https://certitrack.azurewebsites.net/" target="_blank">Certitrack-Demo-App</a>
+## DEMO: <a href="https://certitrack.nem.codes/" target="_blank">Certitrack-Demo-App</a>
 #### U: `admin@certitrack.com`  P: `admin123`
 #### U: `nonadmin@certitrack.com`  P: `nonadmin`
-<sub>
-	Note: Please be patient as app may take some time to cold boot.
-	Certitrack's database is hosted on an Azure server instance with auto-pausing db to conserve resources and save on overhead costs. This stuff ain’t cheap!
-</sub>
 
 ## USAGE:
 1. Clone the repo
