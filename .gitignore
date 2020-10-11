@@ -331,3 +331,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/Properties/ServiceDependencies/ct-demo - Web Deploy/profile.arm.json
+/Properties

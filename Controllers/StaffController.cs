@@ -150,11 +150,11 @@ namespace Certitrack.Controllers
                 out Staff _staff);
 
             // attempt registration of new user with UserManager
-            IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw);
+            IdentityResult result = await UserManager.CreateAsync(_staff, hashed_pw).ConfigureAwait(false);
             if (result.Succeeded)
             {
                 // link role and staffType to newly created user
-                await createStaffLink(staff, _staff);
+                await createStaffLink(staff, _staff).ConfigureAwait(false);
                 staffCreatedParam.Value = 1; // set staff creation success flag
             }
             else

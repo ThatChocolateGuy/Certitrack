@@ -84,23 +84,14 @@ namespace Certitrack
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            if(env == null)
+            {
+                throw new ArgumentNullException("env", "Environment not found");
+            }
+
             if (env.IsDevelopment())
             {
-                //2019-09-10 enable portable db
-                string ContentRootPath = env.ContentRootPath;
-
-                //2019-09-10 enable portable db
-                if (ConnectionString.Contains("%CONTENTROOTPATH%"))
-                {
-                    try
-                    {
-                        ConnectionString = ConnectionString.Replace("%CONTENTROOTPATH%", ContentRootPath);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
+                SetConnectionStringWithContentRootPath(env);
 
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
@@ -109,7 +100,8 @@ namespace Certitrack
             }
             else
             {
-                ConnectionString = Configuration.GetConnectionString("Certitrack");
+                SetConnectionStringWithContentRootPath(env); // 2020-10-10
+
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
@@ -127,6 +119,25 @@ namespace Certitrack
                     name: "default",
                     template: "{controller=Account}/{action=Login}/{id?}");
             });
+        }
+
+        private void SetConnectionStringWithContentRootPath(IHostingEnvironment env)
+        {
+            string ContentRootPath = env.ContentRootPath;
+
+            if (ConnectionString.Contains("%CONTENTROOTPATH%", StringComparison.CurrentCulture))
+            {
+                try
+                {
+                    ConnectionString = ConnectionString.Replace("%CONTENTROOTPATH%", ContentRootPath, StringComparison.CurrentCulture);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+                ConnectionString = Configuration.GetConnectionString("Certitrack");
         }
     }
 }
