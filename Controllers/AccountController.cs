@@ -77,6 +77,9 @@ namespace Certitrack.Controllers
                             StaffLink = staffLink
                         };
 
+                        if (staff == null)
+                            return View();
+
                         await staffController.Create(staff).ConfigureAwait(false);
                         IdentityResult result = await UserManager.AddToRoleAsync(staff, "Admin").ConfigureAwait(false);
                         // output result to console - debugging
