@@ -8,7 +8,7 @@ Certitrack is a fairly simple, yet relationally complex Gift Certificate Managem
 Issue, track, edit, delete, and redeem certificates. Generate PDF reports. Easily manage staff, clients and much more. Suitable for any organization or team.
 
 Built with Microsoft’s .NET Core stack, Certitrack leverages the power of a robust and secure relational SQL database.
-This server-rendered app uses the Bootstrap-based AdminLTE frontend framework, along with AJAX requests where possible, yielding a fast and highly responsive user experience (UX).
+This server-rendered app uses the Bootstrap-based AdminLTE dashboard theme, along with AJAX requests where possible, yielding a fast and highly-responsive user experience.
 
 Certitrack is Dockerized and deployed with Azure Pipleines (CI/CD).
 
