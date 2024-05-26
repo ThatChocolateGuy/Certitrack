@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Runtime.InteropServices;
 
@@ -71,9 +71,7 @@ namespace Certitrack
                 options.FormFieldName = "CSRF-TOKEN-CERTITRACK-FORM";
             });
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddSessionStateTempDataProvider();
+            services.AddRazorPages();
 
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddSession();
@@ -82,7 +80,7 @@ namespace Certitrack
             services.AddDistributedMemoryCache();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if(env == null)
             {
@@ -93,8 +91,8 @@ namespace Certitrack
             {
                 SetConnectionStringWithContentRootPath(env);
 
-                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                loggerFactory.AddDebug();
+                //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                //loggerFactory.AddDebug();
 
                 app.UseDeveloperExceptionPage();
             }
@@ -113,15 +111,19 @@ namespace Certitrack
             app.UseSession();
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Account}/{action=Login}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
             });
         }
 
-        private void SetConnectionStringWithContentRootPath(IHostingEnvironment env)
+        private void SetConnectionStringWithContentRootPath(IWebHostEnvironment env)
         {
             string ContentRootPath = env.ContentRootPath;
 
