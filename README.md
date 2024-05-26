@@ -1,5 +1,5 @@
 # Certitrack
-![.NET Core](https://github.com/ThatChocolateGuy/Certitrack/workflows/.NET%20Core/badge.svg)
+[![.NET](https://github.com/ThatChocolateGuy/Certitrack/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/ThatChocolateGuy/Certitrack/actions/workflows/dotnetcore.yml)
 
 ASP.NET Core Gift Certificate Management System
 
