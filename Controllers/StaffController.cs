@@ -248,7 +248,7 @@ namespace Certitrack.Controllers
         /// <param name="staffCreatedParam"></param>
         private void ExecStpAssignStaff(Staff staff_userInput, string hashed_pw, SqlParameter messageParam, SqlParameter staffCreatedParam)
         {
-            _ = _context.Database.ExecuteSqlCommand(
+            _ = _context.Database.ExecuteSqlRaw(
                     @"EXEC [dbo].[stpAssignStaff]
 						 @staff_name = @name
 						,@staff_email = @email

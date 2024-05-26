@@ -134,14 +134,13 @@ namespace Certitrack.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
-            [Bind("Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt"
-            )] CertificateCreateViewModel certificateCreateViewModel)
+            [Bind("Price,CertQty,CustomerName,CustomerEmail,CustomerPhone,StaffName,ChannelName,PromoAmt")] CertificateCreateViewModel certificateCreateViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int result = _context.Database.ExecuteSqlCommand(@"
+                    int result = _context.Database.ExecuteSqlRaw(@"
                     EXEC stpAssignCertificate
                          @customer_name = @customerName
                         ,@customer_email = @customerEmail
